@@ -14,9 +14,12 @@ import pyone
 logger = logging.getLogger("OpenNebulaSource")
 
 
+def get_all_vms(server: pyone.OneServer) -> pyone.bindings.VM_POOLSub:
+    """Return ALL VMs excluding those in state DONE"""
+    return server.vmpool.info(-2, -1, -1, -1)
+
 def get_vm_info(server: pyone.OneServer, name: str) -> dict:
     """Returns a dict for a specified VM"""
-
 
 def get_vmpool_info(server: pyone.OneServer) -> str:
     """Returns a JSON string containing all VMs"""
