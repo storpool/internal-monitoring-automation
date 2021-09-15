@@ -1,0 +1,15 @@
+---
+- name: Installing node-exporter
+  hosts: monitoring
+  become_method: sudo
+  roles:
+    - name: cloudalchemy.node_exporter
+      become: true
+  vars:
+    node_exporter_version: 1.2.0
+    node_exporter_web_listen_address: "{{ ansible_host }}"
+    node_exporter_basic_auth_users:
+      prometheus: "{{ prometheus_secret }}"
+
+- name: Regenerating Prometheus static targets
+  hosts: prometheus

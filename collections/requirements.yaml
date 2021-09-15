@@ -1,4 +1,4 @@
 ---
 collections:
-  - community.general
   - netcho.opennebula
+  - cloudalchemy.node_exporter
