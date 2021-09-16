@@ -6,8 +6,10 @@
     - name: Including Prometheus variables
       include_vars: vars/prometheus.yaml
     - name: Creating Prometheus file service discovery directory
+      become: true
       file:
         path: /monitoring/file_sd/
         state: directory
   roles:
     - name: cloudlachemy.prometheus
+      become: true
