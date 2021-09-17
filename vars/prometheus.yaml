@@ -26,9 +26,8 @@ prometheus_scrape_jobs:
       - targets:
           - "localhost:9090"
 
-  - job_name: "node-exporter-file-discovery"
+  - job_name: "node-exporter"
     honor_labels: true
     file_sd_configs:
       - files:
-          - "/monitoring/file_sd/dummy_load.yaml"
-          - "/monitoring/file_sd/opennebula.yaml"
+          - "/monitoring/file_sd/*.yaml"
