@@ -1,0 +1,5 @@
+plugin: "netcho.opennebula.opennebula"
+compose:
+  ansible_host: nic[0].ip
+groups:
+  monitoring: 'user_attributes.labels is defined and "monitor" in user_attributes.labels'
