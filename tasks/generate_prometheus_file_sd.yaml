@@ -1,0 +1,4 @@
+---
+- name: Generating scape targets
+  set_fact:
+    scape_targets: []
