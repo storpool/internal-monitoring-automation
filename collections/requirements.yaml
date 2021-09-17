@@ -1,5 +1,3 @@
 ---
 collections:
   - netcho.opennebula
-  - cloudalchemy.prometheus
-  - cloudalchemy.node_exporter
