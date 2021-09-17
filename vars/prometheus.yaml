@@ -27,6 +27,7 @@ prometheus_scrape_jobs:
           - "localhost:9090"
 
   - job_name: "node-exporter-file-discovery"
+    honor_labels: true
     file_sd_configs:
       - files:
           - "/monitoring/file_sd/dummy_load.yaml"
