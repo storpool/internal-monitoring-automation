@@ -11,5 +11,5 @@
         path: /monitoring/file_sd/
         state: directory
   roles:
-    - name: cloudlachemy.prometheus
+    - name: cloudalchemy.prometheus
       become: true
