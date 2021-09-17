@@ -1,6 +1,6 @@
 ---
 - name: Installing node-exporter
-  hosts: monitoring
+  hosts: moonstone_monitor
   become_method: sudo
   roles:
     - name: cloudalchemy.node_exporter

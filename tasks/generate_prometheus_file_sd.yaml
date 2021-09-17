@@ -1,4 +1,8 @@
 ---
 - name: Generating scape targets
-  set_fact:
-    scape_targets: []
+  template:
+    dest: /monitoring/file_sd/moonstone.yaml
+    src: moonstone.yaml.j2
+    owner: root
+    group: prometheus
+    mode: 0640
