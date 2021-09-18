@@ -13,5 +13,6 @@
 
 - name: Regenerating Prometheus static targets
   hosts: prometheus
+  become_method: sudo
   tasks:
     - import_tasks: tasks/generate_prometheus_file_sd.yaml
