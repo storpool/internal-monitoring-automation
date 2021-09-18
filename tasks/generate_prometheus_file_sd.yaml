@@ -1,5 +1,6 @@
 ---
 - name: Generating scape targets
+  become: true
   template:
     dest: /monitoring/file_sd/moonstone.yaml
     src: moonstone.yaml.j2
