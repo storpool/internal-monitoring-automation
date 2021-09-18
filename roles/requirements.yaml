@@ -1,4 +1,5 @@
 ---
 roles:
   - cloudalchemy.prometheus
-  - cloudalchemy.node_exporter
+  - src: https://github.com/cloudalchemy/ansible-node-exporter
+    name: cloudalchemy.node_exporter
