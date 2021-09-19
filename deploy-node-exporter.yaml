@@ -7,8 +7,8 @@
       become: true
   vars_files: vars/node-exporter.yaml
 
-- name: Regenerating Prometheus static targets
-  hosts: prometheusA
+- name: Updating Prometheus static targets
+  hosts: prometheus
   become_method: sudo
   roles:
     - generate-static-targets
