@@ -1,0 +1,8 @@
+---
+- name: Reloading Prometheus
+  service:
+    name: prometheus
+    state: reloaded
+  when:
+    - must_reload_prometheus is defined
+    - must_reload_prometheus | bool

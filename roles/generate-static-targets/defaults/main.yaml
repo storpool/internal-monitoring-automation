@@ -1,0 +1,3 @@
+file_sd_base_path: /monitoring/file_sd/
+file_sd_config_files:
+  - moonstone
