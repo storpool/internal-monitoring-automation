@@ -4,5 +4,5 @@
     name: prometheus
     state: reloaded
   when:
-    - must_reload_prometheus is defined
-    - must_reload_prometheus | bool
+    - reload_prometheus is defined
+    - reload_prometheus | bool
