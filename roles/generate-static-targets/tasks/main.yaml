@@ -1,16 +1,4 @@
 ---
-- name: Retrieving currently present configuration files
-  find:
-    paths:
-      - "{{ file_sd_base_path }}"
-    patterns:
-      - "*.yaml"
-  register: present_config_files
-
-- name: Creating a list of currently present static files
-  set_fact:
-    present_sd_config_files: "{{ present_config_files.files | map(attribute='path') | map('basename') | map('replace', '.yaml', '') | list }}"
-
 - name: Generating file_sd configutaion files
   become: true
   template:
@@ -22,7 +10,4 @@
   loop: "{{ file_sd_config_files }}"
   loop_control:
     loop_var: filename
-
-- name: Updating reload_prometheus variable
-  set_fact:
-    reload_prometheus: "{{ file_sd_config_files | difference(present_sd_config_files) | length > 1 | bool }}"
+  notify: Reloading Prometheus
