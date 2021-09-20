@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include timescale_db"
+      include_role:
+        name: "timescale_db"

@@ -1,0 +1,6 @@
+---
+# handlers file for timescale_db
+- name: Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
