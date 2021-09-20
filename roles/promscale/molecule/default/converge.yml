@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include promscale"
+      include_role:
+        name: "promscale"
