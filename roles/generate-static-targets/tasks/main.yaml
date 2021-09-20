@@ -19,6 +19,11 @@
   loop_control:
     loop_var: filename
 
+- name: Debug prenesnt files
+  debug:
+    var: "{{ present_config_files.files | map(attribute='path') | map('basename') | map('replace', '.yaml', '') | list }}"
+    verbosity: 2
+
 - name: Updating reload_prometheus variable
   set_fact:
     reload_prometheus: "{{ file_sd_config_files | difference(present_config_files.files | map(attribute='path') | map('basename') | map('replace', '.yaml', '')) | length > 1 | bool }}"
