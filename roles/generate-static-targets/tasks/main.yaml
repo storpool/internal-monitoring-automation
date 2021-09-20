@@ -21,7 +21,7 @@
 
 - name: Debug prenesnt files
   debug:
-    var: "{{ present_config_files.files | map(attribute='path') | map('basename') | map('replace', '.yaml', '') | list }}"
+    msg: "{{ present_config_files.files | map(attribute='path') | map('basename') | map('replace', '.yaml', '') | list }}"
     verbosity: 2
 
 - name: Updating reload_prometheus variable
