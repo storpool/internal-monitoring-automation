@@ -3,6 +3,3 @@
   service:
     name: prometheus
     state: reloaded
-  when:
-    - reload_prometheus is defined
-    - reload_prometheus | bool
