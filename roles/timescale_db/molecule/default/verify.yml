@@ -5,6 +5,21 @@
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: Installing netstat
+      package:
+        name: net-tools
+        state: present
+
+    - name: Gathering service facts
+      ansible.builtin.service_facts:
+
+    - name: Gathering listening ports
+      community.general.listen_ports_facts:
+
+    - name: Check if postgresql service is running
+      assert:
+        that: ansible_facts.services['postgresql']['state'] == 'running'
+
+    - name: Check if postgresql port is listening
+      assert:
+        that: "{{ ansible_facts.tcp_listen | selectattr('port', 'eq', 5432) | length == 1 | bool }}"

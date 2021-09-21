@@ -18,6 +18,9 @@ galaxy_info:
 
   min_ansible_version: 2.1
 
+  role_name: timescale_db
+  namespace: netcho
+
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:
 

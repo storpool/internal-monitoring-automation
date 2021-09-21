@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include timescale_db"
+    - name: Applying timescale_db role
       include_role:
-        name: "timescale_db"
+        name: netcho.timescale_db
