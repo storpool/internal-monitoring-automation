@@ -4,7 +4,7 @@
   include_tasks: "install-{{ ansible_pkg_mgr }}.yaml"
 
 - name: Checking if TimescaleDB shared library has been added to postgresql.conf
-  shell: grep "shared_preload_libraries = 'timescaledb'" /etc/postgresql/13/main/postgresql.conf | wc -l
+  shell: "grep \"shared_preload_libraries = 'timescaledb'\" {{ lookup('vars', 'postgre_config_file_' + ansible_distribution.lower()) }} | wc -l"
   register: is_timescale_loaded
   changed_when: is_timescale_loaded.stdout == "0"
 

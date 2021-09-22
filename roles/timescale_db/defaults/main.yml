@@ -1,2 +1,7 @@
 ---
 # defaults file for timescale_db
+postgre_config_file_ubuntu: "/etc/postgresql/13/main/postgresql.conf"
+postgre_config_file_centos: "/var/lib/pgsql/13/data/postgresql.conf"
+
+postgre_service_name_ubuntu: "postgresql"
+postgre_service_name_centos: "postgresql-13"
