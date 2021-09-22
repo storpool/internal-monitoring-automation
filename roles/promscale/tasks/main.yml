@@ -1,2 +1,14 @@
 ---
 # tasks file for promscale
+- name: Downloading Promscale
+  get_url:
+    url: "https://github.com/timescale/promscale/releases/download/{{ promscale_version }}/promscale_{{ promscale_version }}_Linux_x86_64"
+    dest: /usr/bin/promscale
+    mode: 0755
+
+- name: Downloading Promscale systemd file
+  get_url:
+    url: "https://github.com/timescale/promscale/raw/master/build/systemd/promscale.service"
+    dest: /etc/systemd/system/promscale.service
+    mode: 0644
+
