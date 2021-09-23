@@ -7,7 +7,7 @@ driver:
   name: docker
 platforms:
   - name: ubuntu
-    image: netcho/ubuntu-python3
+    image: ubuntu:20.04
     pre_build_image: true
   - name: centos-8
     image: centos:8
