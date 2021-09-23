@@ -1,3 +1,8 @@
 ---
 # defaults file for promscale
 promscale_version: 0.5.1
+
+promscale_database_name: "promscale"
+promscale_username: "promscale"
+
+promscale_config_path: "/etc/promscale"

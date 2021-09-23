@@ -1,2 +1,12 @@
 ---
 # handlers file for promscale
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  when: ansible_service_mgr == 'systemd'
+
+- name: Restart Promscale
+  service:
+    name: promscale
+    state: restarted
+    enabled: true

@@ -3,7 +3,6 @@
 
 - name: Verify
   hosts: all
-  gather_facts: false
   tasks:
     - name: Installing netstat
       package:
@@ -18,7 +17,7 @@
 
     - name: Check if postgresql service is running
       assert:
-        that: ansible_facts.services['postgresql']['state'] == 'running'
+        that: "ansible_facts.services[lookup('vars', 'postgre_service_name_' + ansible_distribution.lower())]['state'] == 'running'"
 
     - name: Check if postgresql port is listening
       assert:

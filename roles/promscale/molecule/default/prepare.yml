@@ -1,0 +1,22 @@
+---
+- name: Installing python3 on Ubuntu
+  gather_facts: false
+  hosts: ubuntu
+  tasks:
+    - name: Installing python3
+      raw: apt-get update && apt install -y python3
+
+- name: Installing missing locales on CentOS 8
+  hosts: centos-8
+  tasks:
+    - name: Installing packages
+      dnf:
+        name:
+          - langpacks-en
+          - glibc-all-langpacks
+        state: present
+
+- name: Installing TimescaleDB
+  hosts: all
+  roles:
+    - netcho.timescale_db
