@@ -1,8 +1,5 @@
 ---
 # tasks file for promscale
-- name: Installing dependencies
-  include_tasks: "install_dependencies/{{ ansible_distribution | lower }}.yml"
-
 - name: Creating Promscale user group
   group:
     name: promscale

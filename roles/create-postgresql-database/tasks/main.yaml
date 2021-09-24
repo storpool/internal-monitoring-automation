@@ -1,4 +1,7 @@
 ---
+- name: Installing dependencies
+  include_tasks: "install_dependencies/{{ ansible_distribution | lower }}.yml"
+
 - name: Generating PostgreSQL user password
   set_fact:
     user_password: "{{ postgres_password if postgres_password is defined else lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
