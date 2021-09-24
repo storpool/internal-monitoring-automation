@@ -16,6 +16,14 @@
           - glibc-all-langpacks
         state: present
 
+- name: Installing dependencies
+  hosts: all
+  tasks:
+    - name: Installing sudo
+      package:
+        name: sudo
+        state: present
+
 - name: Installing TimescaleDB
   hosts: all
   roles:
