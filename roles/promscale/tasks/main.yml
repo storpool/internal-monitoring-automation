@@ -40,7 +40,6 @@
   become: true
   community.postgresql.postgresql_db:
     name: "{{ promscale_database_name }}"
-    owner: "{{ promscale_username }}"
 
 - name: Creating Promscale PostgreSQL user
   become_method: sudo
@@ -52,6 +51,14 @@
     db: "{{ promscale_database_name }}"
     priv: ALL
     role_attr_flags: CREATEROLE
+
+- name: Setting Promscale user as owner of the Promscale database
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_db:
+    name: "{{ promscale_database_name }}"
+    owner: "{{ promscale_username }}"
 
 - name: Generating Promscale systemd environment file
   template:
