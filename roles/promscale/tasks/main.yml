@@ -40,6 +40,7 @@
   become: true
   community.postgresql.postgresql_db:
     name: "{{ promscale_database_name }}"
+    owner: "{{ promscale_username }}"
 
 - name: Creating Promscale PostgreSQL user
   become_method: sudo
