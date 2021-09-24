@@ -1,6 +1,6 @@
 grafana_port: 80
 grafana_cap_net_bind_service: true
-grafana_url: "http://intmon.storpool.local"
+grafana_url: "http://{{ ansible_fqdn }}"
 
 grafana_database:
   type: postgres
