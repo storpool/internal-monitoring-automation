@@ -61,7 +61,7 @@
 - name: Editing Promscale unit service file
   replace:
     path: /etc/systemd/system/promscale.service
-    regexp: "EnvironmentFile="
+    regexp: "EnvironmentFile=__ENV_FILE__"
     replace: "EnvironmentFile={{ promscale_config_path }}"
   notify:
     - Reload systemd
