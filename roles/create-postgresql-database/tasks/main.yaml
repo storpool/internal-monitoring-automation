@@ -1,0 +1,30 @@
+---
+- name: Generating PostgreSQL user password
+  set_fact:
+    user_password: "{{ postgres_password if postgres_password is defined else lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+
+- name: Creating PostgreSQL database
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_db:
+    name: "{{ postgres_database_name }}"
+
+- name: Creating PostgreSQL user
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_user:
+    name: "{{ postgres_username }}"
+    password: "{{ user_password }}"
+    db: "{{ postgres_database_name }}"
+    priv: ALL
+    role_attr_flags: CREATEROLE
+
+- name: Setting Promscale user as owner of the Promscale database
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_db:
+    name: "{{ postgres_database_name }}"
+    owner: "{{ postgres_username }}"
