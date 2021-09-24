@@ -1,7 +1,7 @@
 ---
 roles:
   - cloudalchemy.prometheus
-  - cloudalchemy.granafa
-  - cloudalchemy.alert_manager
   - src: https://github.com/cloudalchemy/ansible-node-exporter
     name: cloudalchemy.node_exporter
+  - cloudalchemy.grafana
+  - cloudalchemy.alert_manager
