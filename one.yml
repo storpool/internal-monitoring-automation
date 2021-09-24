@@ -1,4 +1,5 @@
 plugin: "netcho.opennebula.opennebula"
+one_hostname_preference: name
 compose:
   ansible_host: nic[0].ip
   running: state == 'active' and lcm_state == 'running'
