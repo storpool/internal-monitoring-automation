@@ -1,6 +1,6 @@
 ---
 # tasks file for timescale_db
-- name: Installing TimescaleDB
+- name: Installing TimescaleDB packages
   include_tasks: "install-{{ ansible_pkg_mgr }}.yaml"
 
 - name: Checking if TimescaleDB shared library has been added to postgresql.conf
