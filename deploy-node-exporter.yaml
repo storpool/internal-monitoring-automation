@@ -8,7 +8,7 @@
   vars_files: vars/node-exporter.yaml
 
 - name: Updating Prometheus static targets
-  hosts: prometheus
+  hosts: monitoring-stack
   become_method: sudo
   roles:
     - generate-static-targets
