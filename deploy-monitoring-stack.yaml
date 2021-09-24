@@ -6,7 +6,7 @@
     - name: timescale_db
       become: true
 
-- name: Installing Promscale and Prometheus
+- name: Installing monitoring stack
   hosts: monitoring-stack
   become_method: sudo
   pre_tasks:
@@ -16,8 +16,20 @@
         path: /monitoring/file_sd/
         state: directory
   roles:
+    - name: create-postgresql-database
+      become: true
     - name: promscale
       become: true
     - name: cloudalchemy.prometheus
       become: true
   vars_files: vars/prometheus.yaml
+
+- name: Installing Grafana
+  hosts: monitoring-stack
+  become_method: sudo
+  roles:
+    - name: create-postgresql-database
+      become: true
+    - name: cloudalchemy.granfa
+      become: true
+  vars_files: vars/grafana.yaml

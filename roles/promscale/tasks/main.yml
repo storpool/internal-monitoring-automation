@@ -30,36 +30,6 @@
     mode: 0644
   notify: Reload systemd
 
-- name: Generating Promscale user password
-  set_fact:
-    promscale_user_password: "{{ promscale_password if promscale_password is defined else lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
-
-- name: Creating Promscale PostgreSQL database
-  become_method: sudo
-  become_user: postgres
-  become: true
-  community.postgresql.postgresql_db:
-    name: "{{ promscale_database_name }}"
-
-- name: Creating Promscale PostgreSQL user
-  become_method: sudo
-  become_user: postgres
-  become: true
-  community.postgresql.postgresql_user:
-    name: "{{ promscale_username }}"
-    password: "{{ promscale_user_password }}"
-    db: "{{ promscale_database_name }}"
-    priv: ALL
-    role_attr_flags: CREATEROLE
-
-- name: Setting Promscale user as owner of the Promscale database
-  become_method: sudo
-  become_user: postgres
-  become: true
-  community.postgresql.postgresql_db:
-    name: "{{ promscale_database_name }}"
-    owner: "{{ promscale_username }}"
-
 - name: Generating Promscale systemd environment file
   template:
     dest: "{{ promscale_config_path }}"

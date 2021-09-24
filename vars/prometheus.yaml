@@ -1,3 +1,11 @@
+promscale_postgres_username: "promscale"
+promscale_postgres_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+promscale_postgres_database: "promscale"
+
+postgres_username: "{{ promscale_postgres_username }}"
+postgres_password: "{{ promscale_postgres_password }}"
+postgres_database: "{{ promscale_postgres_database }}"
+
 prometheus_version: 2.28.1
 
 prometheus_global:
