@@ -1,5 +1,4 @@
 promscale_postgres_username: "promscale"
-promscale_postgres_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
 promscale_postgres_database: "promscale"
 
 postgres_username: "{{ promscale_postgres_username }}"

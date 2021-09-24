@@ -7,12 +7,10 @@ grafana_database:
   host: localhost:5432
   name: grafana
   user: grafana
-  password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+  password: "{{ grafana_database_password }}"
   ssl_mode: disable
 
-grafana_security:
-  admin_user: admin
-  admin_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+
 
 postgres_username: "{{ grafana_database.user }}"
 postgres_password: "{{ grafana_database.password }}"
