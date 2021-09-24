@@ -11,6 +11,7 @@ grafana_database:
   ssl_mode: verify
 
 grafana_security:
+  admin_user: admin
   admin_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
 
 postgres_username: "{{ grafana_database.user }}"
