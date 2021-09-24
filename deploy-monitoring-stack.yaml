@@ -32,4 +32,8 @@
       become: true
     - name: cloudalchemy.grafana
       become: true
+  post_tasks:
+    - name: Print Grafana admin password
+      debug:
+        msg: "Grafana admin password: {{ grafana_security.admin_password }}"
   vars_files: vars/grafana.yaml
