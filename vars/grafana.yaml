@@ -8,7 +8,7 @@ grafana_database:
   name: grafana
   user: grafana
   password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
-  ssl_mode: verify
+  ssl_mode: disabled
 
 grafana_security:
   admin_user: admin
