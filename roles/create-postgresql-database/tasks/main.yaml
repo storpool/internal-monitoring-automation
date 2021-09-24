@@ -8,7 +8,7 @@
   become_user: postgres
   become: true
   community.postgresql.postgresql_db:
-    name: "{{ postgres_database_name }}"
+    name: "{{ postgres_database }}"
 
 - name: Creating PostgreSQL user
   become_method: sudo
@@ -17,7 +17,7 @@
   community.postgresql.postgresql_user:
     name: "{{ postgres_username }}"
     password: "{{ user_password }}"
-    db: "{{ postgres_database_name }}"
+    db: "{{ postgres_database }}"
     priv: ALL
     role_attr_flags: CREATEROLE
 
@@ -26,5 +26,5 @@
   become_user: postgres
   become: true
   community.postgresql.postgresql_db:
-    name: "{{ postgres_database_name }}"
+    name: "{{ postgres_database }}"
     owner: "{{ postgres_username }}"
