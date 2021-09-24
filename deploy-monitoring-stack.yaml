@@ -1,7 +1,12 @@
 ---
-- name: Deploying monitoring stack
+- name: Installing TimescaleDB
   hosts: monitoring-stack
   become_method: sudo
+  roles:
+    - name: timescale_db
+      become: true
+
+- name: Installing Promscale and Prometheus
   pre_tasks:
     - name: Creating Prometheus file service discovery directory
       become: true
@@ -9,8 +14,6 @@
         path: /monitoring/file_sd/
         state: directory
   roles:
-    - name: timescale_db
-      become: true
     - name: promscale
       become: true
     - name: cloudalchemy.prometheus
