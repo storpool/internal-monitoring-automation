@@ -30,6 +30,6 @@
   roles:
     - name: create-postgresql-database
       become: true
-    - name: cloudalchemy.granfa
+    - name: cloudalchemy.grafana
       become: true
   vars_files: vars/grafana.yaml
