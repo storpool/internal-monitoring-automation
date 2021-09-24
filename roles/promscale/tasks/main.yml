@@ -50,6 +50,7 @@
     password: "{{ promscale_user_password }}"
     db: "{{ promscale_database_name }}"
     priv: ALL
+    role_attr_flags: CREATEROLE
 
 - name: Generating Promscale systemd environment file
   template:
