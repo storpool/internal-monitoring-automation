@@ -2,10 +2,6 @@
 - name: Installing dependencies
   include_tasks: "install_dependencies/{{ ansible_distribution | lower }}.yml"
 
-- name: Generating PostgreSQL user password
-  set_fact:
-    user_password: "{{ postgres_password if postgres_password is defined else lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
-
 - name: Creating PostgreSQL database
   become_method: sudo
   become_user: postgres
@@ -13,13 +9,18 @@
   community.postgresql.postgresql_db:
     name: "{{ postgres_database }}"
 
+- name: Debug PostgreSQL user password
+  debug:
+    var: postgres_password
+    verbosity: 2
+
 - name: Creating PostgreSQL user
   become_method: sudo
   become_user: postgres
   become: true
   community.postgresql.postgresql_user:
     name: "{{ postgres_username }}"
-    password: "{{ user_password }}"
+    password: "{{ postgres_password if postgres_password is defined else lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
     db: "{{ postgres_database }}"
     priv: ALL
     role_attr_flags: CREATEROLE
