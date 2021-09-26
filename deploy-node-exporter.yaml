@@ -7,6 +7,7 @@
       become: true
   post_tasks:
     - name: Enable node exporter port on firewall
+      become: true
       ansible.posix.firewalld:
         port: "{{ node_exporter_web_listen_port }}/tcp"
         state: enabled
