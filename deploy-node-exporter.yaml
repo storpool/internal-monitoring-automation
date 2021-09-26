@@ -13,6 +13,7 @@
         state: enabled
         permanent: true
         immediate: true
+      when: ansible_os_family == 'RedHat'
   vars_files: vars/node-exporter.yaml
 
 - name: Updating Prometheus static targets
