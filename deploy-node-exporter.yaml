@@ -5,6 +5,13 @@
   roles:
     - name: cloudalchemy.node_exporter
       become: true
+  post_tasks:
+    - name: Enable node exporter port on firewall
+      ansible.posix.firewalld:
+        port: "{{ node_exporter_web_listen_port }}/tcp"
+        state: enabled
+        permanent: true
+        immediate: true
   vars_files: vars/node-exporter.yaml
 
 - name: Updating Prometheus static targets
