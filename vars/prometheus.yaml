@@ -39,7 +39,7 @@ prometheus_scrape_configs:
       password: "{{ prometheus_secret }}"
     file_sd_configs:
       - files:
-          - "/monitoring/file_sd/hosts_*.yaml"
+          - "/monitoring/prometheus_file_sd/hosts_*.yaml"
   - job_name: "snmp"
     metrics_path: /snmp
     basic_auth:
@@ -54,4 +54,4 @@ prometheus_scrape_configs:
         replacement: "{{ ansible_fqdn }}:9116"
     file_sd_configs:
       - files:
-          - "/monitoring/file_sd/network_*.yaml"
+          - "/monitoring/prometheus_file_sd/network_*.yaml"

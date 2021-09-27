@@ -13,7 +13,7 @@
     - name: Creating Prometheus file service discovery directory
       become: true
       file:
-        path: /monitoring/file_sd/
+        path: /monitoring/prometheus_file_sd/
         state: directory
     - name: Generating Promscale PostgreSQL user password
       set_fact:
