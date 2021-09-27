@@ -39,4 +39,19 @@ prometheus_scrape_configs:
       password: "{{ prometheus_secret }}"
     file_sd_configs:
       - files:
-          - "/monitoring/file_sd/*.yaml"
+          - "/monitoring/file_sd/hosts_*.yaml"
+  - job_name: "snmp"
+    metrics_path: /snmp
+    basic_auth:
+      username: prometheus
+      password: "{{ prometheus_secret }}"
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: "{{ ansible_fqdn }}:9116"
+    file_sd_configs:
+      - files:
+          - "/monitoring/file_sd/network_*.yaml"
