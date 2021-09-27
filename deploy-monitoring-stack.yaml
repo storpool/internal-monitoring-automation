@@ -28,6 +28,7 @@
     - name: cloudalchemy.snmp-exporter
       become: true
     - name: cloudalchemy.alertmanager
+      become: true
   vars_files:
     - vars/prometheus.yaml
 
