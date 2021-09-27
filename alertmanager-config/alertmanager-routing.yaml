@@ -1,3 +1,5 @@
 ---
 route:
   receiver: default
+  group_by: [instance, alertname]
+  routes: []
