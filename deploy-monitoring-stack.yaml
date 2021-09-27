@@ -18,6 +18,10 @@
     - name: Generating Promscale PostgreSQL user password
       set_fact:
         promscale_postgres_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+    - name: Debugging alertmanager routes
+      debug:
+        var: alertmanager_route
+        verbosity: 2
   roles:
     - name: create-postgresql-database
       become: true
