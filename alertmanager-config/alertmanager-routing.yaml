@@ -1,5 +1,3 @@
 ---
-route:
-  receiver: default
-  group_by: [instance, alertname]
-  routes: []
+receiver: default
+group_by: [instance, alertname]
