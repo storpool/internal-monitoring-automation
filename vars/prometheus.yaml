@@ -53,3 +53,8 @@ prometheus_scrape_configs:
     file_sd_configs:
       - files:
           - "/monitoring/prometheus_file_sd/network_*.yaml"
+
+prometheus_alermanager_config:
+  - static_configs:
+      - targets:
+          - localhost:9093

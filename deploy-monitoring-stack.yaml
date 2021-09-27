@@ -23,11 +23,11 @@
       become: true
     - name: promscale
       become: true
-    - name: cloudalchemy.prometheus
-      become: true
     - name: cloudalchemy.snmp-exporter
       become: true
     - name: cloudalchemy.alertmanager
+      become: true
+    - name: cloudalchemy.prometheus
       become: true
   vars_files:
     - vars/prometheus.yaml
