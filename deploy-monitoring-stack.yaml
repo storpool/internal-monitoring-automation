@@ -25,6 +25,8 @@
       become: true
     - name: cloudalchemy.prometheus
       become: true
+    - name: cloudalchemy.snmp-exporter
+      become: true
   vars_files: vars/prometheus.yaml
 
 - name: Installing Grafana

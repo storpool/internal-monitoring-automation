@@ -3,5 +3,6 @@ roles:
   - cloudalchemy.prometheus
   - src: https://github.com/cloudalchemy/ansible-node-exporter
     name: cloudalchemy.node_exporter
+  - cloudalchemy.snmp-exporter
   - cloudalchemy.grafana
   - cloudalchemy.alertmanager
