@@ -10,8 +10,6 @@ grafana_database:
   password: "{{ grafana_database_password }}"
   ssl_mode: disable
 
-
-
 postgres_username: "{{ grafana_database.user }}"
 postgres_password: "{{ grafana_database.password }}"
 postgres_database: "{{ grafana_database.name }}"

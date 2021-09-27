@@ -27,7 +27,9 @@
       become: true
     - name: cloudalchemy.snmp-exporter
       become: true
-  vars_files: vars/prometheus.yaml
+    - name: cloudalchemy.alertmanager
+  vars_files:
+    - vars/prometheus.yaml
 
 - name: Installing Grafana
   hosts: monitoring-stack

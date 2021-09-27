@@ -5,8 +5,6 @@ postgres_username: "{{ promscale_postgres_username }}"
 postgres_password: "{{ promscale_postgres_password }}"
 postgres_database: "{{ promscale_postgres_database }}"
 
-prometheus_version: 2.28.1
-
 prometheus_global:
   scrape_interval: 3s
   evaluation_interval: 15s
