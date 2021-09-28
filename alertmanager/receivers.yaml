@@ -1,7 +1,7 @@
 ---
 - name: "default"
   slack_configs:
-  - channel: "#infra-mon"
+  - channel: "{{ alertmanager_slack_channel }}"
     color: '{{ template "slack.storpool.color" . }}'
     title: '{{ template "slack.storpool.title" . }}'
     text: '{{ template "slack.storpool.text" . }}'
