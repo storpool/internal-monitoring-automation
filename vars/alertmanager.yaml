@@ -1,2 +1,2 @@
-alertmanager_receivers: "{{ alerts_receivers }}"
+alertmanager_receivers: "{{ lookup('file', playbook_dir + '/alertmanager/receivers.yaml') | from_yaml }}"
 alertmanager_route: "{{ lookup('file', playbook_dir + '/alertmanager/routing.yaml') | from_yaml }}"

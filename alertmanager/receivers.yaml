@@ -1,14 +1,12 @@
 ---
-slack_configuration:
+- name: "default"
+  slack_configs:
   - channel: "#infra-mon"
     color: '{{ template "slack.storpool.color" . }}'
     title: '{{ template "slack.storpool.title" . }}'
     text: '{{ template "slack.storpool.text" . }}'
     send_resolved: true
     actions:
-      - type: button
-        text: 'Runbook :green_book:'
-        url: '{{ (index .Alerts 0).Annotations.runbook_url }}'
       - type: button
         text: 'Query :mag:'
         url: '{{ (index .Alerts 0).GeneratorURL }}'
