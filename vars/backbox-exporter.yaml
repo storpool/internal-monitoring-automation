@@ -1,0 +1,8 @@
+---
+blackbox_exporter_configuration_modules:
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip4"
+      source_ip_address: "{{ ansible_host }}"

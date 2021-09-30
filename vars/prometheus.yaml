@@ -44,7 +44,7 @@ prometheus_scrape_configs:
       module: [ icmp ]
     file_sd_configs:
       - files:
-          - "/monitoring/prometheus_file_sd/hosts_*.yaml"
+          - "/monitoring/prometheus_file_sd/icmp_*.yaml"
     relabel_configs:
       - source_labels: [ __address__ ]
         target_label: __param_target
@@ -74,11 +74,3 @@ prometheus_alertmanager_config:
 prometheus_alert_rules: "{{ lookup('file', playbook_dir + '/prometheus/default-rules.yaml') | from_yaml }}"
 prometheus_external_labels:
   grafana_url: "http://{{ ansible_fqdn }}"
-
-blackbox_exporter_configuration_modules:
-  icmp:
-    prober: icmp
-    timeout: 5s
-    icmp:
-      preferred_ip_protocol: "ip4"
-      source_ip_address: "{{ ansible_host }}"
