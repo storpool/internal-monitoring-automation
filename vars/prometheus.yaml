@@ -57,4 +57,4 @@ prometheus_scrape_configs:
 prometheus_alertmanager_config:
   - static_configs:
       - targets:
-          - localhost:9093
+          - "{{ alertmanager_web_external_url }}"
