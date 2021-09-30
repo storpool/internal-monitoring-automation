@@ -4,5 +4,6 @@
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
     instance: {{ hostvars[host]['name'] }}
+    node_stats_url: http://{{ hostvars['monitoring-stack']['ansible_fqdn'] }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ host }}
 {% endfor %}
 {% endif %}
