@@ -1,4 +1,4 @@
 alertmanager_web_listen_port: 9093
-alertmanager_web_external_url: "http://{{ ansible_host }}:{{ alertmanager_web_listen_port }}"
+alertmanager_web_external_url: "http://{{ ansible_fqdn }}:{{ alertmanager_web_listen_port }}"
 alertmanager_receivers: "{{ lookup('file', playbook_dir + '/alertmanager/receivers.yaml') | from_yaml }}"
 alertmanager_route: "{{ lookup('file', playbook_dir + '/alertmanager/routing.yaml') | from_yaml }}"
