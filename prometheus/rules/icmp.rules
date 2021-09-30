@@ -1,0 +1,12 @@
+---
+groups:
+  - name: ICMP rules
+    rules:
+      - alert: NodeNoPing
+        expr: 'probe_success == 0'
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: '{{ $labels.instance }} not reachable'
+          description: 'IPv4 connectivity to device {{ $labels.instance }} has been unavailable for more than 2 minutes.'
