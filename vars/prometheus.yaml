@@ -38,6 +38,18 @@ prometheus_scrape_configs:
     file_sd_configs:
       - files:
           - "/monitoring/prometheus_file_sd/hosts_*.yaml"
+  - job_name: "blackbox"
+    metrics_path: /probe
+    params:
+      module: [ icmp ]
+    file_sd_configs:
+      - files:
+          - "/monitoring/prometheus_file_sd/hosts_*.yaml"
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: "{{ ansible_fqdn }}:9115"
   - job_name: "snmp"
     metrics_path: /snmp
     basic_auth:
@@ -62,3 +74,11 @@ prometheus_alertmanager_config:
 prometheus_alert_rules: "{{ lookup('file', playbook_dir + '/prometheus/default-rules.yaml') | from_yaml }}"
 prometheus_external_labels:
   grafana_url: "http://{{ ansible_fqdn }}"
+
+blackbox_exporter_configuration_modules:
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip4"
+      source_ip_address: "{{ ansible_host }}"

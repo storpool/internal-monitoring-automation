@@ -29,6 +29,8 @@
       become: true
     - name: cloudalchemy.snmp-exporter
       become: true
+    - name: cloudalchemy.blackbox-exporter
+      become: true
     - name: cloudalchemy.alertmanager
       become: true
     - name: cloudalchemy.prometheus
