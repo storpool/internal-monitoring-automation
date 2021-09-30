@@ -16,6 +16,7 @@
   annotations:
     description: '{% raw %}{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.{% endraw %}'
     summary: '{% raw %}Instance {{ $labels.instance }} down{% endraw %}'
+    node_stat_url: 'http://{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 - alert: RebootRequired
   expr: 'node_reboot_required > 0'
   labels:
