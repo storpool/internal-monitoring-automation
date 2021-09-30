@@ -8,8 +8,8 @@
     send_resolved: true
     actions:
       - type: button
-        text: 'Dashboard :chart_with_upwards_trend:'
-        url: '{{ (index .Alerts 0).Labels.node_stats_url }}'
+        text: 'Dashboard :grafana:'
+        url: '{{ (index .Alerts 0).Annotations.node_stats_url }}'
       - type: button
         text: 'Silence :no_bell:'
         url: '{{ template "__alert_silence_link" . }}'
