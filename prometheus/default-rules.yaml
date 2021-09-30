@@ -7,7 +7,7 @@
   annotations:
     description: "This is an alert meant to ensure that the entire alerting pipeline is functional.\nThis alert is always firing, therefore it should always be firing in Alertmanager\nand always fire against a receiver. There are integrations with various notification\nmechanisms that send a notification when this alert is not firing. For example the\n\"DeadMansSnitch\" integration in PagerDuty."
     summary: 'Ensure entire alerting pipeline is functional'
-    node_stats_url: 'http://{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
+    node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 - alert: InstanceDown
   expr: 'up == 0'
   for: 2m
@@ -16,7 +16,7 @@
   annotations:
     description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
     summary: 'Instance {{ $labels.instance }} down'
-    node_stats_url: 'http://{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
+    node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 - alert: RebootRequired
   expr: 'node_reboot_required > 0'
   labels:
