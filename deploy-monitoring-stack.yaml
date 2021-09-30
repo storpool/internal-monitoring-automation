@@ -36,7 +36,6 @@
   vars_files:
     - vars/prometheus.yaml
     - vars/alertmanager.yaml
-    - vars/grafana.yaml
 
 - name: Installing Grafana
   hosts: monitoring-stack

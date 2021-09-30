@@ -61,4 +61,4 @@ prometheus_alertmanager_config:
 
 prometheus_alert_rules: "{{ lookup('file', playbook_dir + '/prometheus/default-rules.yaml') | from_yaml }}"
 prometheus_external_labels:
-  grafana_url: "{{ grafana_url }}"
+  grafana_url: "http://{{ ansible_fqdn }}"
