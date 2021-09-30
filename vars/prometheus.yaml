@@ -57,4 +57,4 @@ prometheus_scrape_configs:
 prometheus_alertmanager_config:
   - static_configs:
       - targets:
-          - "{{ alertmanager_web_external_url }}"
+          - "{{ ansible_fqdn }}:{{ alertmanager_web_listen_port }}"
