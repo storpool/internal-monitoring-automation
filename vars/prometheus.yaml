@@ -71,6 +71,6 @@ prometheus_alertmanager_config:
       - targets:
           - "{{ ansible_fqdn }}:{{ alertmanager_web_listen_port }}"
 
-prometheus_alert_rules: "{{ lookup('file', playbook_dir + '/prometheus/default-rules.yaml') | from_yaml }}"
+prometheus_alert_rules: []
 prometheus_external_labels:
   grafana_url: "http://{{ ansible_fqdn }}"

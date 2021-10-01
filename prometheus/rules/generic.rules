@@ -1,0 +1,12 @@
+---
+groups:
+  - name: Generic rules
+    rules:
+      - alert: Watchdog
+        expr: vector(1)
+        for: 24h
+        labels:
+          severity: warning
+        annotations:
+          description: 'This is an alert meant to ensure that the entire alerting pipeline is functional. This alert is always firing, therefore it should always be firing in Alertmanager and always fire against a receiver. There are integrations with various notification mechanisms that send a notification when this alert is not firing.'
+          summary: 'Ensure entire alerting pipeline is functional'
