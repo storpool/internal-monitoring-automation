@@ -1,6 +1,6 @@
 ---
 receiver: default
 group_by:
-  - instance
   - alertname
+  - location
 group_wait: 1m
