@@ -48,6 +48,8 @@ prometheus_scrape_configs:
     relabel_configs:
       - source_labels: [ __address__ ]
         target_label: __param_target
+      - target_label: __address__
+        replacement: "{{ ansible_fqdn}:9115"
   - job_name: "snmp"
     metrics_path: /snmp
     basic_auth:
