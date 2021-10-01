@@ -1,3 +1,6 @@
 ---
 receiver: default
-group_by: [instance, alertname]
+group_by:
+  - instance
+  - alertname
+group_wait: 1m

@@ -2,7 +2,7 @@
 groups:
   - name: ICMP rules
     rules:
-      - alert: NodeNoPing
+      - alert: NoPing
         expr: 'probe_success == 0'
         for: 2m
         labels:

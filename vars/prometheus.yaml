@@ -46,22 +46,22 @@ prometheus_scrape_configs:
       - files:
           - "/monitoring/prometheus_file_sd/icmp_*.yaml"
     relabel_configs:
-      - source_labels: [ __address__ ]
-        target_label: __param_target
       - target_label: __address__
         replacement: "{{ ansible_fqdn }}:9115"
+      - source_labels: [ __address__ ]
+        target_label: __param_target
   - job_name: "snmp"
     metrics_path: /snmp
     basic_auth:
       username: prometheus
       password: "{{ prometheus_secret }}"
     relabel_configs:
+      - target_label: __address__
+        replacement: "{{ ansible_fqdn }}:9116"
       - source_labels: [ __address__ ]
         target_label: __param_target
       - source_labels: [ __param_target ]
         target_label: instance
-      - target_label: __address__
-        replacement: "{{ ansible_fqdn }}:9116"
     file_sd_configs:
       - files:
           - "/monitoring/prometheus_file_sd/network_*.yaml"

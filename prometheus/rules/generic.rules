@@ -10,3 +10,12 @@ groups:
         annotations:
           description: 'This is an alert meant to ensure that the entire alerting pipeline is functional. This alert is always firing, therefore it should always be firing in Alertmanager and always fire against a receiver. There are integrations with various notification mechanisms that send a notification when this alert is not firing.'
           summary: 'Ensure entire alerting pipeline is functional'
+      - alert: InstanceDown
+        expr: 'up{job="node-exporter"} == 0 and probe_success == 0'
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Instance {{ $labels.instance }} is down'
+          description: '{{ $labels.instance }} does not respond to ICMP requests and cannot be scraped'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
