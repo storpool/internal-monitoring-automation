@@ -6,7 +6,7 @@ groups:
         expr: 'probe_success == 0'
         for: 2m
         labels:
-          severity: critical
+          severity: warning
         annotations:
           summary: '{{ $labels.instance }} not reachable'
           description: 'IPv4 connectivity to {{ $labels.instance }} has been unavailable for more than 2 minutes.'
