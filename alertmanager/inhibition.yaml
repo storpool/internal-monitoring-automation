@@ -1,6 +1,6 @@
 ---
 - source_matchers:
-    - alertname = InstanceDown
+    - alertname="InstanceDown"
   target_matchers:
-    - alertname = NoPing
-    - alertname = NodeExporterDown
+    - alertname="NoPing"
+    - alertname="NodeExporterDown"
