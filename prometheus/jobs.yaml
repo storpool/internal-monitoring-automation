@@ -1,0 +1,40 @@
+- job_name: "prometheus"
+  static_configs:
+    - targets:
+        - "localhost:9090"
+
+- job_name: "node-exporter"
+  honor_labels: true
+  basic_auth:
+    username: prometheus
+    password: "{{ prometheus_secret }}"
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/hosts_*.yaml"
+
+- job_name: "icmp"
+  metrics_path: /probe
+  params:
+    module: [ icmp ]
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/icmp_*.yaml"
+  relabel_configs:
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: "{{ ansible_fqdn }}:9115"
+
+- job_name: "snmp"
+  metrics_path: /snmp
+  basic_auth:
+    username: prometheus
+    password: "{{ prometheus_secret }}"
+  relabel_configs:
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+    - source_labels: [ __param_target ]
+      target_label: instance
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/network_*.yaml"
