@@ -20,4 +20,9 @@
   hosts: monitoring-stack
   become_method: sudo
   roles:
-    - generate-static-targets
+    - name: generate-static-targets
+      vars:
+        file_sd_config_files:
+          - hosts_moonstone
+          - icmp_moonstone
+          - network_devices

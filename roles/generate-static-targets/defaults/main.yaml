@@ -1,5 +1,2 @@
 file_sd_base_path: /monitoring/prometheus_file_sd
-file_sd_config_files:
-  - hosts_moonstone
-  - icmp_moonstone
-  - network_devices
+file_sd_template_path: "{{ playbook_dir + '/templates/' }}"

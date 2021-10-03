@@ -7,7 +7,7 @@
     owner: root
     group: prometheus
     mode: 0640
-  loop: "{{ file_sd_config_files }}"
+  loop: "{{ lookup('fileglob', file_sd_template_path) }}"
   loop_control:
     loop_var: filename
   notify: Reloading Prometheus
