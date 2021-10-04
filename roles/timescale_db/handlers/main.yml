@@ -4,3 +4,4 @@
   service:
     name: "{{ lookup('vars', 'postgre_service_name_' + ansible_distribution.lower()) }}"
     state: restarted
+    enabled: true
