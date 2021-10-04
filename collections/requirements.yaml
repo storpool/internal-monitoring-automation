@@ -1,6 +1,7 @@
 ---
 collections:
   - ansible.posix
+  - ansible.netcommon
   - community.general
   - community.postgresql
   - community.grafana

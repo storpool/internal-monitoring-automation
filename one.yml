@@ -1,7 +1,7 @@
 plugin: "netcho.opennebula.opennebula"
 one_hostname_preference: name
 compose:
-  ansible_host: nic[0].ip is defined | ternary(nic[0].ip, name + '.vm.storpool.local')
+  ansible_host: nic | selectattr("defined", "ip") | ansible.netcommon.ipaddr("172.17.24.0/24") | default(name + "." + network_id_domain_map[nic[0].id])
   running: state == 'active' and lcm_state == 'running'
 groups:
   moonstone_monitor: 'user_attributes.labels is defined and "monitor" in user_attributes.labels'
