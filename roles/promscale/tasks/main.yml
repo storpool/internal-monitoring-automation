@@ -42,3 +42,21 @@
   notify:
     - Reload systemd
     - Restart Promscale
+
+- name: Creating Promscale maintenance service
+  template:
+    dest: /etc/systemd/system/promscale-exec-maintenance.service
+    src: promscale-exec-maintenance.service.j2
+    mode: 0644
+  notify:
+    - Reload systemd
+    - Enable Promscale maintenance service
+
+- name: Creating Promscale maintenance timer
+  copy:
+    dest: /etc/systemd/system/promscale-exec-maintenance.timer
+    src: promscale-exec-maintenance.timer
+    mode: 0644
+  notify:
+    - Reload systemd
+    - Enable Promscale maintenance timer
