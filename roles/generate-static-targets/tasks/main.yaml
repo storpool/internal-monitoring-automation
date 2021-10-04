@@ -1,4 +1,9 @@
 ---
+- name: Debugging file templates
+  debug:
+    msg:  "{{ lookup('fileglob', file_sd_template_path) }}"
+    verbosity: 2
+
 - name: Generating file_sd configutaion files
   become: true
   template:
@@ -7,7 +12,7 @@
     owner: root
     group: prometheus
     mode: 0640
-  loop: "{{ lookup('fileglob', file_sd_template_path) | list }}"
+  loop: "{{ lookup('fileglob', file_sd_template_path) | split(',') }}"
   loop_control:
     loop_var: template
   notify: Reloading Prometheus
