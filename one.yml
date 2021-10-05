@@ -3,7 +3,7 @@ one_hostname_preference: name
 strict: true
 use_extra_vars: true
 compose:
-  ansible_host: nic | selectattr("ip", "defined") | map(attribute="ip") | ipaddr("172.17.24.0/24") | first | default(network_id_domain_map[nic[0].id])
+  ansible_host: nic[0].ip if nic[0].ip is defined else name + "." + network_id_domain_map[nic[0].network_id]
   running: state == 'active' and lcm_state == 'running'
 groups:
   moonstone_monitor: 'user_attributes.labels is defined and "monitor" in user_attributes.labels'
