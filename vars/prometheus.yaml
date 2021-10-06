@@ -25,7 +25,7 @@ prometheus_remote_read:
   - url: "http://localhost:9201/read"
     read_recent: true
 
-prometheus_scrape_configs: "{{  lookup('file', playbook_dir + '/prometheus/jobs.yaml') | from_yaml }}"
+prometheus_scrape_configs: "{{ lookup('template', playbook_dir + '/prometheus/jobs.yaml') | from_yaml }}"
 
 prometheus_alertmanager_config:
   - static_configs:
