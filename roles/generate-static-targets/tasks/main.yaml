@@ -7,7 +7,7 @@
 - name: Generating file_sd configutaion files
   become: true
   template:
-    dest: "{{ file_sd_base_path }}/{{ template | basename | splitext | first }}.yaml"
+    dest: "{{ file_sd_base_path }}/{{ template | basename | splitext | first }}"
     src: "{{ template }}"
     owner: root
     group: prometheus
