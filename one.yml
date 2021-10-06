@@ -3,7 +3,7 @@ one_hostname_preference: name
 strict: true
 use_extra_vars: true
 compose:
-  ansible_host: nic | selectattr("ip", "defined") | map (attribute="ip") | first if nic | selectattr("ip", "defined") | length else name + "." + (network_id_domain_map | first)
+  ansible_host: nic | selectattr("ip", "defined") | map (attribute="ip") | first if nic | selectattr("ip", "defined") | length else name + "." + (network_id_domain_map | dict2items | map(attribute="value") | first)
   running: state == 'active' and lcm_state == 'running'
 groups:
   moonstone_monitor: 'user_attributes.labels is defined and "monitor" in user_attributes.labels'
