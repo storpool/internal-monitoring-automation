@@ -37,12 +37,12 @@
     {{ range .Alerts }}
         {{- if .Annotations.description }}
         {{- "\n" -}}
-        {{ .Annotations.description }}
+        * {{ .Annotations.description }}
         {{- "\n" -}}
         {{- end }}
         {{- if .Annotations.message }}
         {{- "\n" -}}
-        {{ .Annotations.message }}
+        * {{ .Annotations.message }}
         {{- "\n" -}}
         {{- end }}
     {{- end }}
