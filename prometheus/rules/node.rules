@@ -103,8 +103,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          description: '{{ $value | humanizePercentage }} of conntrack entries are used'
-          summary: 'Number of conntrack on {{ $labels.instance }} are getting close to the limit'
+          description: '{{ $value | humanizePercentage }} of conntrack entries on {{ $labels.instance }} are used.'
+          summary: 'Number of conntrack are getting close to the limit'
       - alert: NodeClockSkewDetected
         expr: "(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)"
         for: 10m
