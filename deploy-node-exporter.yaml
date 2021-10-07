@@ -11,6 +11,8 @@
   post_tasks:
     - name: Configuring firewall
       import_tasks: tasks/node-exporter-firewall.yaml
+    - name: Installing debug tools
+      import_tasks: tasks/install-debug-tools.yaml
   vars_files: vars/node-exporter.yaml
 
 - name: Updating Prometheus static targets

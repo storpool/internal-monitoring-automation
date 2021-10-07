@@ -1,0 +1,8 @@
+- name: Installing debug packages
+  package:
+    name:
+      - strace
+      - ltrace
+      - vim
+      - mtr
+    state: present
