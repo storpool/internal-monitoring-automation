@@ -1,0 +1,11 @@
+[Unit]
+Description=Promscale maintenance timer
+Requires=promscale-exec-maintenance.service
+
+[Timer]
+Unit=promscale-exec-maintenance.service
+OnCalendar=*:0/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target
