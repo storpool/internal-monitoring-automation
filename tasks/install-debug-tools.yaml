@@ -1,4 +1,5 @@
 - name: Installing debug packages
+  become: true
   package:
     name:
       - strace
