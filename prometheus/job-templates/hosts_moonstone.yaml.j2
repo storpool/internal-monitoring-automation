@@ -3,7 +3,7 @@
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
-    instance: {{ hostvars[host]['name'] }}
+    instance: {{ host }}
     location: 3dc
     environment: production
 {% endfor %}
