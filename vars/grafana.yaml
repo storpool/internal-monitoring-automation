@@ -1,4 +1,4 @@
-grafana_port: 80
+grafana_port: 8080
 grafana_cap_net_bind_service: true
 grafana_url: "https://inframon.storpool.com"
 
