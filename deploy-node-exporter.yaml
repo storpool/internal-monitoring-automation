@@ -1,6 +1,6 @@
 ---
 - name: Installing node-exporter
-  hosts: moonstone_monitor
+  hosts: monitor_nodes
   become_method: sudo
   pre_tasks:
     - name: Collect running services
