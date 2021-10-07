@@ -36,4 +36,4 @@ prometheus_alertmanager_config:
 
 prometheus_alert_rules: []
 prometheus_external_labels:
-  grafana_url: "http://{{ ansible_fqdn }}"
+  grafana_url: "https://inframon.storpool.com"

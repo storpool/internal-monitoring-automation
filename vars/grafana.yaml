@@ -1,6 +1,6 @@
 grafana_port: 80
 grafana_cap_net_bind_service: true
-grafana_url: "http://{{ ansible_fqdn }}"
+grafana_url: "https://inframon.storpool.com"
 
 grafana_database:
   type: postgres
@@ -13,3 +13,14 @@ grafana_database:
 postgres_username: "{{ grafana_database.user }}"
 postgres_password: "{{ grafana_database.password }}"
 postgres_database: "{{ grafana_database.name }}"
+
+grafana_auth:
+  google:
+    enabled: true
+    client_id: "{{ grafana_google_auth_client_id }}"
+    client_secret: "{{ grafana_google_auth_client_secret }}"
+    scopes: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+    auth_url: "https://accounts.google.com/o/oauth2/auth"
+    token_url: "https://accounts.google.com/o/oauth2/token"
+    allowed_domains: "storpool.com"
+    allow_sign_up: true
