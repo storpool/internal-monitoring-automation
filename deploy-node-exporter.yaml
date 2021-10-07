@@ -9,17 +9,8 @@
     - name: cloudalchemy.node_exporter
       become: true
   post_tasks:
-    - name: Enable node exporter port on firewalld
-      become: true
-      ansible.posix.firewalld:
-        port: "{{ node_exporter_web_listen_port }}/tcp"
-        state: enabled
-        permanent: true
-        immediate: true
-      when:
-        - ansible_os_family == 'RedHat'
-        - ansible_facts.services['firewalld'] is defined
-        - ansible_facts.services['firewalld'].state == 'running'
+    - name: Configuring firewall
+      import_tasks: tasks/node-exporter-firewall.yaml
   vars_files: vars/node-exporter.yaml
 
 - name: Updating Prometheus static targets
