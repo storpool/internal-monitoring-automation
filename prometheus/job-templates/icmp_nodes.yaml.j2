@@ -1,5 +1,5 @@
-{% if 'moonstone_monitor' in groups %}
-{% for host in groups['moonstone_monitor'] %}
+{% if 'monitor_nodes' in groups %}
+{% for host in groups['monitor_nodes'] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}
   labels:

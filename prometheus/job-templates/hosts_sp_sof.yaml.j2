@@ -1,0 +1,10 @@
+{% if 'sof_baremetal_monitor' in groups %}
+{% for host in groups['sof_baremetal_monitor'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9100
+  labels:
+    instance: {{ hostvars[host]['name'] }}
+    location: 3dc
+    environment: production
+{% endfor %}
+{% endif %}
