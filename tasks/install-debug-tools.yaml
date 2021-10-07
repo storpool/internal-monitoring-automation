@@ -1,5 +1,9 @@
-- name: Installing debug packages
-  become: true
+- name: Updating apt local cache
+  apt:
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Installing debug tools
   package:
     name:
       - strace

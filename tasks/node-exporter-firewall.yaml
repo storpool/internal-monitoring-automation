@@ -1,5 +1,4 @@
 - name: Enable node exporter port on firewalld
-  become: true
   ansible.posix.firewalld:
     port: "{{ node_exporter_web_listen_port }}/tcp"
     state: enabled
