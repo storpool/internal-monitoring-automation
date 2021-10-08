@@ -5,5 +5,5 @@
     permanent: true
     immediate: true
   when:
-    - ansible_facts.services['firewalld'] is defined
-    - ansible_facts.services['firewalld'].state == 'running'
+    - "firewalld" in ansible_facts.services
+    - ansible_facts.services["firewalld"].state == "running"
