@@ -5,13 +5,13 @@
   pre_tasks:
     - name: Collect running services
       service_facts:
-    - name: Configuring firewall
-      become: true
-      import_tasks: tasks/node-exporter-firewall.yaml
   roles:
     - name: cloudalchemy.node_exporter
       become: true
   post_tasks:
+    - name: Configuring firewall
+      become: true
+      import_tasks: tasks/node-exporter-firewall.yaml
     - name: Installing debug tools
       become: true
       import_tasks: tasks/install-debug-tools.yaml

@@ -1,12 +1,16 @@
 - name: Configuring firewalld
   block:
-    - ansible.posix.firewalld:
+    - name: Enabling node-exporter port
+      ansible.posix.firewalld:
         port: "{{ node_exporter_web_listen_port }}/tcp"
         state: enabled
         permanent: true
-    - service:
+      register: port_enable
+    - name: Reloading firewalld
+      service:
         name: firewalld
         state: reloaded
+      when: port_enable.changed
   when:
     - "'firewalld.service' in ansible_facts.services"
     - "ansible_facts.services['firewalld.service'].state == 'running'"
