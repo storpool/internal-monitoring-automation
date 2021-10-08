@@ -10,7 +10,7 @@
     password: "{{ prometheus_secret }}"
   file_sd_configs:
     - files:
-        - "/monitoring/prometheus_file_sd/hosts_*.yaml"
+        - "/monitoring/prometheus_file_sd/nodes_*.yaml"
 
 - job_name: "icmp"
   metrics_path: /probe
