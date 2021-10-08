@@ -5,6 +5,5 @@
     permanent: true
     immediate: true
   when:
-    - ansible_os_family == 'RedHat'
     - ansible_facts.services['firewalld'] is defined
     - ansible_facts.services['firewalld'].state == 'running'
