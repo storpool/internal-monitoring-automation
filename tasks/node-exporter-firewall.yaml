@@ -1,3 +1,7 @@
+- name: Debbugging presence of firewalld
+  debug:
+    msg: "Firewalld present: {{ 'firewalld' in ansible_facts.services }} and state: {{ ansible_facts.services['firewalld'].state }}"
+
 - name: Enable node exporter port on firewalld
   ansible.posix.firewalld:
     port: "{{ node_exporter_web_listen_port }}/tcp"
