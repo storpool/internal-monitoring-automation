@@ -5,6 +5,10 @@
   pre_tasks:
     - name: Collect running services
       service_facts:
+    - name: Debug running services
+      debug:
+        var: ansible_facts.services
+        verbosity: 2
   roles:
     - name: cloudalchemy.node_exporter
       become: true
