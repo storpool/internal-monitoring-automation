@@ -1,5 +1,5 @@
-{% if 'monitor_nodes' in groups %}
-{% for host in groups['monitor_nodes'] %}
+{% if 'icmp_monitor' in groups %}
+{% for host in groups['icmp_monitor'] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}
   labels:
