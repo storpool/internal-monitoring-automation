@@ -1,0 +1,10 @@
+{% if 'lab_monitor' in groups %}
+{% for host in groups['moonstone_monitor'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9100
+  labels:
+    instance: {{ host }}
+    location: nadezda
+    environment: testing
+{% endfor %}
+{% endif %}
