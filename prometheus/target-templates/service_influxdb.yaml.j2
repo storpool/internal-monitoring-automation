@@ -1,5 +1,5 @@
 {% for host in groups["all"] %}
-{% if "services" in hostvars[host] and "influxdb" in hostvars[host]["servvices"] %}
+{% if "services" in hostvars[host] and "influxdb" in hostvars[host]["services"] %}
 - targets:
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["influxdb"] }}
   labels:
