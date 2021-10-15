@@ -4,9 +4,9 @@
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["influxdb"] }}
   labels:
     instance: {{ host }}
-    {% if host in groups["moonstone_monitor"] %}
+{% if host in groups["moonstone_monitor"] %}
     location: 3dc
     environment: production
-    {% endif %}
+{% endif %}
 {% endif %}
 {% endfor %}
