@@ -38,3 +38,9 @@
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/network_*.yaml"
+
+- job_name: "influxdb"
+  honor_labels: true
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/service_influxdb.yaml"

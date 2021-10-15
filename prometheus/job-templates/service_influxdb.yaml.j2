@@ -1,0 +1,10 @@
+{% for host in (hostvars | selectattr("services", "defined") | selectattr("services", "in", "influxdb")) %}
+- targets:
+    - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["influxdb"] }}
+  labels:
+    instance: {{ host }}
+    {% if host in groups["moonstone_monitor"] %}
+    location: 3dc
+    environment: production
+    {% endif %}
+{% endfor %}
