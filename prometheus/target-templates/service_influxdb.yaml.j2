@@ -1,4 +1,4 @@
-{% for host in (hostvars | selectattr("services", "defined") | selectattr("services", "in", "influxdb")) %}
+{% for host in (hostvars | selectattr("services", "defined") | selectattr("services", "in", "influxdb") | dict2items | map(attribute="key") ) %}
 - targets:
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["influxdb"] }}
   labels:
