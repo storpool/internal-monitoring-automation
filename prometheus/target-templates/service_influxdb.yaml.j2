@@ -1,4 +1,5 @@
-{% for host in (hostvars | selectattr("services", "defined") | selectattr("services", "in", "influxdb") | dict2items | map(attribute="key") ) %}
+{% for host in groups["all"] %}
+{% if "services" in hostvars[host] and "influxdb" in hostvars[host]["servvices"] %}
 - targets:
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["influxdb"] }}
   labels:
@@ -7,4 +8,5 @@
     location: 3dc
     environment: production
     {% endif %}
+{% endif %}
 {% endfor %}
