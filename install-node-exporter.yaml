@@ -16,11 +16,3 @@
       become: true
       import_tasks: tasks/install-debug-tools.yaml
   vars_files: vars/node-exporter.yaml
-
-- name: Updating Prometheus static targets
-  hosts: monitoring-stack
-  become_method: sudo
-  roles:
-    - name: generate-static-targets
-      vars:
-        file_sd_template_path: "{{ playbook_dir + '/prometheus/job-templates/*.yaml.j2' }}"
