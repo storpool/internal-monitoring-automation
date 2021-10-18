@@ -29,4 +29,4 @@ groups:
           severity: critical
         annotations:
           summary: 'InfluxDB HTTP endpoint cannot be accessed'
-          description: 'Prometheus cannot access InfluxDB HTTP endpoint at {{ $labels.__address__}} for more than 1 minute.'
+          description: 'Prometheus cannot access InfluxDB HTTP endpoint at {{ $labels.__address__ }} for more than 1 minute.'
