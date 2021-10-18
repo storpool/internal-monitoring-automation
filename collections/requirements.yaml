@@ -5,4 +5,5 @@ collections:
   - community.general
   - community.postgresql
   - community.grafana
+  - netbox.netbox
   - netcho.opennebula

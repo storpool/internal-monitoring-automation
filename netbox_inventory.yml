@@ -1,0 +1,4 @@
+plugin: netbox.netbox.nb_inventory
+validate_certs: true
+config_context: false
+plurals: false
