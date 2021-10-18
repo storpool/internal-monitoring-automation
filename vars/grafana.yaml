@@ -24,3 +24,8 @@ grafana_auth:
     token_url: "https://accounts.google.com/o/oauth2/token"
     allowed_domains: "storpool.com"
     allow_sign_up: true
+
+grafana_metrics:
+  enabled: true
+  basic_auth_username: prometheus
+  basic_auth_password: "{{ prometheus_secret }}"
