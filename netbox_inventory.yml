@@ -2,8 +2,10 @@ plugin: netbox.netbox.nb_inventory
 validate_certs: true
 config_context: false
 plurals: false
+device_query_filters:
+  - has_primary_ip: 'true'
 group_by:
   - site
 groups:
-  sof_baremetal: role == "server" and site == "3dc"
+  sof_baremetal: 'role == "server" and site == "3dc"'
   sof_baremetal_deploy: '"monitor-autodeploy" in tags'
