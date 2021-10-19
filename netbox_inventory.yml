@@ -2,3 +2,7 @@ plugin: netbox.netbox.nb_inventory
 validate_certs: true
 config_context: false
 plurals: false
+group_by:
+  - site
+groups:
+  sof_baremetal: role == "server"
