@@ -5,4 +5,5 @@ plurals: false
 group_by:
   - site
 groups:
-  3dc_baremetal: role == "server" and site == "3dc"
+  sof_baremetal: role == "server" and site == "3dc"
+  sof_baremetal_deploy: "monitor-autodeploy" in tags

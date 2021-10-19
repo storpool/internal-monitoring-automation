@@ -1,5 +1,5 @@
-{% if '3dc_baremetal' in groups %}
-{% for host in groups['3dc_baremetal'] %}
+{% if 'sof_baremetal' in groups %}
+{% for host in groups['sof_baremetal'] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
