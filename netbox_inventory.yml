@@ -6,4 +6,4 @@ group_by:
   - site
 groups:
   sof_baremetal: role == "server" and site == "3dc"
-  sof_baremetal_deploy: "monitor-autodeploy" in tags
+  sof_baremetal_deploy: '"monitor-autodeploy" in tags'
