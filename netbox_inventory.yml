@@ -5,4 +5,4 @@ plurals: false
 group_by:
   - site
 groups:
-  sof_baremetal: role == "server"
+  3dc_baremetal: role == "server" and site == "3dc"
