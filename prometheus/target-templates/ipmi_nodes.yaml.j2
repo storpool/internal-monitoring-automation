@@ -1,0 +1,10 @@
+{% if 'ipmi_monitor' in groups %}
+{% for host in groups['ipmi_monitor'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9290
+  labels:
+    instance: {{ host }}
+    location: 3dc
+    environment: production
+{% endfor %}
+{% endif %}

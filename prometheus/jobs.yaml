@@ -3,15 +3,6 @@
     - targets:
         - "localhost:9090"
 
-- job_name: "node-exporter"
-  honor_labels: true
-  basic_auth:
-    username: prometheus
-    password: "{{ prometheus_secret }}"
-  file_sd_configs:
-    - files:
-        - "/monitoring/prometheus_file_sd/nodes_*.yaml"
-
 - job_name: "icmp"
   metrics_path: /probe
   params:
@@ -38,6 +29,21 @@
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/network_*.yaml"
+
+- job_name: "ipmi"
+  honor_labels: true
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/ipmi_*.yaml"
+
+- job_name: "node-exporter"
+  honor_labels: true
+  basic_auth:
+    username: prometheus
+    password: "{{ prometheus_secret }}"
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/nodes_*.yaml"
 
 - job_name: "influxdb"
   honor_labels: true

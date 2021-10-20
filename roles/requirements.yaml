@@ -3,6 +3,8 @@ roles:
   - cloudalchemy.prometheus
   - src: https://github.com/cloudalchemy/ansible-node-exporter
     name: cloudalchemy.node_exporter
+  - src: https://github.com/dmrub/ansible-ipmi_exporter
+    name: cloudalchemy.ipmi_exporter
   - cloudalchemy.snmp-exporter
   - cloudalchemy.blackbox-exporter
   - cloudalchemy.grafana
