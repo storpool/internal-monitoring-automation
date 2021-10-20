@@ -61,4 +61,4 @@
   honor_labels: true
   file_sd_configs:
     - files:
-        - "/monitoring/prometheus_files_sd/service_ssh.yaml"
+        - "/monitoring/prometheus_file_sd/service_ssh.yaml"
