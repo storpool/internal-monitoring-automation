@@ -62,3 +62,8 @@
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/service_ssh.yaml"
+  relabel_configs:
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: "{{ ansible_fqdn }}:9115"
