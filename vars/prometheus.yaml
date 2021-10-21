@@ -5,7 +5,7 @@ postgres_username: "{{ promscale_postgres_username }}"
 postgres_password: "{{ promscale_postgres_password }}"
 postgres_database: "{{ promscale_postgres_database }}"
 
-prometheus_storage_retention: 3s
+prometheus_storage_retention: 1h
 
 prometheus_global:
   scrape_interval: 3s
