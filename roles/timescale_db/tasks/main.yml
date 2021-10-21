@@ -12,7 +12,9 @@
   command:
     argv:
       - timescaledb-tune
+      - "--pg_config {{ '/usr/pgsql-13/bin/pg_config' if ansible_os_family == 'RedHat' else '/usr/bin/pg_config' }}"
       - --quiet
       - --yes
+      - --wal-disk-size 8GB
   notify: Restart PostgreSQL
   when: is_timescale_loaded.stdout == "0"

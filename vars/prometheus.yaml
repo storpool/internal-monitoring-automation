@@ -13,18 +13,20 @@ prometheus_global:
 
 prometheus_remote_write:
   - url: "http://localhost:9201/write"
+    name: "promscale"
     remote_timeout: 30s
     queue_config:
-      capacity: 2500
-      min_shards: 8
-      max_shards: 160
-      max_samples_per_send: 500
+      capacity: 10000
+      min_shards: 20
+      max_shards: 200
+      max_samples_per_send: 3000
       batch_send_deadline: 10s
       min_backoff: 500ms
       max_backoff: 10s
 
 prometheus_remote_read:
   - url: "http://localhost:9201/read"
+    name: "promscale"
     read_recent: true
 
 prometheus_scrape_configs: "{{ lookup('template', playbook_dir + '/prometheus/jobs.yaml') | from_yaml }}"
