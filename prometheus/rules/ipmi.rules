@@ -1,0 +1,21 @@
+---
+groups:
+  - name: IPMI Rules
+    rules:
+      - alert: IPMISensorCritical
+        expr: ipmi_sensor_state == 2
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Host IPMI sensor {{ $labels.name}} state is critical'
+          description: 'Host {{ $labels.instance }} IPMI sensor {{ $labels.name }} of type {{ $labels.type }} is in critical state.'
+
+      - alert: IPMIFanSpeedCritical
+        expr: ipmi_fan_speed_state == 2
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Host fan speed is over critical limit'
+          description: 'Host {{ $labels.instance }} {{ $labels.name }} speed is over the critical limit.'
