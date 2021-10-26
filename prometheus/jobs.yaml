@@ -12,9 +12,20 @@
   metrics_path: /probe
   params:
     module: [ icmp ]
+  relabel_configs:
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: "{{ ansible_fqdn }}:9115"
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/icmp_*.yaml"
+
+- job_name: "ssh"
+  honor_labels: true
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/service_ssh.yaml"
   relabel_configs:
     - source_labels: [ __address__ ]
       target_label: __param_target
@@ -23,14 +34,14 @@
 
 - job_name: "snmp"
   metrics_path: /snmp
-  basic_auth:
-    username: prometheus
-    password: "{{ prometheus_secret }}"
+  honor_labels: true
+  params:
+    module: [ if_mib ]
   relabel_configs:
     - source_labels: [ __address__ ]
       target_label: __param_target
-    - source_labels: [ __param_target ]
-      target_label: instance
+    - target_label: __address__
+      replacement: "{{ ansible_fqdn }}:9116"
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/network_*.yaml"
@@ -61,14 +72,3 @@
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/service_grafana.yaml"
-
-- job_name: "ssh"
-  honor_labels: true
-  file_sd_configs:
-    - files:
-        - "/monitoring/prometheus_file_sd/service_ssh.yaml"
-  relabel_configs:
-    - source_labels: [ __address__ ]
-      target_label: __param_target
-    - target_label: __address__
-      replacement: "{{ ansible_fqdn }}:9115"

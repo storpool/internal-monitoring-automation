@@ -2,5 +2,9 @@
 {% for host in groups['network_devices'] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}
+  labels:
+    instance: {{ host }}
+    location: {{ hostvars[host]['site'] }}
+    environment: production
 {% endfor %}
 {% endif %}
