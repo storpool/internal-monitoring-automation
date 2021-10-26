@@ -9,3 +9,4 @@ group_by:
 groups:
   sof_baremetal: 'role == "server" and site == "3dc" and "omit-monitor" not in tags'
   sof_baremetal_deploy: '"monitor-autodeploy" in tags'
+  network_devices: '"switch" in role or role == "ap"'
