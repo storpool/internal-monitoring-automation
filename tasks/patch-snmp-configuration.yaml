@@ -2,6 +2,6 @@
   blockinfile:
     path: /etc/snmp_exporter/snmp.yml
     insertafter: 'if_mib:'
-    block: |
-        auth:
-          community: internalmon
+    block: |2
+      auth:
+        community: internalmon
