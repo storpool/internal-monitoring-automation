@@ -5,3 +5,9 @@
     block: |2
         auth:
           community: internalmon
+        timeout: 15s
+
+- name: Restarting snmp_exporter
+  service:
+    name: snmp_exporter
+    state: restarted
