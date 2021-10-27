@@ -39,6 +39,8 @@
     - name: Add authentication to SNMP modules
       import_tasks: tasks/patch-snmp-configuration.yaml
       become: true
+      tags:
+        - snmp_exporter_configure
   vars_files:
     - vars/prometheus.yaml
     - vars/alertmanager.yaml
