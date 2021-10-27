@@ -1,5 +1,7 @@
 - name: Patching snmp.yml to support community authentication
-  lineinfile:
+  blockinfile:
     path: /etc/snmp_exporter/snmp.yml
     insertafter: 'if_mib:'
-    line: '  auth: {"community": "internalmon"}'
+    block: |
+        auth:
+          community: internalmon
