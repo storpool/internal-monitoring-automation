@@ -29,3 +29,6 @@ grafana_metrics:
   enabled: true
   basic_auth_username: prometheus
   basic_auth_password: "{{ prometheus_secret }}"
+
+grafana_alerting:
+  enabled: false
