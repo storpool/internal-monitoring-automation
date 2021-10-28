@@ -33,7 +33,7 @@
       replacement: "{{ ansible_fqdn }}:9115"
 
 - job_name: "snmp"
-  scrape_timeout: 15s
+  scrape_duration: 15s
   metrics_path: /snmp
   honor_labels: true
   params:
