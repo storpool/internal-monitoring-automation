@@ -34,6 +34,7 @@
 
 - job_name: "snmp"
   scrape_interval: 15s
+  scrape_timeout: 15s
   metrics_path: /snmp
   honor_labels: true
   params:
