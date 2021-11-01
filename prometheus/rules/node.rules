@@ -18,111 +18,111 @@ groups:
           severity: warning
         annotations:
           description: '{{ $labels.instance }} requires a reboot.'
-          summary: 'Instance {{ $labels.instance }} - reboot required'
+          summary: 'Host `{{ $labels.instance }}` - reboot required'
 
       - alert: HostOutOfMemory
-        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+        expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host out of memory (instance {{ $labels.instance }})
-          description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` has less than 10% available memory'
+          description: 'Host has only {{ printf "%.2f" $value }} memory available.'
 
       - alert: HostMemoryUnderMemoryPressure
-        expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+        expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host memory under memory pressure (instance {{ $labels.instance }})
-          description: "The node is under heavy memory pressure. High rate of major page faults\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` is under memory pressure'
+          description: 'The node is under heavy memory pressure. It has high rate of major page faults.'
 
-      - alert: HostUnusualNetworkThroughputIn
-        expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+      - alert: HostHighNetworkInboundTraffic
+        expr: 'sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 500'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual network throughput in (instance {{ $labels.instance }})
-          description: "Host network interfaces are probably receiving too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` has network inbound traffic more than 500 MB/s'
+          description: 'Host network interfaces have an ingress bandwidth of {{ printf "%d" $value }} MB/s'
 
-      - alert: HostUnusualNetworkThroughputOut
-        expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+      - alert: HostHighNetworkOutboundTraffic
+        expr: 'sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 500'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual network throughput out (instance {{ $labels.instance }})
-          description: "Host network interfaces are probably sending too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` has network outbound traffic more than 500 MB/s'
+          description: 'Host network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
 
-      - alert: HostUnusualDiskReadRate
-        expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+      - alert: HostHighDiskReadRate
+        expr: 'sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 100'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual disk read rate (instance {{ $labels.instance }})
-          description: "Disk is probably reading too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` disk read rate more than 100 MB/s'
+          description: 'Disk is reading at {{ printf "%d" $value }} MB/s'
 
-      - alert: HostUnusualDiskWriteRate
-        expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
-        for: 2m
+      - alert: HostHighDiskWriteRate
+        expr: 'sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 100'
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual disk write rate (instance {{ $labels.instance }})
-          description: "Disk is probably writing too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` disk write rate more than 100 MB/s'
+          description: 'Disk is writing at {{ printf "%d" $value }} MB/s.'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostOutOfDiskSpace
-        expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host out of disk space (instance {{ $labels.instance }})
-          description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` has less than 10% of available disk space'
+          description: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostDiskWillFillIn24Hours
-        expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host disk will fill in 24 hours (instance {{ $labels.instance }})
-          description: "Filesystem is predicted to run out of space within the next 24 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` is expected fill its filesystem in the next 24 hours'
+          description: 'Device `{{ $labels.device }}` mounted at `{{ $labels.mountpoint }}` is predicted to run out of space within the next 24 hours at current write rate'
 
-      - alert: HostOutOfInodes
-        expr: node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0
+      - alert: HostRootFSOutOfInodes
+        expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host out of inodes (instance {{ $labels.instance }})
-          description: "Disk is almost running out of available inodes (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` root filesystem has less than 10% free inodes left'
+          description: 'Root filesystem on disk `{{ $labels.device }}` has {{ printf "%.2f $value }} free inodes.'
 
-      - alert: HostInodesWillFillIn24Hours
-        expr: node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0
+      - alert: HostRootFSInodesWillFillIn24Hours
+        expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host inodes will fill in 24 hours (instance {{ $labels.instance }})
-          description: "Filesystem is predicted to run out of inodes within the next 24 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host `{{ $labels.instance }}` root filesystem inodes will fill in 24 hours.'
+          description: 'Root filesystem is predicted to run out of inodes within the next 24 hours at current write rate'
 
       - alert: HostUnusualDiskReadLatency
-        expr: rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0
+        expr: 'rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual disk read latency (instance {{ $labels.instance }})
+          summary: 'Host unusual disk read latency (instance {{ $labels.instance }})'
           description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
       - alert: HostUnusualDiskWriteLatency
@@ -173,15 +173,6 @@ groups:
           summary: Host swap is filling up (instance {{ $labels.instance }})
           description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-      - alert: HostSystemdServiceCrashed
-        expr: node_systemd_unit_state{state="failed"} == 1
-        for: 0m
-        labels:
-          severity: warning
-        annotations:
-          summary: Host systemd service crashed (instance {{ $labels.instance }})
-          description: "systemd service crashed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-
       - alert: HostPhysicalComponentTooHot
         expr: node_hwmon_temp_celsius > 75
         for: 5m
@@ -227,13 +218,13 @@ groups:
           summary: Host kernel version deviations (instance {{ $labels.instance }})
           description: "Different kernel versions are running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-      - alert: HostOomKillDetected
+      - alert: HostOOMKillDetected
         expr: increase(node_vmstat_oom_kill[1m]) > 0
         for: 0m
         labels:
           severity: warning
         annotations:
-          summary: Host OOM kill detected (instance {{ $labels.instance }})
+          summary: 'Host OOM kill detected (instance {{ $labels.instance }})'
           description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
       - alert: HostEdacCorrectableErrorsDetected
