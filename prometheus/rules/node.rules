@@ -219,7 +219,7 @@ groups:
           description: 'Host {{ $labels.instance }} has had {{ printf "%.0f" $value }} correctable memory errors reported by EDAC in the last 5 minutes.'
 
       - alert: HostEdacUncorrectableErrorsDetected
-        expr: 'node_edac_uncorrectable_errors_total[5m] > 0'
+        expr: 'node_edac_uncorrectable_errors_total > 0'
         for: 0m
         labels:
           severity: warning
