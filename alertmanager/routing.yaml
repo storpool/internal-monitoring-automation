@@ -1,6 +1,8 @@
 ---
+group_wait: 10s
+group_interval: 30s
+repeat_interval: 30m
 receiver: default
 group_by:
   - alertname
   - location
-group_wait: 1m
