@@ -4,6 +4,7 @@
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
     instance: {{ host }}
+    type: bare-metal
     location: 3dc
     environment: production
 {% endfor %}

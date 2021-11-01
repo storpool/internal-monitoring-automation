@@ -108,73 +108,73 @@ groups:
           description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
       - alert: HostUnusualDiskWriteLatency
-        expr: rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0
+        expr: 'rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host unusual disk write latency (instance {{ $labels.instance }})
+          summary: 'Host unusual disk write latency (instance {{ $labels.instance }})'
           description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-      - alert: HostHighCpuLoad
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
-        for: 0m
+      - alert: HostHighCPULoad
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
+        for: 10m
         labels:
           severity: warning
         annotations:
-          summary: Host high CPU load (instance {{ $labels.instance }})
-          description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host CPU load is more than 80%'
+          description: 'Host `{{ $labels.instance }}` CPU load is {{ printf "%.2f" $value }}.'
 
       - alert: HostCPUStealNoisyNeighbor
         expr: avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 10
-        for: 0m
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host CPU steal noisy neighbor (instance {{ $labels.instance }})
-          description: "CPU steal is > 10%. A noisy neighbor is killing VM performances or a spot instance may be out of credit.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host CPU steal time is more than 10%'
+          description: 'Host `{{ $labels.instance }}` CPU steal is > 10%. A noisy neighbor is killing VM performances or a spot instance may be out of credit.'
 
       # 1000 context switches is an arbitrary number.
       # Alert threshold depends on nature of application.
       # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
       - alert: HostContextSwitching
-        expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 10000
+        expr: '(rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 10000'
         for: 0m
         labels:
           severity: warning
         annotations:
-          summary: Host context switching (instance {{ $labels.instance }})
-          description: "Context switching is growing on node (> 1000 / s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host context switching growiing'
+          description: 'Host `{{ $labels.instance }}` context switching is growing on node.'
 
       - alert: HostSwapIsFillingUp
-        expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80
+        expr: '(1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host swap is filling up (instance {{ $labels.instance }})
-          description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host swap is filling up has less than 20% left.'
+          description: 'Swap on host `{{ $labels.instance }}` is {{ printf "%.2f" $value }} full.'
 
       - alert: HostPhysicalComponentTooHot
-        expr: node_hwmon_temp_celsius > 75
+        expr: 'node_hwmon_temp_celsius{type="bare-metal} > 75'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: Host physical component too hot (instance {{ $labels.instance }})
-          description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host physical component too hot'
+          description: "Host `{{ $labels.instance }}` physical hardware component too hot"
 
-      - alert: HostNodeOvertemperatureAlarm
-        expr: node_hwmon_temp_crit_alarm_celsius == 1
+      - alert: HostOvertemperatureAlarm
+        expr: 'node_hwmon_temp_crit_alarm_celsius{type="bare-metal} == 1'
         for: 0m
         labels:
           severity: critical
         annotations:
-          summary: Host node overtemperature alarm (instance {{ $labels.instance }})
-          description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host temperature too high'
+          description: 'Host `{{ $labels.instance }}` physical node temperature alarm triggered.'
 
       - alert: HostRaidArrayGotInactive
-        expr: node_md_state{state="inactive"} > 0
+        expr: 'node_md_state{state="inactive"} > 0'
         for: 0m
         labels:
           severity: critical
@@ -201,7 +201,7 @@ groups:
           description: "Different kernel versions are running\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
       - alert: HostOOMKillDetected
-        expr: increase(node_vmstat_oom_kill[1m]) > 0
+        expr: 'increase(node_vmstat_oom_kill[1m]) > 0'
         for: 0m
         labels:
           severity: warning
@@ -210,25 +210,25 @@ groups:
           description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
       - alert: HostEdacCorrectableErrorsDetected
-        expr: increase(node_edac_correctable_errors_total[1m]) > 0
-        for: 0m
+        expr: 'increase(node_edac_correctable_errors_total[5m]) > 0'
+        for: 10m
         labels:
           severity: info
         annotations:
-          summary: Host EDAC Correctable Errors detected (instance {{ $labels.instance }})
-          description: "Host {{ $labels.instance }} has had {{ printf \"%.0f\" $value }} correctable memory errors reported by EDAC in the last 5 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host EDAC correctable errors detected'
+          description: 'Host {{ $labels.instance }} has had {{ printf \"%.0f\" $value }} correctable memory errors reported by EDAC in the last 5 minutes.'
 
       - alert: HostEdacUncorrectableErrorsDetected
-        expr: node_edac_uncorrectable_errors_total > 0
+        expr: 'node_edac_uncorrectable_errors_total[5m] > 0'
         for: 0m
         labels:
           severity: warning
         annotations:
-          summary: Host EDAC Uncorrectable Errors detected (instance {{ $labels.instance }})
-          description: "Host {{ $labels.instance }} has had {{ printf \"%.0f\" $value }} uncorrectable memory errors reported by EDAC in the last 5 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host EDAC uncorrectable errors detected'
+          description: 'Host {{ $labels.instance }} has had {{ printf \"%.0f\" $value }} uncorrectable memory errors reported by EDAC in the last 5 minutes.'
 
       - alert: HostNetworkReceiveErrors
-        expr: rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01
+        expr: 'rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01'
         for: 2m
         labels:
           severity: warning
@@ -237,13 +237,13 @@ groups:
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.'
 
       - alert: HostNetworkTransmitErrors
-        expr: rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01
+        expr: 'rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: Host Network Transmit Errors (instance {{ $labels.instance }})
-          description: "Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host has network transmit errors'
+          description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
 
       - alert: HostNetworkInterfaceSaturated
         expr: (rate(node_network_receive_bytes_total{device!~"^tap.*|^one-.*"}[1m]) + rate(node_network_transmit_bytes_total{device!~"^tap.*|^one-.*"}[1m])) / node_network_speed_bytes{device!~"^tap.*|^one-.*"} > 0.8 < 10000
@@ -260,8 +260,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: Host conntrack limit (instance {{ $labels.instance }})
-          description: "The number of conntrack is approaching limit\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host conntrack limit'
+          description: "The number of conntrack on host `{{ $labels.instance }}` is approaching limit."
 
       - alert: HostClockSkew
         expr: '(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)'
