@@ -26,8 +26,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` has less than 10% available memory'
-          description: 'Host has only {{ printf "%.2f" $value }} memory available.'
+          summary: 'Host has less than 10% available memory'
+          description: 'Host `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% memory available.'
 
       - alert: HostMemoryUnderMemoryPressure
         expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
@@ -35,8 +35,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` is under memory pressure'
-          description: 'The node is under heavy memory pressure. It has high rate of major page faults.'
+          summary: 'Host is under memory pressure'
+          description: 'Host `{{ $labels.instance }}` is under heavy memory pressure. It has high rate of major page faults.'
 
       - alert: HostHighNetworkInboundTraffic
         expr: 'sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 500'
@@ -44,8 +44,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` has network inbound traffic more than 500 MB/s'
-          description: 'Host network interfaces have an ingress bandwidth of {{ printf "%d" $value }} MB/s'
+          summary: 'Host has network inbound traffic more than 500 MB/s'
+          description: 'Host `{{ $labels.instance }}` network interfaces have an ingress bandwidth of {{ printf "%d" $value }} MB/s'
 
       - alert: HostHighNetworkOutboundTraffic
         expr: 'sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 500'
@@ -53,26 +53,26 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` has network outbound traffic more than 500 MB/s'
-          description: 'Host network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
+          summary: 'Host has network outbound traffic more than 500 MB/s'
+          description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
 
       - alert: HostHighDiskReadRate
-        expr: 'sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 100'
+        expr: 'sum by (instance,device) (rate(node_disk_read_bytes_total[10m])) / 1024 / 1024 > 200'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` disk read rate more than 100 MB/s'
-          description: 'Disk is reading at {{ printf "%d" $value }} MB/s'
+          summary: 'Host disk read rate more than 200 MB/s'
+          description: 'Disk at host `{{ $labels.instance }}` is reading at {{ printf "%.0f" $value }} MB/s'
 
       - alert: HostHighDiskWriteRate
-        expr: 'sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 100'
+        expr: 'sum by (instance) (rate(node_disk_written_bytes_total[10m])) / 1024 / 1024 > 200'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` disk write rate more than 100 MB/s'
-          description: 'Disk is writing at {{ printf "%d" $value }} MB/s.'
+          summary: 'Host `{{ $labels.instance }}` disk write rate more than 200 MB/s'
+          description: 'Disk at host `{{ $labels.instance }}` is writing at {{ printf "%.0f" $value }} MB/s.'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
@@ -143,7 +143,7 @@ groups:
           summary: Host high CPU load (instance {{ $labels.instance }})
           description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-      - alert: HostCpuStealNoisyNeighbor
+      - alert: HostCPUStealNoisyNeighbor
         expr: avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 10
         for: 0m
         labels:
@@ -156,7 +156,7 @@ groups:
       # Alert threshold depends on nature of application.
       # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
       - alert: HostContextSwitching
-        expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 1000
+        expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 10000
         for: 0m
         labels:
           severity: warning
