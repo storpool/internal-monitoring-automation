@@ -105,7 +105,7 @@ groups:
           severity: warning
         annotations:
           summary: 'Host `{{ $labels.instance }}` root filesystem has less than 10% free inodes left'
-          description: 'Root filesystem on disk `{{ $labels.device }}` has {{ printf "%.2f $value }} free inodes.'
+          description: 'Root filesystem on disk `{{ $labels.device }}` has {{ printf "%.2f" $value }} free inodes.'
 
       - alert: HostRootFSInodesWillFillIn24Hours
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
