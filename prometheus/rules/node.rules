@@ -56,24 +56,6 @@ groups:
           summary: 'Host has network outbound traffic more than 500 MB/s'
           description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
 
-      - alert: HostHighDiskReadRate
-        expr: 'sum by (instance,device) (rate(node_disk_read_bytes_total[10m])) / 1024 / 1024 > 200'
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host disk read rate more than 200 MB/s'
-          description: 'Disk at host `{{ $labels.instance }}` is reading at {{ printf "%.0f" $value }} MB/s'
-
-      - alert: HostHighDiskWriteRate
-        expr: 'sum by (instance) (rate(node_disk_written_bytes_total[10m])) / 1024 / 1024 > 200'
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host `{{ $labels.instance }}` disk write rate more than 200 MB/s'
-          description: 'Disk at host `{{ $labels.instance }}` is writing at {{ printf "%.0f" $value }} MB/s.'
-
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
