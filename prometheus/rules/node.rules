@@ -156,7 +156,7 @@ groups:
           description: 'Swap on host `{{ $labels.instance }}` is {{ printf "%.2f" $value }} full.'
 
       - alert: HostPhysicalComponentTooHot
-        expr: 'node_hwmon_temp_celsius{type="bare-metal} > 75'
+        expr: 'node_hwmon_temp_celsius{type="bare-metal"} > 75'
         for: 5m
         labels:
           severity: warning
@@ -165,7 +165,7 @@ groups:
           description: "Host `{{ $labels.instance }}` physical hardware component too hot"
 
       - alert: HostOvertemperatureAlarm
-        expr: 'node_hwmon_temp_crit_alarm_celsius{type="bare-metal} == 1'
+        expr: 'node_hwmon_temp_crit_alarm_celsius{type="bare-metal"} == 1'
         for: 0m
         labels:
           severity: critical
