@@ -65,7 +65,7 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host `{{ $labels.instance }}` has less than 10% of available disk space'
+          summary: 'Host has less than 10% of available disk space'
           description: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
       # Please add ignored mountpoints in node_exporter parameters like
