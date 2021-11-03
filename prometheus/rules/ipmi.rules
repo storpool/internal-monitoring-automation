@@ -9,7 +9,7 @@ groups:
           severity: critical
         annotations:
           summary: 'Host IPMI sensor {{ $labels.name}} state is critical'
-          description: 'Host {{ $labels.instance }} IPMI sensor {{ $labels.name }} of type {{ $labels.type }} is in critical state.'
+          description: 'Host `{{ $labels.instance }}` IPMI sensor `{{ $labels.name }}` of type `{{ $labels.type }}` is in critical state.'
 
       - alert: IPMIFanSpeedCritical
         expr: ipmi_fan_speed_state == 2
@@ -18,4 +18,4 @@ groups:
           severity: critical
         annotations:
           summary: 'Host fan speed is over critical limit'
-          description: 'Host {{ $labels.instance }} {{ $labels.name }} speed is over the critical limit.'
+          description: 'Host `{{ $labels.instance }}` `{{ $labels.name }}` speed is over the critical limit.'
