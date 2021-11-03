@@ -155,24 +155,6 @@ groups:
           summary: 'Host swap is filling up has less than 20% left.'
           description: 'Swap on host `{{ $labels.instance }}` is {{ printf "%.2f" $value }} full.'
 
-      - alert: HostPhysicalComponentTooHot
-        expr: 'node_hwmon_temp_celsius{type="bare-metal"} > 75'
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host physical component too hot'
-          description: "Host `{{ $labels.instance }}` physical hardware component too hot"
-
-      - alert: HostOvertemperatureAlarm
-        expr: 'node_hwmon_temp_crit_alarm_celsius{type="bare-metal"} == 1'
-        for: 0m
-        labels:
-          severity: critical
-        annotations:
-          summary: 'Host temperature too high'
-          description: 'Host `{{ $labels.instance }}` physical node temperature alarm triggered.'
-
       - alert: HostRaidArrayGotInactive
         expr: 'node_md_state{state="inactive"} > 0'
         for: 0m
