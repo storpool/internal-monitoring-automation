@@ -10,15 +10,14 @@
 
 {{ define "__alert_severity" -}}
     {{- if eq .CommonLabels.severity "critical" -}}
-    *Severity:* `Critical`
+    *Severity:* `Critical`\n
     {{- else if eq .CommonLabels.severity "warning" -}}
-    *Severity:* `Warning`
+    *Severity:* `Warning`\n
     {{- else if eq .CommonLabels.severity "info" -}}
-    *Severity:* `Info`
+    *Severity:* `Info`\n
     {{- else -}}
-    *Severity:* :question: {{ .CommonLabels.severity }}
+    *Severity:* :question: {{ .CommonLabels.severity }}\n
     {{- end }}
-    {{- "\n" -}}
 {{- end }}
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
@@ -32,17 +31,14 @@
 {{ define "slack.storpool.text" -}}
     {{ template "__alert_severity" . }}
     {{- if (index .Alerts 0).Annotations.summary }}
-    *Summary:* {{ (index .Alerts 0).Annotations.summary }}
-    {{- "\n" -}}
+    *Summary:* {{ (index .Alerts 0).Annotations.summary }}\n
     {{- end }}
     {{ range .Alerts }}
         {{- if .Annotations.description }}
-        - {{ .Annotations.description }}
-        {{- "\n" -}}
+        - {{ .Annotations.description }}\n
         {{- end }}
         {{- if .Annotations.message }}
-        - {{ .Annotations.message }}
-        {{- "\n" -}}
+        - {{ .Annotations.message }}\n
         {{- end }}
     {{- end }}
 {{- end }}
