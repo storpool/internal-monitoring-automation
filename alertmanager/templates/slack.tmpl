@@ -18,6 +18,7 @@
     {{- else -}}
     *Severity:* :question: {{ .CommonLabels.severity }}
     {{- end }}
+    {{- "\n" -}}
 {{- end }}
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
@@ -31,18 +32,16 @@
 {{ define "slack.storpool.text" -}}
     {{ template "__alert_severity" . }}
     {{- if (index .Alerts 0).Annotations.summary }}
-    {{- "\n" -}}
     *Summary:* {{ (index .Alerts 0).Annotations.summary }}
+    {{- "\n" -}}
     {{- end }}
     {{ range .Alerts }}
         {{- if .Annotations.description }}
-        {{- "\n" -}}
-        * {{ .Annotations.description }}
+        - {{ .Annotations.description }}
         {{- "\n" -}}
         {{- end }}
         {{- if .Annotations.message }}
-        {{- "\n" -}}
-        * {{ .Annotations.message }}
+        - {{ .Annotations.message }}
         {{- "\n" -}}
         {{- end }}
     {{- end }}
