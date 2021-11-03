@@ -17,7 +17,7 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus target down'
-          description: 'Prometheus target `{{ $labels.instance }}` is down.'
+          description: 'Prometheus target `{{ $labels.instance }}` from job `{{ $labels.job }}` is down.'
       - alert: PrometheusAllTargetsMissing
         expr: 'count by (job) (up) == 0'
         for: 15s
