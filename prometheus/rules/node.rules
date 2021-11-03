@@ -21,12 +21,12 @@ groups:
           summary: 'Host `{{ $labels.instance }}` - reboot required'
 
       - alert: HostOutOfMemory
-        expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10'
+        expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5'
         for: 2m
         labels:
           severity: warning
         annotations:
-          summary: 'Host has less than 10% available memory'
+          summary: 'Host has less than 5% available memory'
           description: 'Host `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% memory available.'
 
       - alert: HostMemoryUnderMemoryPressure
