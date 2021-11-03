@@ -1,0 +1,11 @@
+{% if 'routers' in groups %}
+{% for host in groups['routers'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9100
+  labels:
+    instance: {{ host }}
+    type: bare-metal
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+{% endfor %}
+{% endif %}

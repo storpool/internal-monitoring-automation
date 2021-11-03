@@ -7,6 +7,9 @@ device_query_filters:
 group_by:
   - site
 groups:
-  sof_baremetal: 'role == "server" and site == "3dc" and "omit-monitor" not in tags'
-  sof_baremetal_deploy: '"monitor-autodeploy" in tags'
+  sof_baremetal: '(role == "server" or role == "router") and site == "3dc" and "omit-monitor" not in tags'
+  sof_baremetal_deploy: '"monitor-autodeploy" in tags and site == "3dc"'
+  office_baremetal: '(role == "server" or role == "router") and site == "office" and "omit-monitor" not in tags'
+  office_baremetal_deploy: '"monitor-autodeploy" in tags and site == "office"'
   network_devices: '"switch" in role or role == "ap"'
+  routers: 'role == "router" and "omit-monitor" not in tags'

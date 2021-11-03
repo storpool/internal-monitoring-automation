@@ -74,3 +74,9 @@
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/service_grafana.yaml"
+
+- job_name: "bird"
+  honor_labels: true
+  file_sd_configs:
+    - files:
+        - "/monitoring/prometheus_file_sd/service_bird.yaml"
