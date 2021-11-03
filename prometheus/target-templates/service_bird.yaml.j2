@@ -1,7 +1,7 @@
 {% if 'routers' in groups %}
 {% for host in groups['routers'] %}
 - targets:
-    - {{ hostvars[host]['ansible_host'] }}:9100
+    - {{ hostvars[host]['ansible_host'] }}:9324
   labels:
     instance: {{ host }}
     type: bare-metal
