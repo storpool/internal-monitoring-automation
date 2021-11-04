@@ -30,7 +30,7 @@
 
 {{ define "slack.storpool.text" -}}
     {{ template "__alert_severity" . }}
-    {{- if (index .Alerts 0).Annotations.summary -}}
+    {{- if (index .Alerts 0).Annotations.summary }}
     *Summary:* {{ (index .Alerts 0).Annotations.summary }}
     {{- "\n" -}}
     {{- end }}
