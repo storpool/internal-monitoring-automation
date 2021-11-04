@@ -228,13 +228,13 @@ groups:
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
 
       - alert: HostNetworkInterfaceSaturated
-        expr: (rate(node_network_receive_bytes_total{device!~"^tap.*|^one-.*"}[1m]) + rate(node_network_transmit_bytes_total{device!~"^tap.*|^one-.*"}[1m])) / node_network_speed_bytes{device!~"^tap.*|^one-.*"} > 0.8 < 10000
-        for: 1m
+        expr: 'increase(node_network_transmit_drop_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) / increase(node_network_transmit_bytes_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) > 0.8 < 10000'
+        for: 5m
         labels:
           severity: warning
         annotations:
           summary: 'Host network interface saturated'
-          description: 'The network interface {{ $labels.device }} on {{ $labels.instance }} is getting overloaded.'
+          description: 'Network interface {{ $labels.device }} on {{ $labels.instance }} is getting overloaded.'
 
       - alert: HostConntrackLimit
         expr: node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8
