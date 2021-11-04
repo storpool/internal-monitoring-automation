@@ -36,10 +36,10 @@
     {{- end }}
     {{ range .Alerts -}}
         {{- if .Annotations.description -}}
-        - {{ .Annotations.description }}
+        • {{ .Annotations.description }}
         {{- end -}}
         {{- if .Annotations.message }}
-        - {{ .Annotations.message }}
+        • {{ .Annotations.message }}
         {{- end -}}
     {{- end }}
 {{- end }}
