@@ -32,6 +32,7 @@
     {{ template "__alert_severity" . }}
     {{- if (index .Alerts 0).Annotations.summary -}}
     *Summary:* {{ (index .Alerts 0).Annotations.summary }}
+    {{- "\n" -}}
     {{- end }}
     {{ range .Alerts }}
         {{- if .Annotations.description }}
