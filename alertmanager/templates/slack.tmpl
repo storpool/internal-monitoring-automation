@@ -33,6 +33,7 @@
     {{ range .Alerts -}}
         {{- if .Annotations.description -}}
         • {{ .Annotations.description }}
+        {{- "\n" -}}
         {{- end -}}
         {{- if .Annotations.message }}
         • {{ .Annotations.message }}
