@@ -35,12 +35,12 @@
     *Summary:* {{ (index .Alerts 0).Annotations.summary }}
     {{- end }}
     {{ range .Alerts -}}
-        {{- if .Annotations.description }}
+        {{- if .Annotations.description -}}
         - {{ .Annotations.description }}
-        {{- end }}
+        {{- end -}}
         {{- if .Annotations.message }}
         - {{ .Annotations.message }}
-        {{- end }}
+        {{- end -}}
     {{- end }}
 {{- end }}
 
