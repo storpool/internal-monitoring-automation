@@ -188,8 +188,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          summary: 'Host OOM kill detected (instance {{ $labels.instance }})'
-          description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Host OOM kill detected'
+          description: 'OOM kill detected on host `{{ $labels.instance }}`.'
 
       - alert: HostEdacCorrectableErrorsDetected
         expr: 'increase(node_edac_correctable_errors_total[5m]) > 0'
