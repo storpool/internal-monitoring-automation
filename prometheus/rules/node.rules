@@ -78,7 +78,7 @@ groups:
           severity: warning
         annotations:
           summary: 'Host `{{ $labels.instance }}` is expected fill its filesystem in the next 24 hours'
-          description: 'Device `{{ $labels.device }}` mounted at `{{ $labels.mountpoint }}` is predicted to run out of space within the next 24 hours at current write rate'
+          description: 'Device `{{ $labels.device }}` mounted at `{{ $labels.mountpoint }}` on host `{{ $labels.instance }}` is predicted to run out of space within the next 24 hours at current write rate'
 
       - alert: HostRootFSOutOfInodes
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
