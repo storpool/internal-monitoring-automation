@@ -4,5 +4,6 @@ promscale_version: 0.5.1
 
 promscale_database_name: "promscale"
 promscale_username: "promscale"
+promscale_db_connections_max: 8
 
 promscale_config_path: "/etc/promscale.conf"
