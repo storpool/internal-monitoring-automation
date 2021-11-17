@@ -9,13 +9,13 @@ groups:
           severity: warning
         annotations:
           summary: 'Interface operational state change'
-          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instace }}` state has changed'
+          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` state has changed'
 
       - alert: InterfaceHighBandwithUtilization
-        expr: '(irate(ifHCInOctets{instance="sw1g2"}[2m]) * 8) / (ifHighSpeed * 10^6) > 0.9 or (irate(ifHCOutOctets{instance="sw1g2"}[2m]) * 8) / (ifHighSpeed * 10^6) > 0.9'
+        expr: '(irate(ifHCInOctets[2m]) * 8) / (ifHighSpeed * 10^6) > 0.9 or (irate(ifHCOutOctets[2m]) * 8) / (ifHighSpeed * 10^6) > 0.9'
         for: 30s
         labels:
           severity: warning
         annotations:
           summary: 'Interface has bandwidth utilization more than 90% for the last 30 seconds'
-          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instace }}` is using X% of its bandwidth'
+          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` is using X% of its bandwidth'
