@@ -4,6 +4,7 @@
     - {{ hostvars[host]['ansible_host'] }}
   labels:
     instance: {{ host }}
+    type: network-device
     location: {{ hostvars[host]['site'] }}
     environment: production
 {% endfor %}
