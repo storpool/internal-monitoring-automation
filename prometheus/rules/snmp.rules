@@ -2,14 +2,14 @@
 groups:
   - name: SNMP Rules
     rules:
-      - alert: InterfaceStatusChange
-        expr: 'ifOperStatus == 0'
+      - alert: InterfaceStatusDown
+        expr: 'changes(ifOperStatus[10m]) % 2 == 1 and ifOperStatus == 2'
         for: 0s
         labels:
           severity: warning
         annotations:
           summary: 'Interface operational state change'
-          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` state has changed'
+          description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` went down'
 
       - alert: InterfaceHighBandwithUtilization
         expr: '(irate(ifHCInOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) > 0.9 <= 1 or (irate(ifHCOutOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) > 0.9 <= 1'
