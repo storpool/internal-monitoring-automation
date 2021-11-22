@@ -7,5 +7,6 @@
     type: network-device
     location: {{ hostvars[host]['site'] }}
     environment: production
+    snmp_mib: {{ hostvars[host]['snmp_mib'] }}
 {% endfor %}
 {% endif %}

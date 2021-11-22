@@ -37,9 +37,9 @@
   scrape_timeout: 30s
   metrics_path: /snmp
   honor_labels: true
-  params:
-    module: [ if_mib ]
   relabel_configs:
+    - source_labels: [ snmp_mib ]
+      target_label: __param_module
     - source_labels: [ __address__ ]
       target_label: __param_target
     - target_label: __address__
