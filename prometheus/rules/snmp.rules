@@ -3,7 +3,7 @@ groups:
   - name: SNMP Rules
     rules:
       - alert: InterfaceStatusDown
-        expr: 'ifOperStatus{ifAlias!=""} == 2'
+        expr: 'ifOperStatus{ifAlias!="ACCESS_PORT"} == 2 and ifAdminStatus{ifAlias!=""} == 1'
         for: 0s
         labels:
           severity: warning
