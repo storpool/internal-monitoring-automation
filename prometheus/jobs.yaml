@@ -3,10 +3,10 @@
     - targets:
         - "localhost:9090"
 
-- job_name: "promscale"
+- job_name: "victoriametrics"
   static_configs:
     - targets:
-        - "localhost:9201"
+        - "{{ victoria_metric_address }}"
 
 - job_name: "icmp"
   metrics_path: /probe
