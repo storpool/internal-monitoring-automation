@@ -6,7 +6,7 @@
 - job_name: "victoriametrics"
   static_configs:
     - targets:
-        - "{{ victoria_metric_address }}"
+        - "{{ victoria_metrics_address }}"
 
 - job_name: "icmp"
   metrics_path: /probe
