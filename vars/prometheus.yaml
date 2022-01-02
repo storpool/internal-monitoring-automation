@@ -5,8 +5,8 @@ prometheus_global:
   evaluation_interval: 15s
 
 prometheus_remote_write:
-  - name: victoriametrics
-    url: http://awx.sof-vm.storpool.local:31689/api/v1/write
+  - name: VictoriaMetrics
+    url: "{{ victoria_metrics_url }}"
     queue_config:
       max_samples_per_send: 10000
       capacity: 20000
