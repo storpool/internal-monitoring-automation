@@ -1,11 +1,4 @@
 ---
-- name: Installing TimescaleDB
-  hosts: monitoring-stack
-  become_method: sudo
-  roles:
-    - name: timescale_db
-      become: true
-
 - name: Installing monitoring stack
   hosts: monitoring-stack
   become_method: sudo
@@ -23,10 +16,6 @@
         var: alertmanager_route
         verbosity: 2
   roles:
-    - name: create-postgresql-database
-      become: true
-    - name: promscale
-      become: true
     - name: cloudalchemy.snmp-exporter
       become: true
     - name: cloudalchemy.blackbox-exporter
