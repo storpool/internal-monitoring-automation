@@ -1,11 +1,5 @@
 ---
 - source_match:
-    alertname: InstanceDown
-  target_match_re:
-    alertname: (NoPing|NodeExporterDown)
-  equal: ['instance']
-
-- source_match:
     severity: critical
   target_match:
     severity: warning
