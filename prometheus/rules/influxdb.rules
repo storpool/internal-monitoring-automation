@@ -2,16 +2,6 @@
 groups:
   - name: InfluxDB rules
     rules:
-      - alert: InfluxDBServiceFailed
-        expr: 'node_systemd_unit_state{name="influxdb.service", state="failed"} > 0'
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: 'InfluxDB service on {{ $labels.instance }} has failed'
-          description: 'InfluxDB systemd service has crashed and has not recovered for more than 1 minute.'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
-
       - alert: InfluxDBServiceInactive
         expr: 'node_systemd_unit_state{name="influxdb.service", state="inactive"} > 0'
         for: 1m

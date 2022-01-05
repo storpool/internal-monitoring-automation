@@ -2,16 +2,6 @@
 groups:
   - name: Node rules
     rules:
-      - alert: NodeExporterDown
-        expr: 'up{job="node-exporter"} == 0'
-        for: 2m
-        labels:
-          severity: warning
-        annotations:
-          description: 'Prometheus cannot scrape {{ $labels.instance }} for more than 2 minutes.'
-          summary: 'Job `node-exporter` target is down'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
-
       - alert: RebootRequired
         expr: 'node_reboot_required > 0'
         labels:
@@ -19,6 +9,7 @@ groups:
         annotations:
           description: '{{ $labels.instance }} requires a reboot.'
           summary: 'Host `{{ $labels.instance }}` - reboot required'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostOutOfMemory
         expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5'
@@ -28,6 +19,7 @@ groups:
         annotations:
           summary: 'Host has less than 5% available memory'
           description: 'Host `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% memory available.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostMemoryUnderMemoryPressure
         expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
@@ -37,6 +29,7 @@ groups:
         annotations:
           summary: 'Host is under memory pressure'
           description: 'Host `{{ $labels.instance }}` is under heavy memory pressure. It has high rate of major page faults.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostHighNetworkInboundTraffic
         expr: 'sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 500'
@@ -46,6 +39,7 @@ groups:
         annotations:
           summary: 'Host has network inbound traffic more than 500 MB/s'
           description: 'Host `{{ $labels.instance }}` network interfaces have an ingress bandwidth of {{ printf "%d" $value }} MB/s'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostHighNetworkOutboundTraffic
         expr: 'sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 500'
@@ -55,6 +49,7 @@ groups:
         annotations:
           summary: 'Host has network outbound traffic more than 500 MB/s'
           description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
@@ -79,6 +74,7 @@ groups:
         annotations:
           summary: 'Host `{{ $labels.instance }}` is expected fill its filesystem in the next 24 hours'
           description: 'Device `{{ $labels.device }}` mounted at `{{ $labels.mountpoint }}` on host `{{ $labels.instance }}` is predicted to run out of space within the next 24 hours at current write rate'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostRootFSOutOfInodes
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
@@ -88,6 +84,7 @@ groups:
         annotations:
           summary: 'Host `{{ $labels.instance }}` root filesystem has less than 10% free inodes left'
           description: 'Root filesystem on disk `{{ $labels.device }}` has {{ printf "%.2f" $value }} free inodes.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostRootFSInodesWillFillIn24Hours
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
@@ -97,6 +94,7 @@ groups:
         annotations:
           summary: 'Host `{{ $labels.instance }}` root filesystem inodes will fill in 24 hours.'
           description: 'Root filesystem is predicted to run out of inodes within the next 24 hours at current write rate'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskReadLatency
         expr: 'rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0'
@@ -106,6 +104,7 @@ groups:
         annotations:
           summary: 'Host unusual disk read latency (instance {{ $labels.instance }})'
           description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskWriteLatency
         expr: 'rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0'
@@ -115,6 +114,7 @@ groups:
         annotations:
           summary: 'Host unusual disk write latency (instance {{ $labels.instance }})'
           description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostHighCPULoad
         expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
@@ -124,6 +124,7 @@ groups:
         annotations:
           summary: 'Host CPU load is more than 80%'
           description: 'Host `{{ $labels.instance }}` CPU load is {{ printf "%.2f" $value }}.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostCPUStealNoisyNeighbor
         expr: avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 10
@@ -133,6 +134,7 @@ groups:
         annotations:
           summary: 'Host CPU steal time is more than 10%'
           description: 'Host `{{ $labels.instance }}` CPU steal is > 10%. A noisy neighbor is killing VM performances or a spot instance may be out of credit.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       # 1000 context switches is an arbitrary number.
       # Alert threshold depends on nature of application.
@@ -145,6 +147,7 @@ groups:
         annotations:
           summary: 'Host context switching growiing'
           description: 'Host `{{ $labels.instance }}` context switching is growing on node.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostSwapIsFillingUp
         expr: '(1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80'
@@ -154,6 +157,7 @@ groups:
         annotations:
           summary: 'Host swap is filling up has less than 20% left.'
           description: 'Swap on host `{{ $labels.instance }}` is {{ printf "%.2f" $value }} full.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostRaidArrayGotInactive
         expr: 'node_md_state{state="inactive"} > 0'
@@ -163,6 +167,7 @@ groups:
         annotations:
           summary: Host RAID array got inactive (instance {{ $labels.instance }})
           description: "RAID array {{ $labels.device }} is in degraded state due to one or more disks failures. Number of spare drives is insufficient to fix issue automatically.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostRaidDiskFailure
         expr: node_md_disks{state="failed"} > 0
@@ -172,6 +177,7 @@ groups:
         annotations:
           summary: Host RAID disk failure (instance {{ $labels.instance }})
           description: "At least one device in RAID array on {{ $labels.instance }} failed. Array {{ $labels.md_device }} needs attention and possibly a disk swap\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       #- alert: HostKernelVersionDeviations
       #  expr: count(sum(label_replace(node_uname_info, "kernel", "$1", "release", "([0-9]+.[0-9]+.[0-9]+).*")) by (kernel)) > 1
@@ -190,6 +196,7 @@ groups:
         annotations:
           summary: 'Host OOM kill detected'
           description: 'OOM kill detected on host `{{ $labels.instance }}`.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostEdacCorrectableErrorsDetected
         expr: 'increase(node_edac_correctable_errors_total[5m]) > 0'
@@ -199,6 +206,7 @@ groups:
         annotations:
           summary: 'Host EDAC correctable errors detected'
           description: 'Host {{ $labels.instance }} has had {{ printf "%.0f" $value }} correctable memory errors on controller {{ $labels.controller }} reported by EDAC in the last 5 minutes.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostEdacUncorrectableErrorsDetected
         expr: 'node_edac_uncorrectable_errors_total > 0'
@@ -208,6 +216,7 @@ groups:
         annotations:
           summary: 'Host EDAC uncorrectable errors detected'
           description: 'Host {{ $labels.instance }} has had {{ printf "%.0f" $value }} uncorrectable memory errors on controller {{ $labels.controller }} reported by EDAC in the last 5 minutes.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostNetworkReceiveErrors
         expr: 'rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01'
@@ -217,6 +226,7 @@ groups:
         annotations:
           summary: 'Host has network receive errors'
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostNetworkTransmitErrors
         expr: 'rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01'
@@ -226,6 +236,7 @@ groups:
         annotations:
           summary: 'Host has network transmit errors'
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostNetworkInterfaceSaturated
         expr: 'increase(node_network_transmit_drop_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) / increase(node_network_transmit_bytes_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) > 0.8 < 10000'
@@ -235,6 +246,7 @@ groups:
         annotations:
           summary: 'Host network interface saturated'
           description: 'Network interface {{ $labels.device }} on {{ $labels.instance }} is getting overloaded.'
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostConntrackLimit
         expr: node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8
@@ -244,6 +256,7 @@ groups:
         annotations:
           summary: 'Host conntrack limit'
           description: "The number of conntrack on host `{{ $labels.instance }}` is approaching limit."
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostClockSkew
         expr: '(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)'
@@ -253,6 +266,7 @@ groups:
         annotations:
           summary: 'Host clock skew'
           description: "Clock skew detected on host `{{ $labels.instance }}`. Clock is out of sync."
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostClockNotSynchronising
         expr: 'min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'
@@ -262,3 +276,4 @@ groups:
         annotations:
           summary: 'Host clock not synchronising'
           description: "Clock on host `{{ $labels.instance }}` not synchronising."
+          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
