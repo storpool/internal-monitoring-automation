@@ -8,10 +8,7 @@
       file:
         path: /monitoring/prometheus_file_sd/
         state: directory
-    - name: Generating Promscale PostgreSQL user password
-      set_fact:
-        promscale_postgres_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
-    - name: Debugging alertmanager routes
+    - name: Print Alertmanager routes
       debug:
         var: alertmanager_route
         verbosity: 2
