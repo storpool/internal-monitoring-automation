@@ -4,6 +4,7 @@ config_context: false
 plurals: false
 device_query_filters:
   - has_primary_ip: 'true'
+interfaces: true
 compose:
   snmp_mib: '"apcups" if device_type == "ap7723" else "if_mib"'
 group_by:
