@@ -4,7 +4,7 @@
     - {{ hostvars[host]['ansible_host'] }}:9290
   labels:
     instance: {{ host }}
-    location: 3dc
+    location: {{ site }}
     environment: production
 {% endfor %}
 {% endif %}
