@@ -49,7 +49,15 @@
         - "/monitoring/prometheus_file_sd/network_*.yaml"
 
 - job_name: "ipmi"
+  metrics_path: /ipmi
+  params:
+    module: ["default"]
   honor_labels: true
+  relabel_configs:
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: "{{ ansible_fdqn }}:9290"
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/ipmi_*.yaml"

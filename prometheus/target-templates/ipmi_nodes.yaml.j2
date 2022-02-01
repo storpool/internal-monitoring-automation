@@ -1,10 +1,10 @@
-{% if 'ipmi_monitor' in groups %}
-{% for host in groups['ipmi_monitor'] %}
+{% for group in ( group_names | select('contains', 'baremetal') ) %}
+{% for host in groups[group] %}
 - targets:
-    - {{ hostvars[host]['ansible_host'] }}:9290
+    - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ipaddr('address') }}
   labels:
     instance: {{ host }}
-    location: {{ site }}
+    location: {{ hostvars[host]['site'] }}
     environment: production
 {% endfor %}
-{% endif %}
+{% endfor %}

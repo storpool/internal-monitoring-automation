@@ -17,6 +17,8 @@
       become: true
     - name: cloudalchemy.blackbox-exporter
       become: true
+    - name: cloudalchemy.ipmi_exporter
+      become: true
     - name: cloudalchemy.alertmanager
       become: true
     - name: cloudalchemy.prometheus
@@ -30,6 +32,7 @@
   vars_files:
     - vars/prometheus.yaml
     - vars/alertmanager.yaml
+    - vars/ipmi-exporter.yaml
     - vars/backbox-exporter.yaml
 
 - name: Installing Grafana

@@ -1,7 +1,0 @@
----
-- name: Instaling impi-exporter
-  hosts: ipmi_exporter_autodeploy
-  become_method: sudo
-  roles:
-    - name: cloudalchemy.ipmi_exporter
-      become: true
