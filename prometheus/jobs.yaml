@@ -57,7 +57,7 @@
     - source_labels: [ __address__ ]
       target_label: __param_target
     - target_label: __address__
-      replacement: "{{ ansible_fdqn }}:9290"
+      replacement: "{{ ansible_fqdn }}:9290"
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/ipmi_*.yaml"
