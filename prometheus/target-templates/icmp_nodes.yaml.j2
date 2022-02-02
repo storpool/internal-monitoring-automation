@@ -1,10 +1,10 @@
 {% if 'icmp_monitor' in groups %}
 {% for host in groups['icmp_monitor'] %}
 - targets:
-    - {{ hostvars[host]['ansible_host'] }}
+    - {{ (lookup('dig', hostvars[host]['ansible_fqdn']) | first)['A'] }}
   labels:
     instance: {{ host }}
-    location: 3dc
+    location: {{ hostvars[host]['site'] }}
     environment: production
 {% endfor %}
 {% endif %}
