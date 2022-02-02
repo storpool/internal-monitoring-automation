@@ -1,0 +1,14 @@
+{% for host in groups['node_exporter_targets'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9100
+  labels:
+    instance: {{ host }}
+{% if 'lcm_state' in hostvars[host] %}
+    type: virtual-machine
+    location: moonstone
+{% elif 'device_type' in hostvars[host] %}
+    type: bare-metal
+    location: {{ hostvars[host]['site'] }}
+{% endif %}
+    environment: production
+{% endfor %}
