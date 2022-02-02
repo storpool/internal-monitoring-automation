@@ -7,5 +7,5 @@ compose:
   running: state == "active" and lcm_state == "running"
   services: dict(user_attributes.services | split(",") | map("split", ":")) if user_attributes.services is defined else {}
 groups:
-  moonstone_monitor: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
-  moonstone_monitor_deploy: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'
+  node_exporter_targets: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
+  deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'

@@ -1,6 +1,6 @@
 ---
 - name: Installing node-exporter
-  hosts: node_exporter_autodeploy
+  hosts: deploy_node_exporter
   become_method: sudo
   pre_tasks:
     - name: Collect running services

@@ -10,9 +10,8 @@ compose:
 group_by:
   - site
 groups:
-  sof_baremetal: '(role == "server" or role == "router") and site == "3dc" and "omit-monitor" not in tags'
-  sof_baremetal_deploy: '"monitor-autodeploy" in tags and site == "3dc"'
-  office_baremetal: '(role == "server" or role == "router") and site == "office" and "omit-monitor" not in tags'
-  office_baremetal_deploy: '"monitor-autodeploy" in tags and site == "office"'
+  baremetal: '(role == "server" or role == "router") and (site == "3dc" or site == "office") and "omit-monitor" not in tags'
+  node_exporter_targets: '(role == "server" or role == "router") and (site == "3dc" or site == "office") and "omit-monitor" not in tags'
+  deploy_node_exporter: '"monitor-autodeploy" in tags'
   network_devices: '"switch" in role or role == "ap" or device_type == "ap7723"'
   routers: 'role == "router" and "omit-monitor" not in tags'
