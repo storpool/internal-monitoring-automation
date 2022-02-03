@@ -3,7 +3,7 @@
 {% if hostvars[host]['ansible_host'] | ipaddr %}
     - {{ hostvars[host]['ansible_host'] }}
 {% elif 'ansible_fqdn' in hostvars[host] %}
-    - {{ (lookup('dig', hostvars[host]['ansible_fqdn']) | first)['A'] }}
+    - {{ lookup('dig', hostvars[host]['ansible_fqdn']) | first }}
 {% endif %}
   labels:
     instance: {{ host }}
