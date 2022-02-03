@@ -3,12 +3,12 @@
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
     instance: {{ host }}
-{% if 'lcm_state' in hostvars[host] %}
-    type: virtual-machine
-    location: moonstone
-{% elif 'device_type' in hostvars[host] %}
+{% if host in groups['baremetal'] %}
     type: bare-metal
     location: {{ hostvars[host]['site'] }}
+{% else %}
+    type: virtual-machine
+    location: moonstone
 {% endif %}
     environment: production
 {% endfor %}
