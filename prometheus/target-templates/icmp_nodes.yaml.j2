@@ -1,4 +1,4 @@
-{% for host in groups['all'] %}
+{% for host in (groups['node_exporter_targets'] + groups['network_devices'] %}
 - targets:
 {% if 'ansible_host' in hostvars[host] and hostvars[host]['ansible_host'] | ipaddr %}
     - {{ hostvars[host]['ansible_host'] }}
