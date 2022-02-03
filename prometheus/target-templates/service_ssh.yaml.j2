@@ -4,9 +4,11 @@
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["ssh"] }}
   labels:
     instance: {{ host }}
-{% if host in groups["moonstone_monitor"] %}
-    location: 3dc
-    environment: production
+{% if host in groups['baremetal'] %}
+    location: {{ hostvars[host]['site'] }}
+{% else %}
+    location: moonstone
 {% endif %}
+    environment: production
 {% endif %}
 {% endfor %}
