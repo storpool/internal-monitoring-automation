@@ -1,7 +1,12 @@
 ---
 - name: Debugging file templates
   debug:
-    msg:  "{{ lookup('fileglob', file_sd_template_path) }}"
+    msg: "{{ lookup('fileglob', file_sd_template_path) }}"
+    verbosity: 2
+
+- name: Debugging DNS FQDN lookups
+  debug:
+    msg: "Host FQDN {{ ansible_fqdn }} resolves to IP {{ lookup('dig', hostvars[host]['ansible_fqdn']) | first }}"
     verbosity: 2
 
 - name: Generating file_sd configutaion files
