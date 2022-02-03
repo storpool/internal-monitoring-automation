@@ -1,10 +1,8 @@
-{% for group in ( group_names | select('contains', 'baremetal') ) %}
-{% for host in groups[group] %}
+{% for host in groups['baremetal'] %}
 - targets:
     - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ipaddr('address') }}
   labels:
     instance: {{ host }}
     location: {{ hostvars[host]['site'] }}
     environment: production
-{% endfor %}
 {% endfor %}
