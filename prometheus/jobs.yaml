@@ -69,7 +69,7 @@
     password: "{{ prometheus_secret }}"
   file_sd_configs:
     - files:
-        - "/monitoring/prometheus_file_sd/nodes_*.yaml"
+        - "/monitoring/prometheus_file_sd/nodes*.yaml"
 
 - job_name: "influxdb"
   honor_labels: true
