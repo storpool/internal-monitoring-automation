@@ -6,7 +6,7 @@
 
 - name: Debugging DNS FQDN lookups
   debug:
-    msg: "Host FQDN {{ ansible_fqdn }} resolves to IP {{ lookup('dig', hostvars[host]['ansible_fqdn']) | first }}"
+    msg: "Host FQDN {{ ansible_fqdn }} resolves to IP {{ lookup('dig', ansible_fqdn) }}"
     verbosity: 2
 
 - name: Generating file_sd configutaion files
