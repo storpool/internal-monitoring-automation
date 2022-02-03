@@ -3,7 +3,7 @@
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
     instance: {{ host }}
-{% if host in groups['baremetal'] %}
+{% if host in groups['baremetal'] and not hostvars[host]['is_virtual'] %}
     type: bare-metal
     location: {{ hostvars[host]['site'] }}
 {% else %}
