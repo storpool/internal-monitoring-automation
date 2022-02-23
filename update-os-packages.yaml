@@ -1,0 +1,29 @@
+---
+- name: Updating OS packages
+  hosts: daily_upgrades
+  become_method: sudo
+  strategy: free
+  tasks:
+    - name: Updating OS packages via yum
+      become: true
+      yum:
+        name: "*"
+        state: latest
+      when:
+        - ansible_pkg_mgr == "yum"
+
+    - name: Updating OS packages via dnf
+      become: true
+      yum:
+        name: "*"
+        state: latest
+      when:
+        - ansible_pkg_mgr == "dnf"
+
+    - name: Updating OS packages via apt
+      become: true
+      apt:
+        update_cache: true
+        upgrade: dist
+      when:
+        - ansible_pkg_mgr == "apt"
