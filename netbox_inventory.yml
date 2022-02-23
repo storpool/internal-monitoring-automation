@@ -15,3 +15,4 @@ groups:
   deploy_node_exporter: '"monitor-autodeploy" in tags'
   network_devices: '"switch" in role or role == "ap" or device_type == "ap7723"'
   routers: 'role == "router" and "omit-monitor" not in tags'
+  daily_upgrades: '"autoupdate" in tags'
