@@ -6,11 +6,11 @@ device_query_filters:
   - has_primary_ip: "true"
 interfaces: true
 compose:
-  snmp_mib: '"apcups" if device_type == "ap7723" or device_type == "ap7724" else "if_mib"'
+  snmp_mib: '"apcups" if "ap77" in device_type else "if_mib"'
 group_by:
   - site
 groups:
-  baremetal: '(role == "server" or role == "router") and (site == "3dc" or site == "office") and "omit-monitor" not in tags'
+  baremetal: '(role == "server" or role == "router") and "omit-monitor" not in tags'
   node_exporter_targets: '(role == "server" or role == "router") and "omit-monitor" not in tags'
   deploy_node_exporter: '"monitor-autodeploy" in tags'
   network_devices: '"switch" in role or role == "ap"'
