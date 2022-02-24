@@ -1,12 +1,10 @@
 plugin: netbox.netbox.nb_inventory
 validate_certs: true
-config_context: false
+config_context: true
 plurals: false
 device_query_filters:
   - has_primary_ip: "true"
 interfaces: true
-compose:
-  snmp_mib: '"apcups" if "ap77" in device_type else "if_mib"'
 group_by:
   - site
 groups:
