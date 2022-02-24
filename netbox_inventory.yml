@@ -8,8 +8,7 @@ interfaces: true
 group_by:
   - site
 groups:
-  baremetal: '(role == "server" or role == "router") and "omit-monitor" not in tags'
-  node_exporter_targets: '(role == "server" or role == "router") and "omit-monitor" not in tags'
+  baremetal_machines: '(role == "server" or role == "router") and "omit-monitor" not in tags'
   deploy_node_exporter: '"monitor-autodeploy" in tags'
   network_devices: '"switch" in role or role == "ap"'
   power_devices: 'role == "pdu" or role == "ups"'

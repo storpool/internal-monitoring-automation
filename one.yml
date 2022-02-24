@@ -7,6 +7,6 @@ compose:
   running: state == "active" and lcm_state == "running"
   services: dict(user_attributes.services | split(",") | map("split", ":")) if user_attributes.services is defined else {}
 groups:
-  node_exporter_targets: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
+  virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
   deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'
   daily_upgrades: 'user_attributes.labels is defined and "autoupdate" in user_attributes.labels'

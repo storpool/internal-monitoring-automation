@@ -1,4 +1,4 @@
-{% for host in groups['baremetal'] %}
+{% for host in groups['baremetal_machines'] %}
 - targets:
     - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ipaddr('address') }}
   labels:
