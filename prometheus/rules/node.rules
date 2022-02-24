@@ -63,6 +63,15 @@ groups:
           summary: 'Host has less than 10% of available disk space'
           description: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
+      - alert: HostOutOfDiskSpace
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Host has less than 5% of available disk space'
+          description: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
+
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
