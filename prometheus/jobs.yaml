@@ -46,7 +46,7 @@
       replacement: "{{ ansible_fqdn }}:9116"
   file_sd_configs:
     - files:
-        - "/monitoring/prometheus_file_sd/network_*.yaml"
+        - "/monitoring/prometheus_file_sd/snmp_*.yaml"
 
 - job_name: "ipmi"
   metrics_path: /ipmi

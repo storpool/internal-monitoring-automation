@@ -1,0 +1,10 @@
+{% for host in groups['power_devices'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}
+  labels:
+    instance: {{ host }}
+    type: power-device
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+    snmp_mib: {{ hostvars[host]['snmp_mib'] }}
+{% endfor %}
