@@ -6,5 +6,5 @@
     type: power-device
     location: {{ hostvars[host]['site'] }}
     environment: production
-    snmp_mib: {{ hostvars[host]['snmp_mib'] | default('if_mib') }}
+    snmp_mib: {{ hostvars[host]['config_context']['snmp_mib'] | default('if_mib') }}
 {% endfor %}
