@@ -1,4 +1,3 @@
-{% if 'network_devices' in groups %}
 {% for host in groups['network_devices'] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}
@@ -9,4 +8,3 @@
     environment: production
     snmp_mib: {{ hostvars[host]['snmp_mib'] }}
 {% endfor %}
-{% endif %}
