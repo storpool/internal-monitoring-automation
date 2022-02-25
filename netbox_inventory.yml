@@ -8,7 +8,8 @@ interfaces: true
 group_by:
   - site
 groups:
-  baremetal_machines: '(role == "server" or role == "router") and "omit-monitor" not in tags'
+  baremetal_machines: '(role == "server" or role == "router") and not is_virtual and "omit-monitor" not in tags'
+  virtual_machines: '(role == "server" or role == "router") and is_virtual and "omit-monitor" not in tags'
   deploy_node_exporter: '"monitor-autodeploy" in tags'
   network_devices: '"switch" in role or role == "ap"'
   power_devices: 'role == "pdu" or role == "ups"'
