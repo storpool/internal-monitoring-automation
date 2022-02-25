@@ -4,7 +4,7 @@
     - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["grafana"] }}
   labels:
     instance: {{ host }}
-{% if host in groups['baremetal'] %}
+{% if host in groups['baremetal_machines'] %}
     location: {{ hostvars[host]['site'] }}
 {% else %}
     location: moonstone
