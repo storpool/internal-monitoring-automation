@@ -55,7 +55,7 @@ groups:
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostOutOfDiskSpace
-        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 2m
         labels:
           severity: warning
@@ -64,7 +64,7 @@ groups:
           description: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
       - alert: HostOutOfDiskSpace
-        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 30s
         labels:
           severity: critical
