@@ -1,11 +1,16 @@
 - name: Patching snmp.yml to support community authentication
   blockinfile:
     path: /etc/snmp_exporter/snmp.yml
-    insertafter: 'if_mib:'
+    insertafter: '{{ mib_name }}:'
     block: |2
         auth:
           community: internalmon
         timeout: 15s
+  loop:
+    - if_mib
+    - apcups
+  loop_control:
+    loop_var: mib_name
 
 - name: Restarting snmp_exporter
   service:
