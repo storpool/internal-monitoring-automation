@@ -6,6 +6,7 @@
         auth:
           community: internalmon
         timeout: 15s
+    marker: '# {mark} Patched authorization for mib {{ mib_name }}'
   loop:
     - apcups
     - if_mib
