@@ -7,12 +7,9 @@
           community: internalmon
         timeout: 15s
   loop:
-    - if_mib
     - apcups
+    - if_mib
   loop_control:
     loop_var: mib_name
-
-- name: Restarting snmp_exporter
-  service:
-    name: snmp_exporter
-    state: restarted
+  notify:
+    - restart snmp exporter
