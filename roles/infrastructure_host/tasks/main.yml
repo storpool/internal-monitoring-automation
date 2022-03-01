@@ -1,7 +1,10 @@
+---
+# tasks file for infrastructure_host
 - name: Updating apt local cache
   apt:
     update_cache: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_pkg_mgr == "apt"
+  ignore_errors: true
 
 - name: Installing debug tools
   package:

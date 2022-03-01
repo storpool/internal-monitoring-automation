@@ -8,7 +8,6 @@
   roles:
     - name: infrastructure_host
       become: true
-      ignore_errors: true
     - name: cloudalchemy.node_exporter
       become: true
   post_tasks:
