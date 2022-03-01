@@ -3,7 +3,7 @@ groups:
   - name: IPMI Rules
     rules:
       - alert: IPMIDown
-        expr: ipmi_up == 1
+        expr: ipmi_up == 0
         for: 30s
         labels:
           severity: critical
