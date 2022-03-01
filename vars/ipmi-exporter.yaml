@@ -4,7 +4,7 @@ ipmi_exporter_configuration_modules:
     user: "{{ ipmi_username }}"
     pass: "{{ ipmi_password }}"
     driver: "LAN_2_0"
-    privilege: "user"
+    privilege: "operator"
     collectors:
       - bmc
       - ipmi
