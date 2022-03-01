@@ -142,7 +142,7 @@ groups:
           severity: warning
         annotations:
           summary: 'Host CPU steal time is more than 10%'
-          description: 'Host `{{ $labels.instance }}` CPU steal is > 10%. A noisy neighbor is killing VM performances or a spot instance may be out of credit.'
+          description: 'Host `{{ $labels.instance }}` CPU steal time is {{ printf "%.0f" $value }}%.'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       # 1000 context switches is an arbitrary number.
