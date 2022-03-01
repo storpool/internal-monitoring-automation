@@ -14,3 +14,10 @@
     loop_var: mib_name
   notify:
     - restart snmp exporter
+
+- name: Appending netagent_snmp configuration
+  blockinfile:
+    path: /etc/snmp_exporter/snmp.yml
+    block: '{{ lookup("file", "netagent_snmp.yaml") }}'
+  notify:
+    - restart snmp exporter
