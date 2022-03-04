@@ -5,7 +5,7 @@ blackbox_exporter_configuration_modules:
     timeout: 5s
     icmp:
       preferred_ip_protocol: "ip4"
-      source_ip_address: "{{ ansible_host if ansible_host | ipaddr else lookup('dig', ansible_host )}}"
+      source_ip_address: "{{ ansible_host if ansible_host | ansible.netcommon.ipaddr else lookup('dig', ansible_host )}}"
 
   ssh_banner:
     prober: tcp
