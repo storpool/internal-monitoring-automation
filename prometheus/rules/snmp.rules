@@ -19,3 +19,57 @@ groups:
         annotations:
           summary: 'Interface has bandwidth utilization more than 90% for the last 30 seconds'
           description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` is using X% of its bandwidth'
+
+      - alert: UPSBatteryLow
+        expr: 'upsBaseBatteryStatus{upsBaseBatteryStatus="batteryLow"} == 1'
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'UPS battery is running low'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is running low'
+
+      - alert: UPSBatteryCapacityWarning
+        expr: 'upsSmartBatteryCapacity < 80'
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'UPS battery capacity is below 80%'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
+
+      - alert: UPSBatteryCapacityCritical
+        expr: 'upsSmartBatteryCapacity < 50'
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'UPS battery capacity is below 50%'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
+
+      - alert: UPSBatteryRuntimeWarning
+        expr: 'upsSmartBatteryRunTimeRemaining < 1800'
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'UPS battery has less than 30 minutes of runtime'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
+
+      - alert: UPSBatteryRuntimeCritical
+        expr: 'upsSmartBatteryRunTimeRemaining < 600'
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'UPS battery has less than 10 minutes of runtime'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
+
+      - alert: UPSLowInputVoltage
+        expr: 'round(upsSmartInputLineVoltage / 10) < 200'
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'UPS input voltage is below 200V'
+          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` input voltage is {{ $value }}V'
