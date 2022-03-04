@@ -1,6 +1,6 @@
 {% for host in groups['baremetal_machines'] %}
 - targets:
-    - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ipaddr('address') }}
+    - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ansible.netcommon.ipaddr('address') }}
   labels:
     instance: {{ host }}
     location: {{ hostvars[host]['site'] }}
