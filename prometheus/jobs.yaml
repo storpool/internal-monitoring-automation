@@ -52,7 +52,7 @@
   metrics_path: /ipmi
   params:
     module: ["default"]
-  scrape_interval: 15s
+  scrape_interval: 25s
   scrape_timeout: 25s
   honor_labels: true
   relabel_configs:
