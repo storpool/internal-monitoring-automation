@@ -1,9 +1,9 @@
 ---
-group_wait: 30s
-group_interval: 5m
+group_wait: 15s
+group_interval: 2m
 repeat_interval: 6h
 receiver: default
 group_by:
   - alertname
   - location
-  - type
+  - job
