@@ -27,43 +27,43 @@ groups:
           severity: critical
         annotations:
           summary: 'UPS battery is running low'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is running low'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is running low'
 
-      - alert: UPSBatteryCapacityWarning
+      - alert: UPSBatteryCapacity
         expr: 'upsSmartBatteryCapacity < 80'
         for: 30s
         labels:
           severity: warning
         annotations:
           summary: 'UPS battery capacity is below 80%'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
 
-      - alert: UPSBatteryCapacityCritical
+      - alert: UPSBatteryCapacity
         expr: 'upsSmartBatteryCapacity < 50'
         for: 30s
         labels:
           severity: warning
         annotations:
           summary: 'UPS battery capacity is below 50%'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
 
-      - alert: UPSBatteryRuntimeWarning
+      - alert: UPSBatteryRuntime
         expr: 'upsSmartBatteryRunTimeRemaining < 1800'
         for: 30s
         labels:
           severity: warning
         annotations:
           summary: 'UPS battery has less than 30 minutes of runtime'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
 
-      - alert: UPSBatteryRuntimeCritical
+      - alert: UPSBatteryRuntime
         expr: 'upsSmartBatteryRunTimeRemaining < 600'
         for: 30s
         labels:
           severity: critical
         annotations:
           summary: 'UPS battery has less than 10 minutes of runtime'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
 
       - alert: UPSLowInputVoltage
         expr: 'round(upsSmartInputLineVoltage / 10) < 200'
@@ -72,4 +72,4 @@ groups:
           severity: critical
         annotations:
           summary: 'UPS input voltage is below 200V'
-          description: 'UPS `{{ $labels.ifName }}` at `{{ $labels.location }}` input voltage is {{ $value }}V'
+          description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` input voltage is {{ $value }}V'
