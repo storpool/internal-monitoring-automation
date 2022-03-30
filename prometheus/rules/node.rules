@@ -38,7 +38,7 @@ groups:
           severity: warning
         annotations:
           summary: 'Host has network inbound traffic more than 500 MB/s'
-          description: 'Host `{{ $labels.instance }}` network interfaces have an ingress bandwidth of {{ printf "%d" $value }} MB/s'
+          description: 'Host `{{ $labels.instance }}` network interfaces have an ingress bandwidth of {{ printf "%.2f" $value }} MB/s'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostHighNetworkOutboundTraffic
@@ -48,7 +48,7 @@ groups:
           severity: warning
         annotations:
           summary: 'Host has network outbound traffic more than 500 MB/s'
-          description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%d" $value }} MB/s'
+          description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%.2f" $value }} MB/s'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       # Please add ignored mountpoints in node_exporter parameters like
