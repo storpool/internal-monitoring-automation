@@ -31,26 +31,6 @@ groups:
           description: 'Host `{{ $labels.instance }}` is under heavy memory pressure. It has high rate of major page faults.'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
-      - alert: HostHighNetworkInboundTraffic
-        expr: 'sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 500'
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host has network inbound traffic more than 500 MB/s'
-          description: 'Host `{{ $labels.instance }}` network interfaces have an ingress bandwidth of {{ printf "%.2f" $value }} MB/s'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
-
-      - alert: HostHighNetworkOutboundTraffic
-        expr: 'sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 500'
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host has network outbound traffic more than 500 MB/s'
-          description: 'Host `{{ $labels.instance }}` network interfaces have an outbound traffic of {{ printf "%.2f" $value }} MB/s'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
-
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
