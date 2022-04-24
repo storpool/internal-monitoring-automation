@@ -86,23 +86,23 @@ groups:
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskReadLatency
-        expr: 'rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0'
-        for: 2m
+        expr: 'rate(node_disk_read_time_seconds_total{type="bare-metal"}[1m]) / rate(node_disk_reads_completed_total{type="bare-metal"}[1m]) > 0.1 and rate(node_disk_reads_completed_total{type="bare-metal"}[1m]) > 0'
+        for: 1m
         labels:
           severity: warning
         annotations:
           summary: 'Host unusual disk read latency (instance {{ $labels.instance }})'
-          description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          description: 'Disk {{ $labels.device }} on host {{ $labels.instance }} read latency is growing ({{ printf "%.2f" $value }} ms)'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskWriteLatency
-        expr: 'rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0'
-        for: 2m
+        expr: 'rate(node_disk_write_time_seconds_total{type="bare-metal"}[1m]) / rate(node_disk_writes_completed_total{type="bare-metal"}[1m]) > 0.1 and rate(node_disk_writes_completed_total{type="bare-metal"}[1m]) > 0'
+        for: 1m
         labels:
           severity: warning
         annotations:
           summary: 'Host unusual disk write latency (instance {{ $labels.instance }})'
-          description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          description: 'Disk {{ $labels.device }} on host {{ $labels.instance }} write latency is growing ({{ printf "%.2f" $value }} ms)'
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostHighCPULoad
