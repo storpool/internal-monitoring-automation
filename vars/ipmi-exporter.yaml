@@ -11,3 +11,14 @@ ipmi_exporter_configuration_modules:
       - chassis
       - dcmi
       - sel
+
+  no_dcmi:
+    user: "{{ ipmi_username }}"
+    pass: "{{ ipmi_password }}"
+    driver: "LAN_2_0"
+    privilege: "admin"
+    collectors:
+      - bmc
+      - ipmi
+      - chassis
+      - sel
