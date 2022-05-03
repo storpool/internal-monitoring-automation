@@ -39,8 +39,8 @@
 
 - job_name: "ipmi"
   metrics_path: /ipmi
-  scrape_interval: 25s
-  scrape_timeout: 25s
+  scrape_interval: 15s
+  scrape_timeout: 10s
   honor_labels: true
   relabel_configs:
     - source_labels: [ ipmi_module ]
