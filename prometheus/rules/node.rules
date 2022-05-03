@@ -86,7 +86,7 @@ groups:
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskReadLatency
-        expr: 'rate(node_disk_read_time_seconds_total{type="bare-metal"}[1m]) / rate(node_disk_reads_completed_total{type="bare-metal"}[1m]) > 0.1 and rate(node_disk_reads_completed_total{type="bare-metal"}[1m]) > 0'
+        expr: 'rate(node_disk_read_time_seconds_total{type="bare-metal", device !~ "sp-.*"}[1m]) / rate(node_disk_reads_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0.1 and rate(node_disk_reads_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0'
         for: 1m
         labels:
           severity: warning
@@ -96,7 +96,7 @@ groups:
           node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: HostUnusualDiskWriteLatency
-        expr: 'rate(node_disk_write_time_seconds_total{type="bare-metal"}[1m]) / rate(node_disk_writes_completed_total{type="bare-metal"}[1m]) > 0.1 and rate(node_disk_writes_completed_total{type="bare-metal"}[1m]) > 0'
+        expr: 'rate(node_disk_write_time_seconds_total{type="bare-metal", device !~ "sp-.*"}[1m]) / rate(node_disk_writes_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0.1 and rate(node_disk_writes_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0'
         for: 1m
         labels:
           severity: warning
