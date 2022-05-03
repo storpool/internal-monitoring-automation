@@ -39,12 +39,12 @@
 
 - job_name: "ipmi"
   metrics_path: /ipmi
-  params:
-    module: ["default"]
   scrape_interval: 25s
   scrape_timeout: 25s
   honor_labels: true
   relabel_configs:
+    - source_labels: [ ipmi_module ]
+      target_label: __param_module
     - source_labels: [ __address__ ]
       target_label: __param_target
     - target_label: __address__
