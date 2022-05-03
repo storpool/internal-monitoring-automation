@@ -5,4 +5,5 @@
     instance: {{ host }}
     location: {{ hostvars[host]['site'] }}
     environment: production
+    ipmi_module: {{ hostvars[host]['config_context']['ipmi_module'] | default('default') }}
 {% endfor %}
