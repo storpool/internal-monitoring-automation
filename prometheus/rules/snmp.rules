@@ -11,7 +11,7 @@ groups:
           summary: 'Interface operational state change'
           description: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` went down'
 
-      - alert: SwitchPortHighBandwithUtilization
+      - alert:
         expr: '((irate(ifHCInOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
         for: 30s
         labels:
