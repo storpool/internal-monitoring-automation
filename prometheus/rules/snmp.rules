@@ -29,7 +29,7 @@ groups:
           summary: 'UPS battery is running low'
           description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is running low'
 
-      - alert: UPSBatteryCapacity
+      - alert: UPSBatteryCapacityDiminishing
         expr: 'upsSmartBatteryCapacity < 80'
         for: 30s
         labels:
@@ -38,7 +38,7 @@ groups:
           summary: 'UPS battery capacity is below 80%'
           description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
 
-      - alert: UPSBatteryCapacity
+      - alert: UPSBatteryCapacityLow
         expr: 'upsSmartBatteryCapacity < 50'
         for: 30s
         labels:
@@ -47,7 +47,7 @@ groups:
           summary: 'UPS battery capacity is below 50%'
           description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity'
 
-      - alert: UPSBatteryRuntime
+      - alert: UPSBatteryRuntimeDiminishing
         expr: 'upsSmartBatteryRunTimeRemaining < 1800'
         for: 30s
         labels:
@@ -56,7 +56,7 @@ groups:
           summary: 'UPS battery has less than 30 minutes of runtime'
           description: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime'
 
-      - alert: UPSBatteryRuntime
+      - alert: UPSBatteryRuntimeLow
         expr: 'upsSmartBatteryRunTimeRemaining < 600'
         for: 30s
         labels:
