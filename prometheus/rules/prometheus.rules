@@ -10,6 +10,8 @@ groups:
         annotations:
           summary: 'Prometheus self-monitoring job'
           description: 'Prometheus self-monitoring job is missing, Prometheus might have crashed'
+          slack_full_msg: 'Prometheus self-monitoring job is missing'
+
       - alert: PrometheusTargetMissing
         expr: up == 0
         for: 1m
@@ -17,7 +19,9 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus target down'
-          description: 'Prometheus target `{{ $labels.instance }}` from job `{{ $labels.job }}` is down.'
+          description: 'Prometheus target {{ $labels.instance }} from job {{ $labels.job }} is down.'
+          slack_full_msg: 'Prometheus target `{{ $labels.instance }}` from job `{{ $labels.job }}` is down.'
+
       - alert: PrometheusAllTargetsMissing
         expr: 'count by (job) (up) == 0'
         for: 15s
@@ -26,14 +30,18 @@ groups:
         annotations:
           summary: 'Prometheus all targets missing'
           description: 'A Prometheus job does not have any living target anymore.'
+          slack_full_msg: 'A Prometheus job does not have any living target anymore.'
+
       - alert: PrometheusConfigurationReloadFailure
         expr: 'prometheus_config_last_reload_successful != 1'
-        for: 10m
+        for: 0m
         labels:
           severity: warning
         annotations:
           summary: 'Prometheus configuration reload failure'
           description: 'Prometheus `{{ $labels.instance }}` configuration failed to reload. Please inspect the configuration file.'
+          slack_full_msg: 'Prometheus `{{ $labels.instance }}` configuration failed to reload.'
+
       - alert: PrometheusTooManyRestarts
         expr: 'changes(process_start_time_seconds{job=~"prometheus|pushgateway|alertmanager"}[15m]) > 2'
         for: 10m
@@ -41,7 +49,9 @@ groups:
           severity: warning
         annotations:
           summary: 'Prometheus too many restarts'
-          description: 'Prometheus instance `{{ $labels.instance }}` has restarted more than twice in the last 15 minutes. It might be crashlooping.'
+          description: 'Prometheus instance {{ $labels.instance }} has restarted more than twice in the last 15 minutes. It might be crashlooping.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` has restarted more than twice in the last 15 minutes.'
+
       - alert: PrometheusAlertmanagerConfigurationReloadFailure
         expr: 'alertmanager_config_last_reload_successful != 1'
         for: 0m
@@ -49,7 +59,9 @@ groups:
           severity: warning
         annotations:
           summary: 'Prometheus AlertManager configuration reload failure'
-          description: 'AlertManager instance `{{ $labels.instance }}` configuration failed to reload.'
+          description: 'AlertManager instance {{ $labels.instance }} configuration failed to reload.'
+          slack_full_msg: 'AlertManager instance `{{ $labels.instance }}` configuration failed to reload.'
+
       - alert: PrometheusAlertmanagerConfigNotSynced
         expr: 'count(count_values("config_hash", alertmanager_config_hash)) > 1'
         for: 0m
@@ -58,6 +70,8 @@ groups:
         annotations:
           summary: 'Prometheus AlertManager config not synced'
           description: 'Configurations of AlertManager cluster instances are out of sync.'
+          slack_full_msg: 'Configurations of AlertManager cluster instances are out of sync.'
+
       - alert: PrometheusNoAlertmanager
         expr: 'prometheus_notifications_alertmanagers_discovered < 1'
         for: 0m
@@ -65,7 +79,8 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus not connected to Alertmanager'
-          description: 'Prometheus instance `{{ $labels.instance }}` does not have any Alertmanager connected to it.'
+          description: 'Prometheus instance {{ $labels.instance }} does not have any Alertmanager connected to it.'
+
       - alert: PrometheusRuleEvaluationFailures
         expr: increase(prometheus_rule_evaluation_failures_total[3m]) > 0
         for: 1m
@@ -73,7 +88,9 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus rule evaluation failures'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} rule evaluation failures, leading to potentially ignored alerts.'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} rule evaluation failures, leading to potentially ignored alerts.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} rule evaluation failures.'
+
       - alert: PrometheusTemplateTextExpansionFailures
         expr: 'increase(prometheus_template_text_expansion_failures_total[3m]) > 0'
         for: 1m
@@ -82,6 +99,8 @@ groups:
         annotations:
           summary: 'Prometheus template text expansion failures'
           description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} template text expansion failures.'
+          slack_full_msg: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} template text expansion failures.'
+
       - alert: PrometheusRuleEvaluationSlow
         expr: 'prometheus_rule_group_last_duration_seconds > prometheus_rule_group_interval_seconds'
         for: 5m
@@ -90,14 +109,18 @@ groups:
         annotations:
           summary: 'Prometheus rule evaluation slow'
           description: 'Prometheus rule evaluation on instance `{{ $labels.instance }}` took more time than the scheduled interval. It indicates a slower storage backend access or too complex queries.'
+          slack_full_msg: 'Prometheus rule evaluation on instance {{ $labels.instance }} took more time than the scheduled interval.'
+
       - alert: PrometheusNotificationsBacklog
-        expr: 'min_over_time(prometheus_notifications_queue_length[10m]) > 0'
-        for: 5m
+        expr: 'min_over_time(prometheus_notifications_queue_length[1h]) > 0'
+        for: 30m
         labels:
           severity: warning
         annotations:
           summary: 'Prometheus notifications backlog too high'
-          description: 'The Prometheus notification queue on instance `{{ $labels.instance }}` has not been empty for 10 minutes'
+          description: 'The Prometheus notification queue on instance {{ $labels.instance }} has not been empty for 1 hour'
+          slack_full_msg: 'The Prometheus notification queue on instance `{{ $labels.instance }}` has not been empty for 1 hour'
+
       - alert: PrometheusAlertmanagerNotificationFailing
         expr: 'rate(alertmanager_notifications_failed_total[5m]) > 0'
         for: 2m
@@ -105,7 +128,8 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus AlertManager notification failing'
-          description: 'Alertmanager instance `{{ $labels.instance }}` is failing to send notifications.'
+          description: 'Alertmanager instance {{ $labels.instance }} is failing to send notifications.'
+
       - alert: PrometheusTargetEmpty
         expr: 'prometheus_sd_discovered_targets == 0'
         for: 0m
@@ -113,15 +137,19 @@ groups:
           severity: warning
         annotations:
           summary: 'Prometheus has no targets'
-          description: 'Prometheus instance `{{ $labels.instance }}` has no target in service discovery.'
+          description: 'Prometheus instance {{ $labels.instance }} has no target in service discovery.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` has no target in service discovery.'
+
       - alert: PrometheusTargetScrapingSlow
         expr: 'prometheus_target_interval_length_seconds{quantile="0.9"} > 60'
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: 'Prometheus target scraping slow (instance )'
-          description: 'Prometheus instance `{{ $labels.instance }}` is scraping exporters slowly.'
+          summary: 'Prometheus target scraping slow'
+          description: 'Prometheus instance {{ $labels.instance }} is scraping exporters slowly.'
+          slack_full_msg: 'Prometheus instance {{ $labels.instance }} is scraping exporters slowly.'
+
       - alert: PrometheusLargeScrape
         expr: 'increase(prometheus_target_scrapes_exceeded_sample_limit_total[10m]) > 10'
         for: 5m
@@ -129,7 +157,9 @@ groups:
           severity: warning
         annotations:
           summary: 'Prometheus large scrape'
-          description: 'Prometheus instance `{{ $labels.instance }}` has many scrapes that exceed the sample limit.'
+          description: 'Prometheus instance {{ $labels.instance }} has many scrapes that exceed the sample limit.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` has many scrapes that exceed the sample limit.'
+
       - alert: PrometheusTargetScrapeDuplicate
         expr: 'increase(prometheus_target_scrapes_sample_duplicate_timestamp_total[5m]) > 0'
         for: 0m
@@ -138,14 +168,18 @@ groups:
         annotations:
           summary: 'Prometheus target scrape duplicate'
           description: 'Prometheus has many samples rejected due to duplicate timestamps but different values.'
+          slack_full_msg: 'Prometheus has many samples rejected due to duplicate timestamps but different values.'
+
       - alert: PrometheusTsdbCheckpointCreationFailures
         expr: 'increase(prometheus_tsdb_checkpoint_creations_failed_total[1m]) > 0'
         for: 30s
         labels:
           severity: critical
         annotations:
-          summary: 'Prometheus TSDB checkpoint creation failures (instance )'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} checkpoint creation failures.'
+          summary: 'Prometheus TSDB checkpoint creation failures'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} checkpoint creation failures.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} checkpoint creation failures.'
+
       - alert: PrometheusTSDBCheckpointDeletionFailures
         expr: 'increase(prometheus_tsdb_checkpoint_deletions_failed_total[5m]) > 0'
         for: 2m
@@ -153,7 +187,9 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus TSDB checkpoint deletion failures'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} checkpoint deletion failures.'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} checkpoint deletion failures.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} checkpoint deletion failures.'
+
       - alert: PrometheusTDSBCompactionsFailed
         expr: 'increase(prometheus_tsdb_compactions_failed_total[5m]) > 0'
         for: 2m
@@ -161,7 +197,9 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus TSDB compactions failed'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB compactions failures.'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB compactions failures.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB compactions failures.'
+
       - alert: PrometheusTSDBHeadTruncationsFailed
         expr: 'increase(prometheus_tsdb_head_truncations_failed_total[5m]) > 0'
         for: 2m
@@ -169,7 +207,9 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus TSDB head truncations failed'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB head truncation failures.'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB head truncation failures.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB head truncation failures.'
+
       - alert: PrometheusTSDBReloadFailures
         expr: 'increase(prometheus_tsdb_reloads_failures_total[5m]) > 0'
         for: 2m
@@ -177,20 +217,25 @@ groups:
           severity: critical
         annotations:
           summary: 'Prometheus TSDB reload failures'
-          description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB reload failures.'
+          description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB reload failures.'
+          slack_full_msg: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} TSDB reload failures.'
+
       - alert: PrometheusTSDBWalCorruptions
         expr: 'increase(prometheus_tsdb_wal_corruptions_total[5m]) > 0'
         for: 2m
         labels:
           severity: critical
         annotations:
-          summary: Prometheus TSDB WAL corruptions (instance {{ $labels.instance }})
-          description: "Prometheus encountered {{ $value }} TSDB WAL corruptions\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Prometheus TSDB WAL corruptions'
+          description: 'Prometheus encountered {{ $value }} TSDB WAL corruptions.'
+          slack_full_msg: 'Prometheus encountered {{ $value }} TSDB WAL corruptions.'
+
       - alert: PrometheusTSDBWalTruncationsFailed
-        expr: increase(prometheus_tsdb_wal_truncations_failed_total[1m]) > 0
+        expr: 'increase(prometheus_tsdb_wal_truncations_failed_total[1m]) > 0'
         for: 0m
         labels:
           severity: critical
         annotations:
-          summary: Prometheus TSDB WAL truncations failed (instance {{ $labels.instance }})
-          description: "Prometheus encountered {{ $value }} TSDB WAL truncation failures\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+          summary: 'Prometheus TSDB WAL truncations failed'
+          description: 'Prometheus encountered {{ $value }} TSDB WAL truncation failures.'
+          slack_full_msg: 'Prometheus encountered {{ $value }} TSDB WAL truncation failures.'

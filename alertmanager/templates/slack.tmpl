@@ -8,6 +8,16 @@
     alertname%3D"{{- .CommonLabels.alertname -}}"%7D
 {{- end }}
 
+{{ define "__alert_dashboard_link" -}}
+    {{- if eq .CommonLabels.job "node-exporter" -}}
+        {{- if eq (len .Alerts) 1 -}}
+        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=
+        {{- .CommonLables.instance -}}
+        {{- end -}}
+    {{- end -}}
+{{- end }}
+
+
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
 
 {{ define "slack.storpool.title" -}}
@@ -32,11 +42,8 @@
     {{ template "__alert_severity" . }}
     {{- range .Alerts -}}
         {{- "\n" -}}
-        {{- if .Annotations.description -}}
-        • {{ .Annotations.description }}
-        {{- end -}}
-        {{- if .Annotations.message }}
-        • {{ .Annotations.message }}
+        {{- if .Annotations.slack_full_msg }}
+        • {{ .Annotations.slack_full_msg }}
         {{- end -}}
     {{- end }}
 {{- end }}
