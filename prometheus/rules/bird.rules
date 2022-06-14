@@ -9,8 +9,8 @@ groups:
           severity: critical
         annotations:
           summary: 'BGP session is down'
-          description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} went down.'
-          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` located at `{{ $labels.location }}` went down.'
+          description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} is down.'
+          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` located at `{{ $labels.location }}` is down.'
 
       - alert: BGPNoImportedPrefixes
         expr: 'bird_protocol_prefix_import_count{proto="BGP"} == 0'
