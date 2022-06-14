@@ -19,5 +19,5 @@ groups:
           severity: warning
         annotations:
           summary: 'BGP session did not accept any prefix'
-          description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not accept any prefix from its neighbour.'
-          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` did not accept any prefix.'
+          description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not import any prefix from its neighbour.'
+          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` did not import any prefix.'
