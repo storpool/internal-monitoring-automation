@@ -42,7 +42,7 @@
     {{ template "__alert_severity" . }}
     {{- range .Alerts -}}
         {{- "\n" -}}
-        {{- if .Annotations.slack_full_msg }}
+        {{- if .Annotations.slack_full_msg -}}
         • {{ .Annotations.slack_full_msg }}
         {{- end -}}
     {{- end }}
