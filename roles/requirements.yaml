@@ -2,6 +2,7 @@
 roles:
   - src: https://github.com/cloudalchemy/ansible-prometheus
     name: cloudalchemy.prometheus
+  - cloudalchemy.alertmanager
   - src: https://github.com/cloudalchemy/ansible-node-exporter
     name: cloudalchemy.node_exporter
   - src: https://github.com/dmrub/ansible-ipmi_exporter
@@ -9,4 +10,5 @@ roles:
   - cloudalchemy.snmp-exporter
   - cloudalchemy.blackbox-exporter
   - cloudalchemy.grafana
-  - cloudalchemy.alertmanager
+  - src: https://github.com/storpool/ansible-karma.git
+    name: storpool.karma

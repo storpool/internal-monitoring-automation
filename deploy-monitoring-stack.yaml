@@ -53,3 +53,13 @@
     - name: cloudalchemy.grafana
       become: true
   vars_files: vars/grafana.yaml
+
+- name: Installing Karma
+  hosts: monitoring-stack
+  become_method: sudo
+  roles:
+    - name: storpool.karma
+      become: true
+  vars_files:
+    - vars/alertmanager.yaml
+    - vars/karma.yaml

@@ -1,0 +1,44 @@
+karma_configuration:
+  alertmanager:
+    interval: 1m
+    servers:
+      - name: Default
+        uri: "{{ alertmanager_web_external_url }}"
+        timeout: 5m
+  alertAcknowledgement:
+    enabled: yes
+  annotations:
+    hidden:
+      - slack_full_msg
+    order:
+      - summary
+      - description
+  grid:
+    sorting:
+      order: label
+      reverse: false
+      label: severity
+      customValues:
+        labels:
+          severity:
+            critical: 1
+            warning: 2
+            info: 3
+  karma:
+    name: Internal Infrastructure Alerts
+  labels:
+    color:
+      custom:
+        "@alertmanager":
+          - value: prod
+            color: "#e6e"
+        severity:
+          - value: info
+            color: "#87c4e0"
+          - value: warning
+            color: "#ffae42"
+          - value: critical
+            color: "#ff220c"
+  receivers:
+    strip:
+      - slack_dont_send_resolved
