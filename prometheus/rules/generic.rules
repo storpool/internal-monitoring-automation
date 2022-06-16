@@ -8,5 +8,6 @@ groups:
         labels:
           severity: warning
         annotations:
-          description: 'This is an alert meant to ensure that the entire alerting pipeline is functional. This alert is always firing, therefore it should always be firing in Alertmanager and always fire against a receiver. There are integrations with various notification mechanisms that send a notification when this alert is not firing.'
           summary: 'Ensure entire alerting pipeline is functional'
+          description: 'This is an alert meant to ensure that the entire alerting pipeline is functional. This alert is always firing, therefore it should always be firing in Alertmanager and always fire against a receiver. There are integrations with various notification mechanisms that send a notification when this alert is not firing.'
+          slack_full_msg: 'This alerts checks that Prometheus can deliver alerts to the Alertmanagers'
