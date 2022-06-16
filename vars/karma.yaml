@@ -5,6 +5,11 @@ karma_configuration:
       - name: Default
         uri: "{{ alertmanager_web_external_url }}"
         timeout: 5m
+        healthcheck:
+          visible: false
+          filters:
+            default:
+              - alertname=Watchdog
   alertAcknowledgement:
     enabled: yes
   annotations:
