@@ -4,6 +4,7 @@ karma_configuration:
     servers:
       - name: Default
         uri: "{{ alertmanager_web_external_url }}"
+        proxy: true
         timeout: 5m
         healthcheck:
           visible: false
