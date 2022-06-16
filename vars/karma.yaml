@@ -8,7 +8,7 @@ karma_configuration:
   alertAcknowledgement:
     enabled: yes
   annotations:
-    hidden:
+    strip:
       - slack_full_msg
     order:
       - summary
@@ -39,6 +39,11 @@ karma_configuration:
             color: "#ffae42"
           - value: critical
             color: "#ff220c"
+    strip:
+      - grafana_url
+      - snmp_mib
   receivers:
     strip:
       - slack_dont_send_resolved
+  ui:
+    minimalGroupWidth: 360
