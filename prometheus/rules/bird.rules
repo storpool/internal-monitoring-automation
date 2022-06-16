@@ -13,7 +13,7 @@ groups:
           slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` located at `{{ $labels.location }}` is down.'
 
       - alert: BGPNoImportedPrefixes
-        expr: 'bird_protocol_prefix_import_count{proto="BGP"} == 0'
+        expr: 'bird_protocol_prefix_import_count{proto="BGP", import_filter!="REJECT"} == 0'
         for: 2m
         labels:
           severity: warning
