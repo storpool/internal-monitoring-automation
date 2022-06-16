@@ -11,7 +11,6 @@ groups:
           summary: 'InfluxDB service on {{ $labels.instance }} has been stopped'
           description: 'InfluxDB systemd service has been stopped for more than 1 minute.'
           slack_full_msg: 'InfluxDB systemd service has been stopped for more than 1 minute.'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'
 
       - alert: InfluxDBEndpointInaccessable
         expr: 'up{job="influxdb"} == 0'
