@@ -48,6 +48,7 @@ karma_configuration:
     strip:
       - grafana_url
       - snmp_mib
+      - proto
   receivers:
     strip:
       - slack_dont_send_resolved
