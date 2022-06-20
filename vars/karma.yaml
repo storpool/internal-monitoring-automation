@@ -36,7 +36,7 @@ karma_configuration:
     color:
       custom:
         "@alertmanager":
-          - value: prod
+          - value: production
             color: "#e6e"
         severity:
           - value: info
