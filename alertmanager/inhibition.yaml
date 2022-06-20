@@ -4,3 +4,9 @@
   target_match:
     severity: warning
   equal: ['alertname','instance','location']
+
+- source_match:
+    alertname: BGPSessionDown
+  target_match:
+    alertname: BGPNoImportedPrefixes
+  equal: ['name', 'instance']
