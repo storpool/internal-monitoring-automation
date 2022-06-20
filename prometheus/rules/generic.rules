@@ -21,3 +21,12 @@ groups:
           summary: 'OpenVPN service is down'
           description: 'OpenVPN service {{ $labels.name }} on host {{ $labels.instance }} failed.'
           slack_full_msg: 'OpenVPN service `{{ $labels.name }}` on host `{{ $labels.instance }}` failed.'
+
+      - alert: ReceiveReportServiceDown
+        expr: 'node_systemd_unit_state{name="receive_reports.service", state="failed"} == 1'
+        for: 2m
+        labels:
+          severity: warning
+          summary: 'Receiving reports service is down'
+          description: 'Receiving reports service {{ $labels.name }} on host {{ $labels.instance }} failed.'
+          slack_full_msg: 'Receiving reports service `{{ $labels.name }}` on host `{{ $labels.instance }}` failed.'
