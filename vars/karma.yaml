@@ -49,6 +49,10 @@ karma_configuration:
       - grafana_url
       - snmp_mib
       - proto
+      - ifIndex
+      - ifDescr
+      - ifName
+      - ifAlias
   receivers:
     strip:
       - slack_dont_send_resolved
