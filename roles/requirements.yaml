@@ -5,6 +5,7 @@ roles:
   - cloudalchemy.alertmanager
   - src: https://github.com/stackhpc/ansible-node-exporter
     name: cloudalchemy.node_exporter
+    version: support-rhel-clones
   - src: https://github.com/dmrub/ansible-ipmi_exporter
     name: cloudalchemy.ipmi_exporter
   - cloudalchemy.snmp-exporter
