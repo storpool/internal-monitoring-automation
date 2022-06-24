@@ -13,7 +13,7 @@
     - name: Collect running services
       service_facts:
   roles:
-    - name:  cloudalchemy.node_exporter
+    - name: cloudalchemy.node_exporter
       become: true
   post_tasks:
     - name: Configuring firewall
