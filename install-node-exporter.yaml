@@ -15,3 +15,4 @@
       become: true
       import_tasks: tasks/node-exporter-firewall.yaml
   vars_files: vars/node-exporter.yaml
+  ansible_python_interpreter: /usr/bin/python3
