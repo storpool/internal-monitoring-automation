@@ -1,4 +1,11 @@
 ---
+- name: Configuring common settings
+  hosts: deploy_node_exporter
+  become_method: sudo
+  roles:
+    - name: infrastructure_host
+      become: true
+
 - name: Installing node-exporter
   hosts: deploy_node_exporter
   become_method: sudo
@@ -6,16 +13,12 @@
     - name: Collect running services
       service_facts:
   roles:
-    - name: infrastructure_host
+    - name:  cloudalchemy.node_exporter
       become: true
-  tasks:
-    - import_role:
-        name: cloudalchemy.node_exporter
-      become: true
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
   post_tasks:
     - name: Configuring firewall
       become: true
       import_tasks: tasks/node-exporter-firewall.yaml
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   vars_files: vars/node-exporter.yaml
