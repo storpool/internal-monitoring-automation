@@ -9,7 +9,8 @@
     - name: infrastructure_host
       become: true
   tasks:
-    - import_role: cloudalchemy.node_exporter
+    - import_role:
+        name: cloudalchemy.node_exporter
       become: true
       vars:
         ansible_python_interpreter: /usr/bin/python3
