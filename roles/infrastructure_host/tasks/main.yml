@@ -6,6 +6,11 @@
   when: ansible_pkg_mgr == "apt"
   ignore_errors: true
 
+- name: Ensuring python3 is installed
+  package:
+    name: python3
+    state: present
+
 - name: Installing debug tools
   package:
     name:
