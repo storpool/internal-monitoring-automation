@@ -12,6 +12,9 @@
   pre_tasks:
     - name: Collect running services
       service_facts:
+    - name: Setting python interpreter version to use
+      set_fact:
+        ansible_python_interpreter: "{{ '/usr/bin/' + redhat_python_version_map['redhat_' + ansible_distribution_major_version] if ansible_os_family == 'RedHat' else 'auto' }}"
   roles:
     - name: cloudalchemy.node_exporter
       become: true
@@ -19,6 +22,4 @@
     - name: Configuring firewall
       become: true
       import_tasks: tasks/node-exporter-firewall.yaml
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   vars_files: vars/node-exporter.yaml

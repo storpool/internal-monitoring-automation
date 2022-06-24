@@ -6,10 +6,12 @@
   when: ansible_pkg_mgr == "apt"
   ignore_errors: true
 
-- name: Installing python3
+- name: Installing python on RHEL-like distros
   package:
-    name: python3
+    name: "{{ redhat_python_version_map['redhat_' + ansible_distribution_major_version] }}"
     state: present
+  when:
+    - ansible_os_family == 'RedHat'
 
 - name: Installing debug tools
   package:
