@@ -1,5 +1,2 @@
 ---
 # vars file for infrastructure_host
-redhat_python_version_map:
-  redhat_7: "python2"
-  redhat_8: "python3"

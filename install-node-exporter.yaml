@@ -5,6 +5,8 @@
   roles:
     - name: infrastructure_host
       become: true
+  vars_files:
+    - vars/infrastructure.yaml
 
 - name: Installing node-exporter
   hosts: deploy_node_exporter
@@ -22,4 +24,6 @@
     - name: Configuring firewall
       become: true
       import_tasks: tasks/node-exporter-firewall.yaml
-  vars_files: vars/node-exporter.yaml
+  vars_files:
+    - vars/infrastructure.yaml
+    - vars/node-exporter.yaml
