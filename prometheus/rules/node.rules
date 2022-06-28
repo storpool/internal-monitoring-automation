@@ -36,7 +36,7 @@ groups:
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostOutOfDiskSpace
         expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
-        for: 2m
+        for: 10m
         labels:
           severity: warning
         annotations:
