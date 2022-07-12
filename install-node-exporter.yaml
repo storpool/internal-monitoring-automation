@@ -20,6 +20,23 @@
   roles:
     - name: cloudalchemy.node_exporter
       become: true
+  tasks:
+    - name: Creating node_exporter drop-in directory
+      become: true
+      file:
+        path: /etc/systemd/system/node_exporter.service.d/
+        owner: root
+        group: root
+        mode: 0755
+    - name: Creating node_exporter oom score systemd drop-in
+      become: true
+      copy:
+        dest: /etc/systemd/system/node_exporter.service.d/10-oom-score.conf
+        src: files/node-exporter-oom-score.conf
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart node_exporter
   post_tasks:
     - name: Configuring firewall
       become: true
