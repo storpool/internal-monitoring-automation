@@ -25,6 +25,7 @@
       become: true
       file:
         path: /etc/systemd/system/node_exporter.service.d/
+        state: directory
         owner: root
         group: root
         mode: 0755
