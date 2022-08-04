@@ -14,7 +14,7 @@
 
     - name: Updating OS packages via dnf
       become: true
-      yum:
+      dnf:
         name: "*"
         state: latest
       when:
