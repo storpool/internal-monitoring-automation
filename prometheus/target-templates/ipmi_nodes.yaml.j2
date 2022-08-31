@@ -1,4 +1,5 @@
 {% for host in groups['baremetal_machines'] %}
+{% if (hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | length %}
 - targets:
     - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ansible.netcommon.ipaddr('address') }}
   labels:
@@ -6,4 +7,5 @@
     location: {{ hostvars[host]['site'] }}
     environment: production
     ipmi_module: {{ hostvars[host]['config_context']['ipmi_module'] | default('default') }}
+{% endif %}
 {% endfor %}
