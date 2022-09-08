@@ -13,7 +13,7 @@ groups:
           slack_full_msg: 'Interface `{{ $labels.ifName }}` (`{{ $labels.ifAlias }}`) on `{{ $labels.instance }}` went down.'
 
       - alert: SwitchPortHighBandwithUtilization
-        expr: '((irate(ifHCInOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
+        expr: '((irate(ifHCInOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
         for: 30s
         labels:
           severity: warning
