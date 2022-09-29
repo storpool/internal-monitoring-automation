@@ -2691,9 +2691,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifType
@@ -2707,9 +2714,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -2756,9 +2770,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifSpeed
@@ -2771,9 +2792,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifPhysAddress
@@ -2787,9 +2815,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifAdminStatus
@@ -2802,9 +2837,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -2821,9 +2863,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -2841,9 +2890,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInOctets
@@ -2857,9 +2913,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInUcastPkts
@@ -2873,9 +2936,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInNUcastPkts
@@ -2889,9 +2959,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInDiscards
@@ -2906,9 +2983,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInErrors
@@ -2922,9 +3006,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInUnknownProtos
@@ -2938,9 +3029,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutOctets
@@ -2954,9 +3052,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutUcastPkts
@@ -2971,9 +3076,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutNUcastPkts
@@ -2988,9 +3100,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutDiscards
@@ -3004,9 +3123,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutErrors
@@ -3020,9 +3146,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutQLen
@@ -3035,9 +3168,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifSpecific
@@ -3051,24 +3191,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
+      type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
       type: DisplayString
     - labels: []
       labelname: ifIndex
-  - name: ifName
-    oid: 1.3.6.1.2.1.31.1.1.1.1
-    type: DisplayString
-    help: The textual name of the interface - 1.3.6.1.2.1.31.1.1.1.1
-    indexes:
-    - labelname: ifIndex
-      type: gauge
-    lookups:
-    - labels:
-      - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
-      type: DisplayString
     - labels: []
       labelname: ifIndex
   - name: ifInMulticastPkts
@@ -3082,9 +3214,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifInBroadcastPkts
@@ -3098,9 +3237,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutMulticastPkts
@@ -3115,9 +3261,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifOutBroadcastPkts
@@ -3132,9 +3285,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCInOctets
@@ -3148,9 +3308,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCInUcastPkts
@@ -3165,9 +3332,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCInMulticastPkts
@@ -3181,9 +3355,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCInBroadcastPkts
@@ -3197,9 +3378,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCOutOctets
@@ -3213,9 +3401,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCOutUcastPkts
@@ -3230,9 +3425,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCOutMulticastPkts
@@ -3247,9 +3449,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifHCOutBroadcastPkts
@@ -3264,9 +3473,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifLinkUpDownTrapEnable
@@ -3280,9 +3496,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3299,9 +3522,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: ifPromiscuousMode
@@ -3315,9 +3545,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3334,30 +3571,21 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
       1: "true"
       2: "false"
-  - name: ifAlias
-    oid: 1.3.6.1.2.1.31.1.1.1.18
-    type: DisplayString
-    help: This object is an 'alias' name for the interface as specified by a network
-      manager, and provides a non-volatile 'handle' for the interface - 1.3.6.1.2.1.31.1.1.1.18
-    indexes:
-    - labelname: ifIndex
-      type: gauge
-    lookups:
-    - labels:
-      - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
-      type: DisplayString
-    - labels: []
-      labelname: ifIndex
   - name: ifCounterDiscontinuityTime
     oid: 1.3.6.1.2.1.31.1.1.1.19
     type: gauge
@@ -3369,9 +3597,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIpMtu
@@ -3384,9 +3619,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfDuplexMode
@@ -3399,9 +3641,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3418,9 +3667,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfRxFlowCtrl
@@ -3433,9 +3689,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3451,9 +3714,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3469,9 +3739,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfAdminStatus
@@ -3484,9 +3761,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3502,9 +3786,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfSpeed
@@ -3517,9 +3808,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -3538,9 +3836,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInVlanPkts
@@ -3553,9 +3858,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIn64BytePkts
@@ -3569,9 +3881,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIn65To127BytePkts
@@ -3586,9 +3905,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIn128To255BytePkts
@@ -3603,9 +3929,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIn256To511BytePkts
@@ -3620,9 +3953,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfIn512To1023BytePkts
@@ -3637,9 +3977,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInOver1023BytePkts
@@ -3654,9 +4001,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInThrottles
@@ -3670,9 +4024,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInRunts
@@ -3686,9 +4047,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInGiants
@@ -3703,9 +4071,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInCRC
@@ -3720,9 +4095,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInOverruns
@@ -3735,9 +4117,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutVlanPkts
@@ -3750,9 +4139,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutUnderruns
@@ -3765,9 +4161,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutUnicasts
@@ -3780,9 +4183,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutCollisions
@@ -3796,9 +4206,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutWredDrops
@@ -3812,9 +4229,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOut64BytePkts
@@ -3827,9 +4251,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOut65To127BytePkts
@@ -3843,9 +4274,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOut128To255BytePkts
@@ -3859,9 +4297,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOut256To511BytePkts
@@ -3875,9 +4320,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOut512To1023BytePkts
@@ -3891,9 +4343,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutOver1023BytePkts
@@ -3907,9 +4366,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutThrottles
@@ -3923,9 +4389,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfLastDiscontinuityTime
@@ -3939,9 +4412,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfInCentRate
@@ -3954,9 +4434,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfOutCentRate
@@ -3969,9 +4456,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransDeviceName
@@ -3984,9 +4478,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransPort
@@ -3999,9 +4500,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransOpticsPresent
@@ -4014,9 +4522,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
     enum_values:
@@ -4032,9 +4547,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransVendorName
@@ -4047,9 +4569,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransPartNumber
@@ -4062,9 +4591,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransSerialNumber
@@ -4077,9 +4613,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitPowerLane1
@@ -4092,9 +4635,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitPowerLane2
@@ -4107,9 +4657,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitPowerLane3
@@ -4122,9 +4679,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitPowerLane4
@@ -4137,9 +4701,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransReceivePowerLane1
@@ -4152,9 +4723,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransReceivePowerLane2
@@ -4167,9 +4745,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransReceivePowerLane3
@@ -4182,9 +4767,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransReceivePowerLane4
@@ -4197,9 +4789,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTemperature
@@ -4212,9 +4811,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransVoltage
@@ -4227,9 +4833,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitBiasCurrentLane1
@@ -4242,9 +4855,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitBiasCurrentLane2
@@ -4257,9 +4877,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitBiasCurrentLane3
@@ -4272,9 +4899,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   - name: dellNetIfTransTransmitBiasCurrentLane4
@@ -4287,9 +4921,16 @@ dell_nos_switch:
     lookups:
     - labels:
       - ifIndex
-      labelname: ifDescr
-      oid: 1.3.6.1.2.1.2.2.1.2
+      labelname: ifName
+      oid: 1.3.6.1.2.1.31.1.1.1.1
       type: DisplayString
+    - labels:
+      - ifIndex
+      labelname: ifAlias
+      oid: 1.3.6.1.2.1.31.1.1.1.18
+      type: DisplayString
+    - labels: []
+      labelname: ifIndex
     - labels: []
       labelname: ifIndex
   version: 2
