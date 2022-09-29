@@ -2660,3 +2660,1415 @@ netagentups:
   version: 2
   auth:
     community: internalmon
+# WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
+dell_nos_switch:
+  walk:
+  - 1.3.6.1.2.1.2
+  - 1.3.6.1.2.1.31.1.1
+  - 1.3.6.1.4.1.6027.3.11.1.1
+  - 1.3.6.1.4.1.6027.3.11.1.2
+  - 1.3.6.1.4.1.6027.3.11.1.3
+  get:
+  - 1.3.6.1.2.1.1.3.0
+  metrics:
+  - name: sysUpTime
+    oid: 1.3.6.1.2.1.1.3
+    type: gauge
+    help: The time (in hundredths of a second) since the network management portion
+      of the system was last re-initialized. - 1.3.6.1.2.1.1.3
+  - name: ifNumber
+    oid: 1.3.6.1.2.1.2.1
+    type: gauge
+    help: The number of network interfaces (regardless of their current state) present
+      on this system. - 1.3.6.1.2.1.2.1
+  - name: ifIndex
+    oid: 1.3.6.1.2.1.2.2.1.1
+    type: gauge
+    help: A unique value for each interface - 1.3.6.1.2.1.2.2.1.1
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifType
+    oid: 1.3.6.1.2.1.2.2.1.3
+    type: EnumAsInfo
+    help: The type of interface, distinguished according to the physical/link protocol(s)
+      immediately `below' the network layer in the protocol stack. - 1.3.6.1.2.1.2.2.1.3
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: other
+      2: regular1822
+      3: hdh1822
+      4: ddn-x25
+      5: rfc877-x25
+      6: ethernet-csmacd
+      7: iso88023-csmacd
+      8: iso88024-tokenBus
+      9: iso88025-tokenRing
+      10: iso88026-man
+      11: starLan
+      12: proteon-10Mbit
+      13: proteon-80Mbit
+      14: hyperchannel
+      15: fddi
+      16: lapb
+      17: sdlc
+      18: ds1
+      19: e1
+      20: basicISDN
+      21: primaryISDN
+      22: propPointToPointSerial
+      23: ppp
+      24: softwareLoopback
+      25: eon
+      26: ethernet-3Mbit
+      27: nsip
+      28: slip
+      29: ultra
+      30: ds3
+      31: sip
+      32: frame-relay
+  - name: ifMtu
+    oid: 1.3.6.1.2.1.2.2.1.4
+    type: gauge
+    help: The size of the largest datagram which can be sent/received on the interface,
+      specified in octets - 1.3.6.1.2.1.2.2.1.4
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifSpeed
+    oid: 1.3.6.1.2.1.2.2.1.5
+    type: gauge
+    help: An estimate of the interface's current bandwidth in bits per second - 1.3.6.1.2.1.2.2.1.5
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifPhysAddress
+    oid: 1.3.6.1.2.1.2.2.1.6
+    type: PhysAddress48
+    help: The interface's address at the protocol layer immediately `below' the network
+      layer in the protocol stack - 1.3.6.1.2.1.2.2.1.6
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifAdminStatus
+    oid: 1.3.6.1.2.1.2.2.1.7
+    type: EnumAsStateSet
+    help: The desired state of the interface - 1.3.6.1.2.1.2.2.1.7
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: up
+      2: down
+      3: testing
+  - name: ifOperStatus
+    oid: 1.3.6.1.2.1.2.2.1.8
+    type: EnumAsStateSet
+    help: The current operational state of the interface - 1.3.6.1.2.1.2.2.1.8
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: up
+      2: down
+      3: testing
+  - name: ifLastChange
+    oid: 1.3.6.1.2.1.2.2.1.9
+    type: gauge
+    help: The value of sysUpTime at the time the interface entered its current operational
+      state - 1.3.6.1.2.1.2.2.1.9
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInOctets
+    oid: 1.3.6.1.2.1.2.2.1.10
+    type: counter
+    help: The total number of octets received on the interface, including framing
+      characters. - 1.3.6.1.2.1.2.2.1.10
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInUcastPkts
+    oid: 1.3.6.1.2.1.2.2.1.11
+    type: counter
+    help: The number of subnetwork-unicast packets delivered to a higher-layer protocol.
+      - 1.3.6.1.2.1.2.2.1.11
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInNUcastPkts
+    oid: 1.3.6.1.2.1.2.2.1.12
+    type: counter
+    help: The number of non-unicast (i.e., subnetwork- broadcast or subnetwork-multicast)
+      packets delivered to a higher-layer protocol. - 1.3.6.1.2.1.2.2.1.12
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInDiscards
+    oid: 1.3.6.1.2.1.2.2.1.13
+    type: counter
+    help: The number of inbound packets which were chosen to be discarded even though
+      no errors had been detected to prevent their being deliverable to a higher-layer
+      protocol - 1.3.6.1.2.1.2.2.1.13
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInErrors
+    oid: 1.3.6.1.2.1.2.2.1.14
+    type: counter
+    help: The number of inbound packets that contained errors preventing them from
+      being deliverable to a higher-layer protocol. - 1.3.6.1.2.1.2.2.1.14
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInUnknownProtos
+    oid: 1.3.6.1.2.1.2.2.1.15
+    type: counter
+    help: The number of packets received via the interface which were discarded because
+      of an unknown or unsupported protocol. - 1.3.6.1.2.1.2.2.1.15
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutOctets
+    oid: 1.3.6.1.2.1.2.2.1.16
+    type: counter
+    help: The total number of octets transmitted out of the interface, including framing
+      characters. - 1.3.6.1.2.1.2.2.1.16
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutUcastPkts
+    oid: 1.3.6.1.2.1.2.2.1.17
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted
+      to a subnetwork-unicast address, including those that were discarded or not
+      sent. - 1.3.6.1.2.1.2.2.1.17
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutNUcastPkts
+    oid: 1.3.6.1.2.1.2.2.1.18
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted
+      to a non- unicast (i.e., a subnetwork-broadcast or subnetwork-multicast) address,
+      including those that were discarded or not sent. - 1.3.6.1.2.1.2.2.1.18
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutDiscards
+    oid: 1.3.6.1.2.1.2.2.1.19
+    type: counter
+    help: The number of outbound packets which were chosen to be discarded even though
+      no errors had been detected to prevent their being transmitted - 1.3.6.1.2.1.2.2.1.19
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutErrors
+    oid: 1.3.6.1.2.1.2.2.1.20
+    type: counter
+    help: The number of outbound packets that could not be transmitted because of
+      errors. - 1.3.6.1.2.1.2.2.1.20
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutQLen
+    oid: 1.3.6.1.2.1.2.2.1.21
+    type: gauge
+    help: The length of the output packet queue (in packets). - 1.3.6.1.2.1.2.2.1.21
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifSpecific
+    oid: 1.3.6.1.2.1.2.2.1.22
+    type: OctetString
+    help: A reference to MIB definitions specific to the particular media being used
+      to realize the interface - 1.3.6.1.2.1.2.2.1.22
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInMulticastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.2
+    type: counter
+    help: The number of packets, delivered by this sub-layer to a higher (sub-)layer,
+      which were addressed to a multicast address at this sub-layer - 1.3.6.1.2.1.31.1.1.1.2
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifInBroadcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.3
+    type: counter
+    help: The number of packets, delivered by this sub-layer to a higher (sub-)layer,
+      which were addressed to a broadcast address at this sub-layer - 1.3.6.1.2.1.31.1.1.1.3
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutMulticastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.4
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted,
+      and which were addressed to a multicast address at this sub-layer, including
+      those that were discarded or not sent - 1.3.6.1.2.1.31.1.1.1.4
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifOutBroadcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.5
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted,
+      and which were addressed to a broadcast address at this sub-layer, including
+      those that were discarded or not sent - 1.3.6.1.2.1.31.1.1.1.5
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCInOctets
+    oid: 1.3.6.1.2.1.31.1.1.1.6
+    type: counter
+    help: The total number of octets received on the interface, including framing
+      characters - 1.3.6.1.2.1.31.1.1.1.6
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCInUcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.7
+    type: counter
+    help: The number of packets, delivered by this sub-layer to a higher (sub-)layer,
+      which were not addressed to a multicast or broadcast address at this sub-layer
+      - 1.3.6.1.2.1.31.1.1.1.7
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCInMulticastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.8
+    type: counter
+    help: The number of packets, delivered by this sub-layer to a higher (sub-)layer,
+      which were addressed to a multicast address at this sub-layer - 1.3.6.1.2.1.31.1.1.1.8
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCInBroadcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.9
+    type: counter
+    help: The number of packets, delivered by this sub-layer to a higher (sub-)layer,
+      which were addressed to a broadcast address at this sub-layer - 1.3.6.1.2.1.31.1.1.1.9
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCOutOctets
+    oid: 1.3.6.1.2.1.31.1.1.1.10
+    type: counter
+    help: The total number of octets transmitted out of the interface, including framing
+      characters - 1.3.6.1.2.1.31.1.1.1.10
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCOutUcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.11
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted,
+      and which were not addressed to a multicast or broadcast address at this sub-layer,
+      including those that were discarded or not sent - 1.3.6.1.2.1.31.1.1.1.11
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCOutMulticastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.12
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted,
+      and which were addressed to a multicast address at this sub-layer, including
+      those that were discarded or not sent - 1.3.6.1.2.1.31.1.1.1.12
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifHCOutBroadcastPkts
+    oid: 1.3.6.1.2.1.31.1.1.1.13
+    type: counter
+    help: The total number of packets that higher-level protocols requested be transmitted,
+      and which were addressed to a broadcast address at this sub-layer, including
+      those that were discarded or not sent - 1.3.6.1.2.1.31.1.1.1.13
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifLinkUpDownTrapEnable
+    oid: 1.3.6.1.2.1.31.1.1.1.14
+    type: gauge
+    help: Indicates whether linkUp/linkDown traps should be generated for this interface
+      - 1.3.6.1.2.1.31.1.1.1.14
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: enabled
+      2: disabled
+  - name: ifHighSpeed
+    oid: 1.3.6.1.2.1.31.1.1.1.15
+    type: gauge
+    help: An estimate of the interface's current bandwidth in units of 1,000,000 bits
+      per second - 1.3.6.1.2.1.31.1.1.1.15
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: ifPromiscuousMode
+    oid: 1.3.6.1.2.1.31.1.1.1.16
+    type: gauge
+    help: This object has a value of false(2) if this interface only accepts packets/frames
+      that are addressed to this station - 1.3.6.1.2.1.31.1.1.1.16
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: "true"
+      2: "false"
+  - name: ifConnectorPresent
+    oid: 1.3.6.1.2.1.31.1.1.1.17
+    type: gauge
+    help: This object has the value 'true(1)' if the interface sublayer has a physical
+      connector and the value 'false(2)' otherwise. - 1.3.6.1.2.1.31.1.1.1.17
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: "true"
+      2: "false"
+  - name: ifCounterDiscontinuityTime
+    oid: 1.3.6.1.2.1.31.1.1.1.19
+    type: gauge
+    help: The value of sysUpTime on the most recent occasion at which any one or more
+      of this interface's counters suffered a discontinuity - 1.3.6.1.2.1.31.1.1.1.19
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIpMtu
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.1
+    type: gauge
+    help: The IP (Internet Protocol), Maximum Transmission Unit value. - 1.3.6.1.4.1.6027.3.11.1.1.1.1.1
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfDuplexMode
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.2
+    type: EnumAsStateSet
+    help: Duplex mode of the interface - 1.3.6.1.4.1.6027.3.11.1.1.1.1.2
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: half
+      2: full
+      3: auto
+  - name: dellNetIfQueueingStrategy
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.3
+    type: DisplayString
+    help: Queueing strategy used for packets. - 1.3.6.1.4.1.6027.3.11.1.1.1.1.3
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfRxFlowCtrl
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.4
+    type: gauge
+    help: Flow control receive - 1.3.6.1.4.1.6027.3.11.1.1.1.1.4
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: "true"
+      2: "false"
+  - name: dellNetIfTxFlowCtrl
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.5
+    type: gauge
+    help: Flow Control transmit.This will be read-only only for s60 - 1.3.6.1.4.1.6027.3.11.1.1.1.1.5
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: "true"
+      2: "false"
+  - name: dellNetIfDescr
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.6
+    type: OctetString
+    help: A textual string containing information about the interface - 1.3.6.1.4.1.6027.3.11.1.1.1.1.6
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfAdminStatus
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.7
+    type: EnumAsStateSet
+    help: A admin status of any interface - 1.3.6.1.4.1.6027.3.11.1.1.1.1.7
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: up
+      2: down
+  - name: dellNetIfRateInterval
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.8
+    type: gauge
+    help: The rate info interval for the interface - 1.3.6.1.4.1.6027.3.11.1.1.1.1.8
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfSpeed
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.9
+    type: gauge
+    help: The interface's current bandwidth in bits per second - 1.3.6.1.4.1.6027.3.11.1.1.1.1.9
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: auto
+      10: tenMbps
+      100: hundredMbps
+      1000: thousandMbps
+  - name: dellNetIfPortListBitPos
+    oid: 1.3.6.1.4.1.6027.3.11.1.1.1.1.10
+    type: gauge
+    help: This is used for identifying the bit position in PortList Object for a given
+      interface. - 1.3.6.1.4.1.6027.3.11.1.1.1.1.10
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInVlanPkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.1
+    type: counter
+    help: The total number of valid VLAN Tagged frames received. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.1
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIn64BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.2
+    type: counter
+    help: The total number of frames (including bad frames) received that were 64
+      octets in length (excluding framing bits but in-cluding FCS octets). - 1.3.6.1.4.1.6027.3.11.1.2.1.1.2
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIn65To127BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.3
+    type: counter
+    help: The total number of frames (including bad frames) received that were between
+      65 and 127 octets in length inclusive (ex-cluding framing bits but including
+      FCS octets). - 1.3.6.1.4.1.6027.3.11.1.2.1.1.3
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIn128To255BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.4
+    type: counter
+    help: The total number of frames (including bad frames) received that were between
+      128 and 255 octets in length inclusive (excluding framing bits but including
+      FCS octets). - 1.3.6.1.4.1.6027.3.11.1.2.1.1.4
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIn256To511BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.5
+    type: counter
+    help: The total number of frames (including bad frames) received that were between
+      256 and 511 octets in length inclusive (excluding framing bits but including
+      FCS octets). - 1.3.6.1.4.1.6027.3.11.1.2.1.1.5
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfIn512To1023BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.6
+    type: counter
+    help: The total number of frames (including bad frames) received that were between
+      512 and 1023 octets in length inclusive (excluding framing bits but including
+      FCS octets). - 1.3.6.1.4.1.6027.3.11.1.2.1.1.6
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInOver1023BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.7
+    type: counter
+    help: The total number of frames received that were longer than 1023 (1025 Bytes
+      in case of VLAN Tag) octets (excluding framing bits, but including FCS octets)
+      and were otherwise well formed - 1.3.6.1.4.1.6027.3.11.1.2.1.1.7
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInThrottles
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.8
+    type: counter
+    help: This counter is incremented when a valid frame with a length or type field
+      value equal to 0x8808 (Control Frame) is re-ceived. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.8
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInRunts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.9
+    type: counter
+    help: The total number of frames received that were less than 64 octets long (excluding
+      framing bits, but including FCS octets) and were otherwise well formed. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.9
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInGiants
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.10
+    type: counter
+    help: The total number of frames received that were longer than 1518 (1522 Bytes
+      in case of VLAN Tag) octets (excluding framing bits, but including FCS octets)
+      and were otherwise well formed - 1.3.6.1.4.1.6027.3.11.1.2.1.1.10
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInCRC
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.11
+    type: counter
+    help: The total number of frames received that had a length (ex-cluding framing
+      bits, but including FCS octets) of between 64 and 1518 octets, inclusive, but
+      had a bad CRC. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.11
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInOverruns
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.12
+    type: counter
+    help: The total number of frames dropped because of buffer issue. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.12
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutVlanPkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.13
+    type: counter
+    help: The Number of Good VLAN Tagged Frames sent successfully. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.13
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutUnderruns
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.14
+    type: counter
+    help: The total number of frames dropped because of buffer underrun. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.14
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutUnicasts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.15
+    type: counter
+    help: The Number of Good Unicast Frames sent successfully. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.15
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutCollisions
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.16
+    type: counter
+    help: A count of the frames that due to excessive or late collisions are not transmitted
+      successfully. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.16
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutWredDrops
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.17
+    type: counter
+    help: A count of the frames that are dropped using WRED policy because of to excessive
+      traffic. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.17
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOut64BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.18
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was 64 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.18
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOut65To127BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.19
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was in the range
+      of 65 to 127 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.19
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOut128To255BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.20
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was in the range
+      of 128 to 255 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.20
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOut256To511BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.21
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was in the range
+      of 256 to 511 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.21
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOut512To1023BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.22
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was in the range
+      of 512 to 1023 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.22
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutOver1023BytePkts
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.23
+    type: counter
+    help: The Number of Good Frames sent successfully whose size was greater than
+      1023 Bytes. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.23
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutThrottles
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.24
+    type: counter
+    help: This counter is incremented when a valid frame with a length or type field
+      value equal to 0x8808 (Control Frame) is sent. - 1.3.6.1.4.1.6027.3.11.1.2.1.1.24
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfLastDiscontinuityTime
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.25
+    type: gauge
+    help: The value of sysUpTime on the most recent occasion at which this interface's
+      counters suffered a discontinuity via a reset - 1.3.6.1.4.1.6027.3.11.1.2.1.1.25
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfInCentRate
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.26
+    type: gauge
+    help: This is the ingress rate in percentage - 1.3.6.1.4.1.6027.3.11.1.2.1.1.26
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfOutCentRate
+    oid: 1.3.6.1.4.1.6027.3.11.1.2.1.1.27
+    type: gauge
+    help: This is the egress rate in percentage - 1.3.6.1.4.1.6027.3.11.1.2.1.1.27
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransDeviceName
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.1
+    type: OctetString
+    help: TransceiverData - DeviceName - 1.3.6.1.4.1.6027.3.11.1.3.1.1.1
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransPort
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.2
+    type: OctetString
+    help: TransceiverData - Port - 1.3.6.1.4.1.6027.3.11.1.3.1.1.2
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransOpticsPresent
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.3
+    type: EnumAsStateSet
+    help: TransceiverData - OpticsPresent shows the presence of optic - 1.3.6.1.4.1.6027.3.11.1.3.1.1.3
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+    enum_values:
+      1: "true"
+      2: "false"
+  - name: dellNetIfTransOpticsType
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.4
+    type: OctetString
+    help: TransceiverData - Type - 1.3.6.1.4.1.6027.3.11.1.3.1.1.4
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransVendorName
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.5
+    type: OctetString
+    help: TransceiverData - Name - 1.3.6.1.4.1.6027.3.11.1.3.1.1.5
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransPartNumber
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.6
+    type: OctetString
+    help: TransceiverData - PartNumber - 1.3.6.1.4.1.6027.3.11.1.3.1.1.6
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransSerialNumber
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.7
+    type: OctetString
+    help: TransceiverData - SerialNumber - 1.3.6.1.4.1.6027.3.11.1.3.1.1.7
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitPowerLane1
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.8
+    type: OctetString
+    help: TransceiverData - Transmit Power in Lane 1 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.8
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitPowerLane2
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.9
+    type: OctetString
+    help: TransceiverData - Transmit Power in Lane 2 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.9
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitPowerLane3
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.10
+    type: OctetString
+    help: TransceiverData - Transmit Power in Lane 3 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.10
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitPowerLane4
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.11
+    type: OctetString
+    help: TransceiverData - Transmit Power in Lane 4 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.11
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransReceivePowerLane1
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.12
+    type: OctetString
+    help: TransceiverData - Receive Power in Lane 1 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.12
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransReceivePowerLane2
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.13
+    type: OctetString
+    help: TransceiverData - Receive Power in Lane 2 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.13
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransReceivePowerLane3
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.14
+    type: OctetString
+    help: TransceiverData - Receive Power in Lane 3 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.14
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransReceivePowerLane4
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.15
+    type: OctetString
+    help: TransceiverData - Receive Power in Lane 4 in unit dBm - 1.3.6.1.4.1.6027.3.11.1.3.1.1.15
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTemperature
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.16
+    type: OctetString
+    help: TransceiverData - Temperature in unit degree Celsius - 1.3.6.1.4.1.6027.3.11.1.3.1.1.16
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransVoltage
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.17
+    type: OctetString
+    help: TransceiverData - Voltage in unit volts - 1.3.6.1.4.1.6027.3.11.1.3.1.1.17
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitBiasCurrentLane1
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.18
+    type: OctetString
+    help: TransceiverData - Transmit Bias Current in Lane 1 in unit mA - 1.3.6.1.4.1.6027.3.11.1.3.1.1.18
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitBiasCurrentLane2
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.19
+    type: OctetString
+    help: TransceiverData - Transmit Bias Current in Lane 2 in unit mA - 1.3.6.1.4.1.6027.3.11.1.3.1.1.19
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitBiasCurrentLane3
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.20
+    type: OctetString
+    help: TransceiverData - Transmit Bias Current in Lane 3 in unit mA - 1.3.6.1.4.1.6027.3.11.1.3.1.1.20
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  - name: dellNetIfTransTransmitBiasCurrentLane4
+    oid: 1.3.6.1.4.1.6027.3.11.1.3.1.1.21
+    type: OctetString
+    help: TransceiverData - Transmit Bias Current in Lane 4 in unit mA - 1.3.6.1.4.1.6027.3.11.1.3.1.1.21
+    indexes:
+    - labelname: ifIndex
+      type: gauge
+    lookups:
+    - labels:
+      - ifIndex
+      labelname: ifDescr
+      oid: 1.3.6.1.2.1.2.2.1.2
+      type: DisplayString
+  version: 2
+  auth:
+    community: internalmon
