@@ -9,8 +9,8 @@ groups:
           severity: warning
         annotations:
           summary: 'Interface operational state change'
-          description: 'Interface {{ $labels.ifName }} ({{ $labels.ifAlias }}) on {{ $labels.instance }} went down.'
-          slack_full_msg: 'Interface `{{ $labels.ifName }}` (`{{ $labels.ifAlias }}`) on `{{ $labels.instance }}` went down.'
+          description: 'Interface {{ $labels.ifName }} ({{ $labels.ifAlias }}) on {{ $labels.instance }} (location: {{ $labels.location }}) went down.'
+          slack_full_msg: 'Interface `{{ $labels.ifName }}` (`{{ $labels.ifAlias }}`) on `{{ $labels.instance }}` (location: `{{ $labels.location }}`) went down.'
 
       - alert: SwitchPortHighBandwithUtilization
         expr: '((irate(ifHCInOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
@@ -19,8 +19,8 @@ groups:
           severity: warning
         annotations:
           summary: 'Interface has bandwidth utilization more than 90%.'
-          description: 'Interface {{ $labels.ifName }} on {{ $labels.instance }} attached to {{ $labels.ifAlias }} is using {{ printf "%.0f" $value }}% of its bandwidth.'
-          slack_full_msg: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` attached to `{{ $labels.ifAlias }}` is using {{ printf "%.0f" $value }}% of its bandwidth.'
+          description: 'Interface {{ $labels.ifName }} on {{ $labels.instance }} (location: {{ $labels.location }}) attached to {{ $labels.ifAlias }} is using {{ printf "%.0f" $value }}% of its bandwidth.'
+          slack_full_msg: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` (location: `{{ $labels.location }}`) attached to `{{ $labels.ifAlias }}` is using {{ printf "%.0f" $value }}% of its bandwidth.'
 
       - alert: UPSBatteryLow
         expr: 'upsBaseBatteryStatus{upsBaseBatteryStatus="batteryLow"} == 1'
