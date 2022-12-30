@@ -3,8 +3,8 @@ groups:
   - name: BIRD Rules
     rules:
       - alert: BGPSessionDown
-        expr: 'bird_protocol_up{proto="BGP"} == 0'
-        for: 2m
+        expr: 'bird_protocol_up{proto="BGP", state != ""} == 0'
+        for: 4s
         labels:
           severity: critical
         annotations:
@@ -14,7 +14,7 @@ groups:
 
       - alert: BGPNoImportedPrefixes
         expr: 'bird_protocol_prefix_import_count{proto="BGP", import_filter!="REJECT"} == 0'
-        for: 2m
+        for: 30s
         labels:
           severity: warning
         annotations:
