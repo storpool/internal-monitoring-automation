@@ -1,4 +1,5 @@
 - name: Installing psycopg2
+  become: true
   ansible.builtin.package:
     name: python3-psycopg2
     state: latest
