@@ -1,6 +1,0 @@
----
-- name: Installing psycopg2
-  apt:
-    name: python3-psycopg2
-    state: present
-    update_cache: true

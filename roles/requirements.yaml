@@ -1,15 +1,6 @@
 ---
 roles:
-  - src: https://github.com/cloudalchemy/ansible-prometheus
-    name: cloudalchemy.prometheus
-  - cloudalchemy.alertmanager
-  - src: https://github.com/stackhpc/ansible-node-exporter
-    name: cloudalchemy.node_exporter
-    version: support-rhel-clones
   - src: https://github.com/dmrub/ansible-ipmi_exporter
     name: cloudalchemy.ipmi_exporter
-  - cloudalchemy.snmp-exporter
-  - cloudalchemy.blackbox-exporter
-  - cloudalchemy.grafana
   - src: https://github.com/storpool/ansible-karma
     name: storpool.karma

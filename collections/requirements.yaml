@@ -7,3 +7,4 @@ collections:
   - community.grafana
   - netbox.netbox
   - netcho.opennebula
+  - prometheus.prometheus

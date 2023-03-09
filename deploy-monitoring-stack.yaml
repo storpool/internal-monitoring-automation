@@ -13,15 +13,15 @@
         var: alertmanager_route
         verbosity: 2
   roles:
-    - name: cloudalchemy.snmp-exporter
+    - name: prometheus.prometheus.snmp_exporter
       become: true
-    - name: cloudalchemy.blackbox-exporter
+    - name: prometheus.prometheus.blackbox_exporter
       become: true
     - name: cloudalchemy.ipmi_exporter
       become: true
-    - name: cloudalchemy.alertmanager
+    - name: prometheus.prometheus.alertmanager
       become: true
-    - name: cloudalchemy.prometheus
+    - name: prometheus.prometheus.prometheus
       become: true
   post_tasks:
     - name: Add authentication to SNMP modules
