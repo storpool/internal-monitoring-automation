@@ -7,4 +7,6 @@ collections:
   - community.grafana
   - netbox.netbox
   - netcho.opennebula
-  - prometheus.prometheus
+  - src: https://github.com/prometheus-community/ansible
+    version: main
+    name: prometheus.prometheus
