@@ -7,5 +7,6 @@ collections:
   - community.grafana
   - netbox.netbox
   - netcho.opennebula
-  - src: https://github.com/prometheus-community/ansible.git
+  - name: prometheus.prometheus
+    source: https://github.com/prometheus-community/ansible.git
     type: git
