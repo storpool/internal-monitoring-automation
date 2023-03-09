@@ -47,9 +47,9 @@
         grafana_security:
           admin_user: admin
           admin_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+    - name: Creating Grafana database
+      import_tasks: tasks/create-granafa-database.yaml
   roles:
-    - name: create-postgresql-database
-      become: true
     - name: cloudalchemy.grafana
       become: true
   vars_files: vars/grafana.yaml

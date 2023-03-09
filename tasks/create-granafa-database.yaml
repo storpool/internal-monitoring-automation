@@ -1,0 +1,35 @@
+- name: Installing psycopg2
+  ansible.builtin.package:
+    name: python3-psycopg2
+    state: latest
+
+- name: Creating PostgreSQL database
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_db:
+    name: "{{ grafana_database.name }}"
+
+- name: Debug PostgreSQL user password
+  ansible.builtin.debug:
+    var: grafana_database.password
+    verbosity: 2
+
+- name: Creating PostgreSQL user
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_user:
+    name: "{{ grafana_database.user }}"
+    password: "{{ grafana_database.password }}"
+    db: "{{ grafana_database.name }}"
+    priv: ALL
+    role_attr_flags: CREATEROLE
+
+- name: Setting the PostgreSQL user as owner of the database
+  become_method: sudo
+  become_user: postgres
+  become: true
+  community.postgresql.postgresql_db:
+    name: "{{ grafana_database.name }}"
+    owner: "{{ grafana_database.user }}"
