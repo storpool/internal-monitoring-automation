@@ -8,5 +8,4 @@ collections:
   - netbox.netbox
   - netcho.opennebula
   - src: https://github.com/prometheus-community/ansible.git
-    name: prometheus.prometheus
     type: git
