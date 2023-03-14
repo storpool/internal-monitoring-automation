@@ -84,6 +84,9 @@
 
 - job_name: "grafana"
   honor_labels: true
+  basic_auth:
+    username: grafana
+    password: "{{ grafana_metrics_password }}"
   file_sd_configs:
     - files:
         - "/monitoring/prometheus_file_sd/service_grafana.yaml"
