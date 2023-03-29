@@ -1,5 +1,5 @@
 {% for host in groups['baremetal_machines'] %}
-{% if (hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | length %}
+{% if (hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | length and 'omit-ipmi-monitor' not in hostvars[host]['tags'] %}
 - targets:
     - {{ ((hostvars[host]['interfaces'] | selectattr('mgmt_only') | first)['ip_addresses'] | first)['address'] | ansible.netcommon.ipaddr('address') }}
   labels:
