@@ -4,16 +4,17 @@ groups:
     rules:
       - alert: IPMIDown
         expr: ipmi_up == 0
-        for: 30s
+        for: 60s
         labels:
           severity: critical
         annotations:
           summary: 'Host IPMI module is down'
           description: 'Host {{ $labels.instance }} IPMI module {{ $labels.collector }} is down'
           slack_full_msg: 'Host `{{ $labels.instance }}` IPMI module `{{ $labels.collector }}` is down'
+
       - alert: IPMISensorCritical
         expr: ipmi_sensor_state == 2
-        for: 30s
+        for: 60s
         labels:
           severity: critical
         annotations:
@@ -23,7 +24,7 @@ groups:
 
       - alert: IPMIFanSpeedCritical
         expr: ipmi_fan_speed_state == 2
-        for: 30s
+        for: 60s
         labels:
           severity: critical
         annotations:
