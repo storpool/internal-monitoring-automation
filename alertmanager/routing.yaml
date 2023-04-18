@@ -3,7 +3,6 @@ receiver: slack_send_resolved
 group_by:
   - alertname
   - location
-  - job
 group_wait: 5s
 group_interval: 2m
 repeat_interval: 12h
