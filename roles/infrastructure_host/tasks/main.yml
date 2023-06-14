@@ -8,7 +8,7 @@
 
 - name: Installing python on RHEL-like distros
   package:
-    name: "{{ (ansible_distribution_major_version | int) >= 8 | ternary('python3', 'python2') }}"
+    name: "{{ (ansible_distribution_major_version | int >= 8) | ternary('python3', 'python2') }}"
     state: present
   when:
     - ansible_os_family == 'RedHat'
