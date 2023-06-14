@@ -5,8 +5,6 @@
   roles:
     - name: infrastructure_host
       become: true
-  vars_files:
-    - vars/infrastructure.yaml
 
 - name: Installing node-exporter
   hosts: deploy_node_exporter
