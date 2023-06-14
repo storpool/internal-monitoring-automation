@@ -2,7 +2,7 @@ prometheus_storage_retention: 12h
 
 prometheus_global:
   scrape_interval: 3s
-  evaluation_interval: 15s
+  evaluation_interval: 9s
 
 prometheus_remote_write:
   - name: VictoriaMetrics
