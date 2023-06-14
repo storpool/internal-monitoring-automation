@@ -14,7 +14,7 @@
       service_facts:
     - name: Setting python interpreter version to use
       set_fact:
-        ansible_python_interpreter: "{{ '/usr/bin/' + redhat_python_version_map['redhat_' + ansible_distribution_major_version] if ansible_os_family == 'RedHat' else 'auto' }}"
+        ansible_python_interpreter: "{{ '/usr/bin/' + (ansible_distribution_major_version | int >= 8) | ternary('python3', 'python2') if ansible_os_family == 'RedHat' else 'auto' }}"
   roles:
     - name: prometheus.prometheus.node_exporter
       become: true
