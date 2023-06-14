@@ -40,4 +40,5 @@
     - name: Configuring firewall
       become: true
       import_tasks: tasks/node-exporter-firewall.yaml
+  vars_files:
     - vars/node-exporter.yaml
