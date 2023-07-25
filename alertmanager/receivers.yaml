@@ -1,7 +1,7 @@
 ---
 - name: 'slack_send_resolved'
   slack_configs:
-  - channel: '#infra-mon'
+  - channel: '#infrastructure-alerts'
     color: '{{ template "slack.storpool.color" . }}'
     title: '{{ template "slack.storpool.title" . }}'
     text: '{{ template "slack.storpool.text" . }}'
@@ -16,7 +16,7 @@
 
 - name: 'slack_dont_send_resolved'
   slack_configs:
-  - channel: '#infra-mon'
+  - channel: '#infrastructure-alerts'
     color: '{{ template "slack.storpool.color" . }}'
     title: '{{ template "slack.storpool.title" . }}'
     text: '{{ template "slack.storpool.text" . }}'
