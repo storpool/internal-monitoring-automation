@@ -14,7 +14,7 @@ groups:
 
       - alert: PrometheusTargetMissing
         expr: up == 0
-        for: 10s
+        for: 20s
         labels:
           severity: critical
         annotations:
@@ -34,7 +34,7 @@ groups:
 
       - alert: PrometheusConfigurationReloadFailure
         expr: 'prometheus_config_last_reload_successful != 1'
-        for: 0m
+        for: 0s
         labels:
           severity: warning
         annotations:
@@ -54,7 +54,7 @@ groups:
 
       - alert: PrometheusAlertmanagerConfigurationReloadFailure
         expr: 'alertmanager_config_last_reload_successful != 1'
-        for: 0m
+        for: 0s
         labels:
           severity: warning
         annotations:
@@ -64,7 +64,7 @@ groups:
 
       - alert: PrometheusAlertmanagerConfigNotSynced
         expr: 'count(count_values("config_hash", alertmanager_config_hash)) > 1'
-        for: 0m
+        for: 0s
         labels:
           severity: warning
         annotations:
@@ -74,7 +74,7 @@ groups:
 
       - alert: PrometheusNoAlertmanager
         expr: 'prometheus_notifications_alertmanagers_discovered < 1'
-        for: 0m
+        for: 0s
         labels:
           severity: critical
         annotations:
