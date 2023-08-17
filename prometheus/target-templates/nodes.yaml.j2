@@ -5,6 +5,7 @@
     instance: {{ host }}
 {% if host in groups['baremetal_machines'] and not hostvars[host]['is_virtual'] %}
     type: bare-metal
+    role: {{ hostvars[host]['role'] }}
     location: {{ hostvars[host]['site'] }}
 {% else %}
     type: virtual-machine
