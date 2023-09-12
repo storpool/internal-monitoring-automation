@@ -13,11 +13,11 @@
   loop_control:
     loop_var: mib_name
   notify:
-    - restart snmp exporter
+    - restart snmp_exporter
 
 - name: Appending extra snmp modules configuration
   blockinfile:
     path: /etc/snmp_exporter/snmp.yml
     block: '{{ lookup("file", "snmp.yml") }}'
   notify:
-    - restart snmp exporter
+    - restart snmp_exporter
