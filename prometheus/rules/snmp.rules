@@ -14,7 +14,7 @@ groups:
 
       - alert: SwitchPortHighBandwithUtilization
         expr: '((irate(ifHCInOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
-        for: 30s
+        for: 150s
         labels:
           severity: warning
         annotations:
