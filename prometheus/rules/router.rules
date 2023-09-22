@@ -1,0 +1,13 @@
+---
+groups:
+  - name: RouterRules
+    rules:
+      - name: RouterNICLostCarrier
+        expr: 'node_network_carrier{type="bare-metal", role="router"} == 0'
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: 'NIC lost carrier'
+          description: 'NIC {{ $labels.device }} on host {{ $labels.instance }} lost carrier.'
+          slack_full_msg: 'NIC `{{ $labels.device }}` on host `{{ $labels.instance }}` lost carrier.'
