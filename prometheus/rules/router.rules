@@ -2,7 +2,7 @@
 groups:
   - name: RouterRules
     rules:
-      - name: RouterNICLostCarrier
+      - alert: RouterNICLostCarrier
         expr: 'node_network_carrier{type="bare-metal", role="router"} == 0'
         for: 30s
         labels:
