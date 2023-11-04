@@ -1,0 +1,65 @@
+---
+- name: Installing monitoring stack
+  hosts: monitoring-stack
+  become_method: sudo
+  pre_tasks:
+    - name: Creating Prometheus file service discovery directory
+      become: true
+      file:
+        path: /monitoring/prometheus_file_sd/
+        state: directory
+    - name: Print Alertmanager routes
+      debug:
+        var: alertmanager_route
+        verbosity: 2
+  roles:
+    - name: prometheus.prometheus.snmp_exporter
+      become: true
+    - name: prometheus.prometheus.blackbox_exporter
+      become: true
+    - name: cloudalchemy.ipmi_exporter
+      become: true
+    - name: prometheus.prometheus.alertmanager
+      become: true
+    - name: prometheus.prometheus.prometheus
+      become: true
+  post_tasks:
+    - name: Add authentication to SNMP modules
+      import_tasks: tasks/patch-snmp-configuration.yaml
+      become: true
+      tags:
+        - snmp_exporter_configure
+  vars_files:
+    - vars/prometheus.yaml
+    - vars/alertmanager.yaml
+    - vars/ipmi-exporter.yaml
+    - vars/backbox-exporter.yaml
+
+- name: Installing Grafana
+  hosts: monitoring-stack
+  become_method: sudo
+  pre_tasks:
+    - name: Generating Grafana PostgreSQL user password
+      set_fact:
+        grafana_database_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+    - name: Generating Grafana admin credentials
+      set_fact:
+        grafana_security:
+          admin_user: admin
+          admin_password: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+    - name: Creating Grafana database
+      import_tasks: tasks/create-granafa-database.yaml
+  roles:
+    - name: cloudalchemy.grafana
+      become: true
+  vars_files: vars/grafana.yaml
+
+- name: Installing Karma
+  hosts: monitoring-stack
+  become_method: sudo
+  roles:
+    - name: storpool.karma
+      become: true
+  vars_files:
+    - vars/alertmanager.yaml
+    - vars/karma.yaml
