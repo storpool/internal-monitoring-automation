@@ -1,0 +1,10 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: bird-service
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  honorLabels: true
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bird_service.yaml.j2') | from_yaml }}

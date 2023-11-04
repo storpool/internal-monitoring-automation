@@ -1,24 +1,41 @@
 ---
-ipmi_exporter_configuration_modules:
+ipmi_exporter_available_modules:
   default:
-    user: "{{ ipmi_username }}"
-    pass: "{{ ipmi_password }}"
-    driver: "LAN_2_0"
-    privilege: "admin"
-    collectors:
-      - bmc
-      - ipmi
-      - chassis
-      - dcmi
-      - sel
+    collector_cmd:
+      bmc: sudo
+      chassis: sudo
+      dcmi: sudo
+      ipmi: sudo
+      sel: sudo
+    custom_args:
+      bmc:
+        - bmc-info
+      chassis:
+        - ipmi-chassis
+      dcmi:
+        - ipmi-dcmi
+      ipmi:
+        - ipmimonitoring
+      sel:
+        - ipmi-sel
 
   no_dcmi:
-    user: "{{ ipmi_username }}"
-    pass: "{{ ipmi_password }}"
-    driver: "LAN_2_0"
-    privilege: "admin"
     collectors:
       - bmc
       - ipmi
       - chassis
       - sel
+    collector_cmd:
+      bmc: sudo
+      chassis: sudo
+      ipmi: sudo
+      sel: sudo
+    custom_args:
+      bmc:
+        - bmc-info
+      chassis:
+        - ipmi-chassis
+      ipmi:
+        - ipmimonitoring
+      sel:
+        - ipmi-sel

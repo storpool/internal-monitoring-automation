@@ -1,0 +1,6 @@
+slack_api_url_secret: "alerting-slack-api"
+
+storpool_monitoring_labels:
+  metadata:
+    labels:
+      storpool.com/env: production

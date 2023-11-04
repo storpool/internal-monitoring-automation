@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: karma
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  selector:
+    app.kubernetes.io/name: karma
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: web

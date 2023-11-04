@@ -1,0 +1,65 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: internal
+  namespace: internal-monitoring
+spec:
+  route:
+    receiver: slack_send_resolved
+    groupBy:
+      - alertname
+      - location
+    groupWait: 1m
+    groupInterval: 5m
+    repeatInterval: 12h
+    routes:
+      - receiver: slack_dont_send_resolved
+        matchers:
+          - name: severity
+            value: info
+            matchType: =
+  receivers:
+    - name: 'slack_send_resolved'
+      slackConfigs:
+        - channel: '#infrastructure-alerts'
+          color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
+          title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
+          text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
+          sendResolved: true
+          actions:
+            - type: button
+              text: 'Dashboard :grafana:'
+              url: '{% raw %}{{ (index .Alerts 0).Annotations.node_stats_url }}{% endraw %}'
+            - type: button
+              text: 'Silence :no_bell:'
+              url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
+    - name: 'slack_dont_send_resolved'
+      slackConfigs:
+        - channel: '#infrastructure-alerts'
+          color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
+          title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
+          text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
+          sendResolved: false
+          actions:
+            - type: button
+              text: 'Dashboard :grafana:'
+              url: '{% raw %}{{ (index .Alerts 0).Annotations.node_stats_url }}{% endraw %}'
+            - type: button
+              text: 'Silence :no_bell:'
+              url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
+  inhibitRules:
+    - sourceMatch:
+        - name: severity
+          value: critical
+      targetMatch:
+        - name: severity
+          value: warning
+      equal: [ 'alertname', 'instance', 'location' ]
+    - sourceMatch:
+        - name: alertname
+          value: BGPSessionDown
+      targetMatch:
+        - name: alertname
+          value: BGPNoImportedPrefixes
+      equal: [ 'name', 'instance' ]

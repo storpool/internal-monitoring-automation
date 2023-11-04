@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: prometheus-self
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  podMetricsEndpoints:
+    - port: web
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  jobLabel: app.kubernetes.io/name
+

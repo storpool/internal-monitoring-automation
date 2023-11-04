@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karma-config
+  namespace: internal-monitoring
+data:
+  config.yaml: |
+    alertmanager:
+      interval: 1m
+      servers:
+    {% for alertmanager_endpoint_address in alertmanager_endpoint_subset.addresses +%}
+        - name: {{ alertmanager_endpoint_address.hostname }}
+          uri: http://{{ alertmanager_endpoint_address.hostname }}.alertmanager-operated:9093
+          proxy: true
+          timeout: 5m
+          healthcheck:
+            visible: false
+            filters:
+              default:
+                - alertname=Watchdog
+    {% endfor -%}
+    alertAcknowledgement:
+      enabled: true
+    annotations:
+      strip:
+        - slack_full_msg
+      order:
+        - summary
+        - description
+    grid:
+      sorting:
+        order: label
+        reverse: false
+        label: severity
+        customValues:
+          labels:
+            severity:
+              critical: 1
+              warning: 2
+              info: 3
+    karma:
+      name: Internal Infrastructure Alerts
+    labels:
+      color:
+        custom:
+          "@alertmanager":
+            - value: production
+              color: "#e6e"
+          severity:
+            - value: info
+              color: "#87c4e0"
+            - value: warning
+              color: "#ffae42"
+            - value: critical
+              color: "#ff220c"
+      strip:
+        - grafana_url
+        - snmp_mib
+        - proto
+        - ifIndex
+        - ifDescr
+        - ifName
+        - ifAlias
+    receivers:
+      strip:
+        - slack_dont_send_resolved
+    ui:
+      minimalGroupWidth: 360

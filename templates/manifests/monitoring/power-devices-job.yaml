@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: power-devices
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  metricsPath: /snmp
+  honorLabels: true
+  scrapeInterval: 30s
+  scrapeTimeout: 29s
+  relabelings:
+    - sourceLabels: [ snmp_mib ]
+      targetLabel: __param_module
+    - sourceLabels: [ __address__ ]
+      targetLabel: __param_target
+    - targetLabel: __address__
+      replacement: snmp-exporter:9116
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/power_devices.yaml.j2') | from_yaml }}

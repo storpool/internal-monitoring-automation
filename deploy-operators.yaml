@@ -1,0 +1,59 @@
+- name: Deploying Kubernetes Operators
+  hosts: localhost
+  tasks:
+    - name: Applying the Custom Resource Definitions
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('url', url, split_lines=False) | from_yaml_all | list }}"
+      loop:
+        - "https://github.com/prometheus-operator/prometheus-operator/releases/download/{{ prometheus_operator }}/stripped-down-crds.yaml"
+        - "https://github.com/VictoriaMetrics/operator/releases/download/{{ victoriametrics_operator }}/crd.yaml"
+      loop_control:
+        loop_var: url
+
+    - name: Creating the internal-monitoring namespace
+      kubernetes.core.k8s:
+        state: present
+        resource_definition:
+          api_version: v1
+          kind: Namespace
+          metadata:
+            name: internal-monitoring
+            labels:
+              storpool.com/kind: system
+
+    - name: Adding Helm repositories
+      kubernetes.core.helm_repository:
+        name: "{{ repository.name }}"
+        repo_url: "{{ repository.url }}"
+      loop:
+        - name: prometheus-community
+          url: https://prometheus-community.github.io/helm-charts
+        - name: vm
+          url: https://victoriametrics.github.io/helm-charts
+      loop_control:
+        loop_var: repository
+
+    - name: Updating the repository cache
+      kubernetes.core.helm:
+        name: dummy
+        namespace: kube-system
+        state: absent
+        update_repo_cache: true
+
+    - name: Deploying the Prometheus Operator
+      kubernetes.core.helm:
+        release_name: prometheus-operator
+        release_namespace: prometheus-operator
+        chart_ref: prometheus-community/kube-prometheus-stack
+        values: "{{ lookup('file', 'helm/values/kube-prometheus-stack.yaml') | from_yaml }}"
+
+    - name: Deploying the VictoriaMetrics Operator
+      kubernetes.core.helm:
+        release_name: vmoperator
+        release_namespace: victoriametrics-operator
+        chart_ref: vm/victoria-metrics-operator
+        set_values:
+          - value: createCRD=false
+        create_namespace: yes
+  vars_files:
+    - vars/operators.yaml

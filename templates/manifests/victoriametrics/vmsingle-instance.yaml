@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMSingle
+metadata:
+  name: metrics
+  namespace: internal-monitoring
+spec:
+  extraArgs:
+    search.maxConcurrentRequests: '16'
+  removePvcAfterDelete: true
+  resources:
+    limits:
+      cpu: '2'
+      memory: 5000Mi
+  retentionPeriod: '12'
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Ti
+    storageClassName: storpool-nvme-database
+    volumeName: pv-victoriametrics-data

@@ -53,7 +53,7 @@ groups:
           slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity.'
 
       - alert: UPSBatteryRuntimeDiminishing
-        expr: 'upsSmartBatteryRunTimeRemaining < 1800'
+        expr: 'upsSmartBatteryRunTimeRemaining{instance!="UPS Tunkmatik 6KVA"} < 1800'
         for: 30s
         labels:
           severity: warning
@@ -63,7 +63,7 @@ groups:
           slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime.'
 
       - alert: UPSBatteryRuntimeLow
-        expr: 'upsSmartBatteryRunTimeRemaining < 600'
+        expr: 'upsSmartBatteryRunTimeRemaining{instance!="UPS Tunkmatik 6KVA"} < 600'
         for: 30s
         labels:
           severity: critical

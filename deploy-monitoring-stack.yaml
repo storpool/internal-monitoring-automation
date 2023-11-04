@@ -1,23 +1,162 @@
 - name: Deploying monitoring stack
   hosts: localhost
   tasks:
-    - name: Adding Prometheus Helm chart
-      kubernetes.core.helm_repository:
-        name: prometheus-community
-        repo_url: https://prometheus-community.github.io/helm-charts
-
-    - name: Updating the repository cache
+    - name: Deploying the blackbox-exporter
       kubernetes.core.helm:
-        name: dummy
-        namespace: kube-system
-        state: absent
-        update_repo_cache: true
-
-    - name: Deploying the Prometheus Helm chart
-      kubernetes.core.helm:
-        release_name: prometheus-internal
-        release_values: {{ lookup("template", "prometheus_values.yaml.j2") | from_yaml }}
+        release_name: blackbox-exporter
         release_namespace: internal-monitoring
-        chart_ref: prometheus-community/prometheus
-        create_namespace: yes
-        wait: yes
+        chart_ref: prometheus-community/prometheus-blackbox-exporter
+        values: "{{ lookup('file', 'helm/values/blackbox-exporter.yaml') | from_yaml }}"
+
+    - name: Deploying the snmp-exporter
+      kubernetes.core.helm:
+        release_name: snmp-exporter
+        release_namespace: internal-monitoring
+        chart_ref: prometheus-community/prometheus-snmp-exporter
+        values:
+          fullnameOverride: snmp-exporter
+          image:
+            repository: cts.storpool.com/public/snmp-exporter
+            tag: latest
+
+    - name: Creating a VMSingle instance
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
+        apply: yes
+      loop:
+        - manifests/victoriametrics/vmsingle-instance.yaml
+        - manifests/victoriametrics/servicemonitor.yaml
+      loop_control:
+        loop_var: manifest
+
+    - name: Creating an empty set of static scrape configurations
+      ansible.builtin.set_fact:
+        scrape_configs: []
+
+    - name: Adding Prometheus Pod Monitors
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ (lookup('file', config_path) | from_yaml) }}"
+        apply: yes
+      loop: "{{ lookup('fileglob', 'prometheus/pod-monitors/*.yaml', wantlist=True) }}"
+      loop_control:
+        loop_var: config_path
+
+    - name: Creating a Prometheus instance
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
+        apply: yes
+      loop:
+        - manifests/prometheus/service-account.yaml
+        - manifests/prometheus/cluster-role.yaml
+        - manifests/prometheus/cluster-role-binding.yaml
+        - manifests/prometheus/prometheus-instance.yaml
+      loop_control:
+        loop_var: manifest
+
+    - name: Searching for a Slack API URL secret
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        namespace: internal-monitoring
+        name: "{{ slack_api_url_secret }}"
+      register: slack_api_url_secret_result
+
+    - name: Checking if a Slack API URL secret exists
+      ansible.builtin.assert:
+        that: slack_api_url_secret_result.resources | length == 1
+        fail_msg: Please define a Slack API URL for the Alertmanager to use
+
+    - name: Creating a ConfigMap to hold Alertmanager templates
+      kubernetes.core.k8s:
+        state: present
+        resource_definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: alertmanager-templates
+            namespace: internal-monitoring
+          data:
+            slack.tmpl: "{{ lookup('file', 'alertmanager/templates/slack.tmpl') }}"
+
+    - name: Creating an Alertmanager instance
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
+      loop:
+        - manifests/alertmanager/alertmanager-config.yaml
+        - manifests/alertmanager/alertmanager-instance.yaml
+      loop_control:
+        loop_var: manifest
+
+    - name: Creating Kubernetes control plane metrics services
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('file', manifest) | from_yaml }}"
+      loop_control:
+        loop_var: manifest
+      loop: "{{ lookup('fileglob', 'kubernetes/*.yaml', wantlist=True) }}"
+
+    - name: Creating Prometheus Kubernetes control plane monitoring resources
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ lookup('url', crd_url, split_lines=False) | from_yaml | ansible.utils.remove_keys(target=['namespace']) | combine(storpool_monitoring_labels, recursive=true) }}"
+        namespace: internal-monitoring
+      loop:
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-prometheusRule.yaml
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorApiserver.yaml
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorCoreDNS.yaml
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorKubeControllerManager.yaml
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorKubeScheduler.yaml
+        - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorKubelet.yaml
+      loop_control:
+        loop_var: crd_url
+
+    - name: Creating Prometheus alerting rules
+      kubernetes.core.k8s:
+        state: present
+        resource_definition:
+          apiVersion: monitoring.coreos.com/v1
+          kind: PrometheusRule
+          metadata:
+            name: "{{ rules_file | basename | split('.') | first }}"
+            namespace: internal-monitoring
+            labels:
+              storpool.com/env: production
+          spec: "{{ lookup('file', rules_file) | from_yaml }}"
+      loop: "{{ lookup('fileglob', 'prometheus/rules/*.rules', wantlist=True) }}"
+      loop_control:
+        loop_var: rules_file
+
+    - name: Retrieving Alertmanager endpoints
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Endpoints
+        namespace: internal-monitoring
+        name: alertmanager-operated
+      register: alertmanager_endpoints_result
+      tags:
+        - karma
+
+    - name: Dumping Alertmanager endpoints
+      ansible.builtin.debug:
+        var: alertmanager_endpoints_result
+        
+    - name: Deploying Karma alert dashboard
+      kubernetes.core.k8s:
+        state: present
+        resource_definition: "{{ (lookup('template', manifest_path) | from_yaml) }}"
+      loop:
+        - manifests/karma/karma-configmap.yaml
+        - manifests/karma/karma-service.yaml
+        - manifests/karma/karma-deployment.yaml
+      loop_control:
+        loop_var: manifest_path
+      vars:
+        alertmanager_endpoint_subset: "{{ (alertmanager_endpoints_result.resources | first)['subsets'] | first }}"
+      tags:
+        - karma
+
+  vars_files:
+    - vars/monitoring-stack.yaml

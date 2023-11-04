@@ -1,0 +1,19 @@
+fullnameOverride: blackbox-exporter
+podSecurityContext:
+  sysctls:
+  - name: net.ipv4.ping_group_range
+    value: "0 65536"
+config:
+  modules:
+    ping_v4:
+      prober: icmp
+      timeout: 4s
+      icmp:
+        preferred_ip_protocol: "ip4"
+
+    ssh_banner:
+      prober: tcp
+      tcp:
+        query_response:
+          - expect: "^SSH-2.0-"
+          - send: "SSH-2.0-blackbox-ssh-check"

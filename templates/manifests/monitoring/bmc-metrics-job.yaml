@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: bmc-metrics
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  honorLabels: true
+  scrapeInterval: 15s
+  scrapeTimeout: 10s
+  relabelings:
+    - sourceLabels: [ ipmi_module ]
+      targetLabel: __param_module
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bmcs.yaml.j2') | from_yaml }}

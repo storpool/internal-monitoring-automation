@@ -1,0 +1,67 @@
+- name: Configure blackbox-exporter jobs
+  hosts: localhost
+  tasks:
+    - name: Creating the ping-v4 ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/ping-v4-job.yaml') | from_yaml }}"
+        apply: yes
+
+    - name: Creating the ssh-banner ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/ssh-service-job.yaml') | from_yaml }}"
+        apply: yes
+
+- name: Configuring snmp-exporter jobs
+  hosts: localhost
+  tasks:
+    - name: Creating the network-devices ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/network-devices-job.yaml') | from_yaml }}"
+        apply: yes
+
+    - name: Creating the power-devices ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/power-devices-job.yaml') | from_yaml }}"
+        apply: yes
+
+- name: Configuring host jobs
+  hosts: localhost
+  tasks:
+    - name: Searching for the node-exporter auth secret
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        namespace: internal-monitoring
+        name: "{{ node_exporter_secret_name }}"
+      register: node_exporter_secret_result
+
+    - name: Checking if the node-exporter auth secret exists
+      ansible.builtin.assert:
+        that: node_exporter_secret_result.resources | length == 1
+        fail_msg: Please define a secret for Prometheus to use to authenticate against node-exporter instances
+
+    - name: Creating the host-metrics ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/host-metrics-job.yaml') | from_yaml }}"
+        apply: yes
+
+    - name: Creating the bmc-metrics ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
+        apply: yes
+
+- name: Configuring InfluxDB job
+  hosts: localhost
+  tasks:
+    - name: Creating the InfluxDB ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') | from_yaml }}"
+        apply: yes
+
+- name: Configuring BIRD job
+  hosts: localhost
+  tasks:
+    - name: Creating the BIRD ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/bird-service-job.yaml') | from_yaml }}"
+        apply: yes

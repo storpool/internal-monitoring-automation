@@ -1,7 +1,0 @@
-- name: Updating Prometheus targets
-  hosts: monitoring-stack
-  become_method: sudo
-  roles:
-    - name: generate-static-targets
-      vars:
-        file_sd_template_path: "{{ playbook_dir + '/prometheus/target-templates/*.yaml.j2' }}"

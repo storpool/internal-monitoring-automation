@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: host-metrics
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  honorLabels: true
+  basicAuth:
+    username:
+      key: username
+      name: "{{ node_exporter_secret_name }}"
+    password:
+      key: password
+      name: "{{ node_exporter_secret_name }}"
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/hosts.yaml.j2') | from_yaml }}

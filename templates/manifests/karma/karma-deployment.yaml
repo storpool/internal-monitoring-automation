@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karma
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: karma
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: karma
+    spec:
+      containers:
+        - name: karma
+          image: ghcr.io/prymitive/karma:latest
+          args:
+            - --config.file=/etc/karma/config.yaml
+          ports:
+            - name: web
+              containerPort: 8080
+          volumeMounts:
+            - mountPath: /etc/karma
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: karma-config

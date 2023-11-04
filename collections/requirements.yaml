@@ -2,11 +2,8 @@
 collections:
   - ansible.posix
   - ansible.netcommon
+  - ansible.utils
   - community.general
-  - community.postgresql
   - community.grafana
   - netbox.netbox
   - netcho.opennebula
-  - name: prometheus.prometheus
-    source: https://github.com/prometheus-community/ansible.git
-    type: git

@@ -1,0 +1,14 @@
+- name: Deploying the ipmi-exporter on baremetal hosts
+  hosts: baremetal_machines,!sp-mgmt
+  pre_tasks:
+    - name: Determining ipmi_exporter module configuration
+      ansible.builtin.set_fact:
+        ipmi_exporter_module: "{{ config_context['ipmi_module'] if 'ipmi_module' in config_context else 'default' }}"
+  roles:
+    - name: cloudalchemy.ipmi_exporter
+      become: true
+      vars:
+        ipmi_exporter_configuration_modules:
+          default: "{{ ipmi_exporter_available_modules[ipmi_exporter_module] }}"
+  vars_files:
+    - vars/ipmi-exporter.yaml

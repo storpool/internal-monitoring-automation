@@ -1,0 +1,49 @@
+crds:
+  enabled: true
+
+defaultRules:
+  create: false
+
+global:
+  rbac:
+    create: true
+
+windowsMonitoring:
+  enabled: false
+
+prometheus-windows-exporter:
+  prometheus:
+    monitor:
+      enabled: false
+
+alertmanager:
+  enabled: false
+
+grafana:
+  enabled: false
+
+kubernetesServiceMonitors:
+  enabled: false
+
+kube-state-metrics:
+  namespaceOverride: internal-monitoring
+  prometheus:
+    monitor:
+      additionalLabels:
+        storpool.com/env: production
+
+nodeExporter:
+  enabled: false
+
+prometheusOperator:
+  enabled: true
+  tls:
+    enabled: false
+  kubeletService:
+    enabled: true
+    namespace: kube-system
+  serviceMonitor:
+    selfMonitor: false
+
+prometheus:
+  enabled: false
