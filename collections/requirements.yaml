@@ -6,6 +6,6 @@ collections:
   - community.general
   - community.grafana
   - netbox.netbox
-  - src: https://github.com/netcho/opennebula-collection
-    name: netcho.opennebula
-
+  - name: netcho.opennebula
+    type: git
+    source: https://github.com/netcho/opennebula-collection
