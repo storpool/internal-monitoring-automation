@@ -9,3 +9,5 @@ collections:
   - name: netcho.opennebula
     type: git
     source: https://github.com/netcho/opennebula-collection
+  - prometheus.prometheus
+
