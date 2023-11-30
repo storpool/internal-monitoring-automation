@@ -53,6 +53,10 @@
 - name: Configuring InfluxDB job
   hosts: localhost
   tasks:
+    - name: Dumping InfluxDB ScrapeConfig
+      ansible.builtin.debug:
+        msg: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') }}"
+        verbosity: 3
     - name: Creating the InfluxDB ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') | from_yaml }}"
