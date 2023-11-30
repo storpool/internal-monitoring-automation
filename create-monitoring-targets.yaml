@@ -53,6 +53,10 @@
 - name: Configuring InfluxDB job
   hosts: localhost
   tasks:
+    - name: Dumping InfluxDB static config
+      ansible.builtin.debug:
+        msg: "{{ lookup('template', 'manifests/monitoring/targets/influxdb_service.yaml.j2') }}"
+        verbosity: 3
     - name: Dumping InfluxDB ScrapeConfig
       ansible.builtin.debug:
         msg: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') }}"
