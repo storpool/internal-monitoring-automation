@@ -1,0 +1,18 @@
+- name: Adding Helm repositories
+  kubernetes.core.helm_repository:
+    name: "{{ repository.name }}"
+    repo_url: "{{ repository.url }}"
+  loop:
+    - name: prometheus-community
+      url: https://prometheus-community.github.io/helm-charts
+    - name: vm
+      url: https://victoriametrics.github.io/helm-charts
+  loop_control:
+    loop_var: repository
+
+- name: Updating the repository cache
+  kubernetes.core.helm:
+    name: dummy
+    namespace: kube-system
+    state: absent
+    update_repo_cache: true

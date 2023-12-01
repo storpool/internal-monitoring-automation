@@ -1,5 +1,7 @@
 - name: Deploying monitoring stack
   hosts: localhost
+  pre_tasks:
+    - import_tasks: tasks/add-helm-repositories.yaml
   tasks:
     - name: Deploying the blackbox-exporter
       kubernetes.core.helm:
