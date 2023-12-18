@@ -9,7 +9,7 @@ spec:
   metricsPath: /snmp
   honorLabels: true
   scrapeInterval: 60s
-  scrapeTimeout: 70s
+  scrapeTimeout: 59s
   relabelings:
     - sourceLabels: [ snmp_mib ]
       targetLabel: __param_module
