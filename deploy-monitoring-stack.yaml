@@ -146,6 +146,7 @@
     - name: Dumping Alertmanager endpoints
       ansible.builtin.debug:
         var: alertmanager_endpoints_result
+        verbosity: 2
         
     - name: Deploying Karma alert dashboard
       kubernetes.core.k8s:
