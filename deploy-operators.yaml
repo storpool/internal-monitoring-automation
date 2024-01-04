@@ -36,7 +36,8 @@
         release_namespace: victoriametrics-operator
         chart_ref: vm/victoria-metrics-operator
         set_values:
-          - value: createCRD=false
+          - value: "createCRD=false"
+          - value: "image.tag={{ victoriametrics_operator }}"
         create_namespace: yes
   vars_files:
     - vars/operators.yaml

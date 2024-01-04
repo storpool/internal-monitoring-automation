@@ -4,7 +4,6 @@ metadata:
   name: internal
   namespace: internal-monitoring
 spec:
-  version: v2.47.2
   alerting:
     alertmanagers:
       - name: alertmanager-operated
