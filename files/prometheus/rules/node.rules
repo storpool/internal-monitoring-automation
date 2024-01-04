@@ -126,20 +126,6 @@ groups:
         annotations:
           summary: 'Host CPU steal time is more than 10%'
           description: 'Host {{ $labels.instance }} CPU steal time is {{ printf "%.0f" $value }}%.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` CPU steal time is {{ printf "%.0f" $value }}%.'
-
-      # 1000 context switches is an arbitrary number.
-      # Alert threshold depends on nature of application.
-      # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
-      - alert: HostContextSwitching
-        expr: '(rate(node_context_switches_total{role!="router"}[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{role!="router", mode="idle"})) > 10000'
-        for: 3m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'Host context switching growing'
-          description: 'Host {{ $labels.instance }} context switching is growing on node.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` context switching is growing on node.'
 
       - alert: HostSwapIsFillingUp
         expr: '(1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80'
