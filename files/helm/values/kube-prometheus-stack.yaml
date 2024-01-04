@@ -44,8 +44,6 @@ prometheusOperator:
     namespace: kube-system
   serviceMonitor:
     selfMonitor: false
-  image:
-    tag: "{{ prometheus_operator }}"
 
 prometheus:
   enabled: false
