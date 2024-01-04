@@ -31,7 +31,7 @@
         values: "{{ lookup('file', 'helm/values/kube-prometheus-stack.yaml') | from_yaml }}"
         set_values:
           - value: "prometheusOperator.image.tag={{ prometheus_operator }}"
-          - value: "prometheusOperator.prometheusConfigReloader.image.tag ={{ prometheus_operator }}"
+          - value: "prometheusOperator.prometheusConfigReloader.image.tag={{ prometheus_operator }}"
 
     - name: Deploying the VictoriaMetrics Operator
       kubernetes.core.helm:
