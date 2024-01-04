@@ -1,16 +1,18 @@
 {{ define "__alert_silence_link" -}}
-    {{ .ExternalURL }}/#/silences/new?filter=%7B
-    {{- range .CommonLabels.SortedPairs -}}
-        {{- if ne .Name "alertname" -}}
-            {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
+    {{- if eq .Status "firing" -}}
+        {{ .ExternalURL }}/#/silences/new?filter=%7B
+        {{- range .CommonLabels.SortedPairs -}}
+            {{- if ne .Name "alertname" -}}
+                {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
+            {{- end -}}
         {{- end -}}
+        alertname%3D"{{- .CommonLabels.alertname -}}"%7D
     {{- end -}}
-    alertname%3D"{{- .CommonLabels.alertname -}}"%7D
 {{- end }}
 
 {{ define "__alert_dashboard_link" -}}
     {{- if eq .CommonLabels.kind "host" -}}
-        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{- .CommonLables.instance -}}
+        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{ .CommonLables.instance }}
     {{- end -}}
 {{- end }}
 
@@ -38,13 +40,17 @@
         {{- range .Alerts -}}
             {{- "\n" -}}
             {{- if .Annotations.description -}}
-            {{ .Annotations.description }}
+            {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
             {{- end -}}
         {{- end }}
     {{ else }}
         {{- range .Alerts -}}
             {{- "\n" -}}
-            {{ .Labels.instance }}
+            {{- if eq .CommonLabels.kind "host" -}}
+                Host: `{{ .Labels.instance }}`
+            {{-else -}}
+                Device: `{{ .Labels.instance }}`
+            {{- end -}}
         {{- end -}}
     {{ end }}
 {{- end }}
