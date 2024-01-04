@@ -25,13 +25,6 @@ spec:
           volumeMounts:
             - mountPath: /etc/karma
               name: config
-        - name: silence-extender
-          image: ghcr.io/prymitive/kthxbye:v0.16
-          args:
-            - --listen=:8081
-            - --alertmanager.uri=http://internal-alertmanager-api/
-            - --extend-if-expiring-in=1m
-            - --extend-by=1h
       volumes:
         - name: config
           configMap:
