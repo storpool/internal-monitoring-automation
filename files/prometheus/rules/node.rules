@@ -35,7 +35,7 @@ groups:
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostOutOfDiskSpace
-        expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 10m
         labels:
           severity: warning
@@ -45,7 +45,7 @@ groups:
           description: 'Disk {{ $labels.device }} on {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space.'
 
       - alert: HostOutOfDiskSpace
-        expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 30s
         labels:
           severity: critical
@@ -58,15 +58,14 @@ groups:
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
       # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
       - alert: HostDiskWillFillIn24Hours
-        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+        expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 2m
         labels:
           severity: warning
           kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} is expected fill its filesystem in the next 24 hours'
-          description: 'Device {{ $labels.device }} on host {{ $labels.instance }}is predicted to run out of space within the next 24 hours at current write rate.'
-          slack_full_msg: 'Device `{{ $labels.device }}` mounted at `{{ $labels.mountpoint }}` on host `{{ $labels.instance }}` is predicted to run out of space within the next 24 hours.'
+          description: 'Device {{ $labels.device }} on host {{ $labels.instance }} is predicted to run out of space within the next 24 hours at current write rate.'
 
       - alert: HostRootFSOutOfInodes
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
