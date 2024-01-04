@@ -10,4 +10,3 @@ groups:
         annotations:
           summary: 'NIC lost carrier'
           description: 'NIC {{ $labels.device }} on host {{ $labels.instance }} lost carrier.'
-          slack_full_msg: 'NIC `{{ $labels.device }}` on host `{{ $labels.instance }}` lost carrier.'

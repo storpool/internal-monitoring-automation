@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  namespace: internal-monitoring
+  name: alertmanager-web
+  annotations:
+    external-dns.alpha.kubernetes.io/target: traefik.sof-k8s.storpool.net
+spec:
+  entryPoints:
+    - webinternal
+  routes:
+    - kind: Rule
+      match: Host(`alertmanager.sof-k8s.storpool.net`)
+      services:
+        - name: internal-alertmanager-api
+          port: http

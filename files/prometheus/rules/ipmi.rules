@@ -10,7 +10,6 @@ groups:
         annotations:
           summary: 'Host IPMI module is down'
           description: 'Host {{ $labels.instance }} IPMI module {{ $labels.collector }} is down'
-          slack_full_msg: 'Host `{{ $labels.instance }}` IPMI module `{{ $labels.collector }}` is down'
 
       - alert: IPMISensorCritical
         expr: ipmi_sensor_state == 2
@@ -20,7 +19,6 @@ groups:
         annotations:
           summary: 'Host IPMI sensor {{ $labels.name }} state is critical'
           description: 'Host {{ $labels.instance }} IPMI sensor {{ $labels.name }} of type {{ $labels.type }} is in critical state.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` IPMI sensor `{{ $labels.name }}` of type `{{ $labels.type }}` is in critical state.'
 
       - alert: IPMIFanSpeedCritical
         expr: ipmi_fan_speed_state == 2
@@ -29,4 +27,4 @@ groups:
           severity: critical
         annotations:
           summary: 'Host fan speed is over critical limit'
-          description: 'Host `{{ $labels.instance }}` `{{ $labels.name }}` speed is over the critical limit.'
+          description: 'Host {{ $labels.instance }} {{ $labels.name }} speed is over the critical limit.'

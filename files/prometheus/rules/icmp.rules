@@ -1,6 +1,6 @@
 ---
 groups:
-  - name: ICMP rules
+  - name: ICMP
     rules:
       - alert: NoPing
         expr: 'probe_success == 0'
@@ -10,5 +10,3 @@ groups:
         annotations:
           summary: '{{ $labels.instance }} not reachable'
           description: 'IPv4 connectivity to {{ $labels.instance }} has been unavailable for more than 2 minutes.'
-          slack_full_msg: 'IPv4 connectivity to `{{ $labels.instance }}` has been unavailable for more than 2 minutes.'
-          node_stats_url: '{{ $externalLabels.grafana_url }}/d/rYdddlPWk/node-status?orgId=1&var-DS_PROMETHEUS=default&var-job=node-exporter&var-node={{ $labels.instance }}'

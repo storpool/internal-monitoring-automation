@@ -90,6 +90,8 @@
       loop:
         - manifests/alertmanager/alertmanager-config.yaml
         - manifests/alertmanager/alertmanager-instance.yaml
+        - manifests/alertmanager/alertmanager-service.yaml
+        - manifests/alertmanager/alertmanager-ingress-route.yaml
       loop_control:
         loop_var: manifest
 

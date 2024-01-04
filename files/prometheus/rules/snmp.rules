@@ -10,7 +10,6 @@ groups:
         annotations:
           summary: 'Interface operational state change'
           description: 'Interface {{ $labels.ifName }} ({{ $labels.ifAlias }}) on {{ $labels.instance }} (location: {{ $labels.location }}) went down.'
-          slack_full_msg: 'Interface `{{ $labels.ifName }}` (`{{ $labels.ifAlias }}`) on `{{ $labels.instance }}` (location: `{{ $labels.location }}`) went down.'
 
       - alert: SwitchPortHighBandwithUtilization
         expr: '((irate(ifHCInOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100 or ((irate(ifHCOutOctets{ifName!~".*CPU.*|Vlan.*"}[2m])) / (ifHighSpeed * 10^6/8) * 100) > 90 <= 100'
@@ -20,7 +19,6 @@ groups:
         annotations:
           summary: 'Interface has bandwidth utilization more than 90%.'
           description: 'Interface {{ $labels.ifName }} on {{ $labels.instance }} (location: {{ $labels.location }}) attached to {{ $labels.ifAlias }} is using {{ printf "%.0f" $value }}% of its bandwidth.'
-          slack_full_msg: 'Interface `{{ $labels.ifName }}` on `{{ $labels.instance }}` (location: `{{ $labels.location }}`) attached to `{{ $labels.ifAlias }}` is using {{ printf "%.0f" $value }}% of its bandwidth.'
 
       - alert: UPSBatteryLow
         expr: 'upsBaseBatteryStatus{upsBaseBatteryStatus="batteryLow"} == 1'
@@ -30,7 +28,6 @@ groups:
         annotations:
           summary: 'UPS battery is running low.'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} battery is running low.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is running low.'
 
       - alert: UPSBatteryCapacityDiminishing
         expr: 'upsSmartBatteryCapacity < 80'
@@ -40,7 +37,6 @@ groups:
         annotations:
           summary: 'UPS battery capacity is below 80%'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} battery is at {{ $value }}% capacity.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity.'
 
       - alert: UPSBatteryCapacityLow
         expr: 'upsSmartBatteryCapacity < 50'
@@ -50,7 +46,6 @@ groups:
         annotations:
           summary: 'UPS battery capacity is below 50%'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} battery is at {{ $value }}% capacity.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery is at {{ $value }}% capacity.'
 
       - alert: UPSBatteryRuntimeDiminishing
         expr: 'upsSmartBatteryRunTimeRemaining{instance!="UPS Tunkmatik 6KVA"} < 1800'
@@ -60,7 +55,6 @@ groups:
         annotations:
           summary: 'UPS battery has less than 30 minutes of runtime'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} battery has {{ $value }} seconds of runtime.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime.'
 
       - alert: UPSBatteryRuntimeLow
         expr: 'upsSmartBatteryRunTimeRemaining{instance!="UPS Tunkmatik 6KVA"} < 600'
@@ -70,7 +64,6 @@ groups:
         annotations:
           summary: 'UPS battery has less than 10 minutes of runtime'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} battery has {{ $value }} seconds of runtime.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` battery has {{ $value }} seconds of runtime.'
 
       - alert: UPSLowInputVoltage
         expr: 'round(upsSmartInputLineVoltage / 10) < 200'
@@ -80,4 +73,3 @@ groups:
         annotations:
           summary: 'UPS input voltage is below 200V'
           description: 'UPS {{ $labels.instance }} at {{ $labels.location }} input voltage is {{ $value }}.'
-          slack_full_msg: 'UPS `{{ $labels.instance }}` at `{{ $labels.location }}` input voltage is {{ $value }}.'

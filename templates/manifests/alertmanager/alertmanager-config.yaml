@@ -9,7 +9,7 @@ spec:
     receiver: slack_send_resolved
     groupBy:
       - alertname
-      - location
+      - instance
     groupWait: 1m
     groupInterval: 5m
     repeatInterval: 12h
@@ -30,7 +30,7 @@ spec:
           actions:
             - type: button
               text: 'Dashboard :grafana:'
-              url: '{% raw %}{{ (index .Alerts 0).Annotations.node_stats_url }}{% endraw %}'
+              url: '{% raw %}{{ template "__alert_dashboard_link" . }}{% endraw %}'
             - type: button
               text: 'Silence :no_bell:'
               url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'

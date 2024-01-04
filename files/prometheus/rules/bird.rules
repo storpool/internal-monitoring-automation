@@ -1,6 +1,6 @@
 ---
 groups:
-  - name: BIRD Rules
+  - name: BIRD
     rules:
       - alert: BGPSessionDown
         expr: 'bird_protocol_up{proto="BGP", state != ""} == 0'
@@ -10,7 +10,6 @@ groups:
         annotations:
           summary: 'BGP session is down'
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} is down.'
-          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` located at `{{ $labels.location }}` is down.'
 
       - alert: BGPNoImportedPrefixes
         expr: 'bird_protocol_prefix_import_count{proto="BGP", state="Established", import_filter!="REJECT"} == 0'
@@ -20,4 +19,3 @@ groups:
         annotations:
           summary: 'BGP session did not accept any prefix'
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not import any prefix from its neighbour.'
-          slack_full_msg: 'BGP session `{{ $labels.name }}` on `{{ $labels.instance }}` did not import any prefix.'

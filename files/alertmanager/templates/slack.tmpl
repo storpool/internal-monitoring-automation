@@ -9,21 +9,9 @@
 {{- end }}
 
 {{ define "__alert_dashboard_link" -}}
-    {{- if eq .CommonLabels.job "node-exporter" -}}
-        {{- if eq (len .Alerts) 1 -}}
-        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node=
-        {{- .CommonLables.instance -}}
-        {{- end -}}
+    {{- if eq .CommonLabels.kind "host" -}}
+        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{- .CommonLables.instance -}}
     {{- end -}}
-{{- end }}
-
-
-{{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
-
-{{ define "slack.storpool.title" -}}
-  [{{ .Status | toUpper -}}
-  {{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{- end -}}
-  ] {{ .CommonLabels.alertname }}
 {{- end }}
 
 {{ define "__alert_severity" -}}
@@ -38,14 +26,27 @@
     {{- end }}
 {{- end }}
 
+{{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
+
+{{ define "slack.storpool.title" -}}
+  [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+{{- end }}
+
 {{ define "slack.storpool.text" -}}
-    {{ template "__alert_severity" . }}
-    {{- range .Alerts -}}
-        {{- "\n" -}}
-        {{- if .Annotations.slack_full_msg -}}
-        • {{ .Annotations.slack_full_msg }}
+    {{ if eq .Status "firing" }}
+        {{ template "__alert_severity" . }}
+        {{- range .Alerts -}}
+            {{- "\n" -}}
+            {{- if .Annotations.description -}}
+            {{ .Annotations.description }}
+            {{- end -}}
+        {{- end }}
+    {{ else }}
+        {{- range .Alerts -}}
+            {{- "\n" -}}
+            {{ .Labels.instance }}
         {{- end -}}
-    {{- end }}
+    {{ end }}
 {{- end }}
 
 {{ define "slack.storpool.color" -}}

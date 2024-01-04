@@ -6,30 +6,30 @@ groups:
         expr: 'node_reboot_required > 0'
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} - reboot required'
           description: 'Host {{ $labels.instance }} requires a reboot.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` requires a reboot.'
 
       - alert: HostOutOfMemory
         expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host has less than 5% available memory'
           description: 'Host {{ $labels.instance }} has only {{ printf "%.2f" $value }}% memory available.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% memory available.'
 
       - alert: HostMemoryUnderMemoryPressure
         expr: 'rate(node_vmstat_pgmajfault[2m]) > 1000'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host is under memory pressure'
           description: 'Host {{ $labels.instance }} is under heavy memory pressure. It has high rate of major page faults.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` is under heavy memory pressure.'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
@@ -39,20 +39,20 @@ groups:
         for: 10m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host has less than 10% of available disk space'
           description: 'Disk {{ $labels.device }} on {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space.'
-          slack_full_msg: 'Disk `{{ $labels.device }}` on host `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
       - alert: HostOutOfDiskSpace
         expr: '(node_filesystem_avail_bytes{fstype !~ "procfs"} * 100) / node_filesystem_size_bytes < 5 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
         for: 30s
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Host has less than 5% of available disk space'
           description: 'Disk {{ $labels.device }} on {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space.'
-          slack_full_msg: 'Disk `{{ $labels.device }}` on `{{ $labels.instance }}` has only {{ printf "%.2f" $value }}% available space.'
 
       # Please add ignored mountpoints in node_exporter parameters like
       # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
@@ -62,6 +62,7 @@ groups:
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} is expected fill its filesystem in the next 24 hours'
           description: 'Device {{ $labels.device }} on host {{ $labels.instance }}is predicted to run out of space within the next 24 hours at current write rate.'
@@ -72,56 +73,57 @@ groups:
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} root filesystem has less than 10% free inodes left'
           description: 'Root filesystem on disk {{ $labels.device }} has {{ printf "%.2f" $value }} free inodes.'
-          slack_full_msg: 'Root filesystem on disk `{{ $labels.device }}` has {{ printf "%.2f" $value }} free inodes.'
 
       - alert: HostRootFSInodesWillFillIn24Hours
         expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} root filesystem inodes will fill in 24 hours.'
           description: 'Root filesystem is predicted to run out of inodes within the next 24 hours at current write rate.'
-          slack_full_msg: 'Root filesystem is predicted to run out of inodes within the next 24 hours.'
 
       - alert: HostUnusualDiskReadLatency
         expr: 'rate(node_disk_read_time_seconds_total{type="bare-metal", device !~ "sp-.*"}[1m]) / rate(node_disk_reads_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0.1 and rate(node_disk_reads_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0'
         for: 1m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host unusual disk read latency (instance {{ $labels.instance }})'
           description: 'Disk {{ $labels.device }} on host {{ $labels.instance }} read latency is growing ({{ printf "%.2f" $value }} ms)'
-          slack_full_msg: 'Disk `{{ $labels.device }}` on host `{{ $labels.instance }}` read latency is growing ({{ printf "%.2f" $value }} ms)'
 
       - alert: HostUnusualDiskWriteLatency
         expr: 'rate(node_disk_write_time_seconds_total{type="bare-metal", device !~ "sp-.*"}[1m]) / rate(node_disk_writes_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0.1 and rate(node_disk_writes_completed_total{type="bare-metal", device !~ "sp-.*"}[1m]) > 0'
         for: 1m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host unusual disk write latency (instance {{ $labels.instance }})'
           description: 'Disk {{ $labels.device }} on host {{ $labels.instance }} write latency is growing ({{ printf "%.2f" $value }} ms)'
-          slack_full_msg: 'Disk `{{ $labels.device }}` on host `{{ $labels.instance }}` write latency is growing ({{ printf "%.2f" $value }} ms)'
 
       - alert: HostHighCPULoad
         expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
         for: 10m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host CPU load is more than 80%'
           description: 'Host {{ $labels.instance }} CPU load is {{ printf "%.2f" $value }}.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` CPU load is {{ printf "%.2f" $value }}.'
 
       - alert: HostCPUStealNoisyNeighbor
         expr: avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 20
         for: 5m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host CPU steal time is more than 10%'
           description: 'Host {{ $labels.instance }} CPU steal time is {{ printf "%.0f" $value }}%.'
@@ -145,20 +147,20 @@ groups:
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host swap is filling up has less than 20% left.'
           description: 'Swap on host {{ $labels.instance }} is {{ printf "%.2f" $value }} full.'
-          slack_full_msg: 'Swap on host `{{ $labels.instance }}` is {{ printf "%.2f" $value }} full.'
 
       - alert: HostRaidArrayGotInactive
         expr: 'node_md_state{state="inactive"} > 0'
         for: 0m
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Host {{ $labels.instance }} RAID array got inactive'
           description: 'RAID array {{ $labels.device }} is in degraded state due to one or more disks failures.'
-          slack_full_msg: 'RAID array `{{ $labels.device }}` is in degraded state.'
 
       - alert: HostRaidDiskFailure
         expr: 'node_md_disks{state="failed"} > 0'
@@ -168,7 +170,6 @@ groups:
         annotations:
           summary: 'Host {{ $labels.instance }} RAID disk failure'
           description: 'At least one device in RAID array on {{ $labels.instance }} failed. Array {{ $labels.md_device }} needs attention.'
-          slack_full_msg: 'Device in RAID array on `{{ $labels.instance }}` failed. Array `{{ $labels.md_device }}` needs attention.'
 
       - alert: HostOOMKillDetected
         expr: 'increase(node_vmstat_oom_kill[1m]) > 0'
@@ -178,58 +179,56 @@ groups:
         annotations:
           summary: 'Host OOM kill detected'
           description: 'OOM kill detected on host {{ $labels.instance }}.'
-          slack_full_msg: 'OOM kill detected on host `{{ $labels.instance }}`.'
 
       - alert: HostEdacCorrectableErrorsDetected
         expr: 'increase(node_edac_correctable_errors_total[5m]) > 0'
         for: 0m
         labels:
           severity: info
+          kind: host
         annotations:
           summary: 'Host EDAC correctable errors detected'
           description: 'Host {{ $labels.instance }} encountered {{ printf "%.0f" $value }} correctable memory errors on controller {{ $labels.controller }} reported by EDAC.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` encountered {{ printf "%.0f" $value }} correctable memory errors on controller `{{ $labels.controller }}`.'
 
       - alert: HostNetworkReceiveErrors
         expr: 'rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host has network receive errors'
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last two minutes.'
-          slack_full_msg: 'Host `{{ $labels.instance }}` interface `{{ $labels.device }}` has encountered `{{ printf "%.0f" $value }}` receive errors.'
 
       - alert: HostNetworkTransmitErrors
         expr: 'rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host has network transmit errors'
           description: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last two minutes.'
-          slack_full_msg: 'Host {{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors.'
-
 
       - alert: HostNetworkInterfaceSaturated
         expr: 'increase(node_network_transmit_drop_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) / increase(node_network_transmit_bytes_total{device!~"^tap.*|^one-.*", type="bare-metal"}[30m]) > 0.8 < 10000'
         for: 5m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host network interface saturated'
           description: 'Network interface {{ $labels.device }} on {{ $labels.instance }} is getting overloaded.'
-          slack_full_msg: 'Network interface `{{ $labels.device }}` on `{{ $labels.instance }}` is getting overloaded.'
 
       - alert: HostConntrackLimit
         expr: node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8
         for: 5m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host conntrack limit'
           description: "The number of conntrack on host {{ $labels.instance }} is approaching limit."
-          slack_full_msg: "The number of conntrack on host `{{ $labels.instance }}` is approaching limit."
 
       - alert: HostClockSkew
         expr: '(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)'
@@ -239,14 +238,13 @@ groups:
         annotations:
           summary: 'Host clock skew'
           description: "Clock skew detected on host {{ $labels.instance }}. Clock is out of sync."
-          slack_full_msg: "Clock skew detected on host `{{ $labels.instance }}`."
 
       - alert: HostClockNotSynchronising
         expr: 'min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host clock not synchronising'
           description: "Clock on host {{ $labels.instance }} not synchronising."
-          slack_full_msg: "Clock on host `{{ $labels.instance }}` not synchronising."

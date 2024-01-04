@@ -1,6 +1,6 @@
 ---
 groups:
-  - name: InfluxDB rules
+  - name: InfluxDB
     rules:
       - alert: InfluxDBServiceInactive
         expr: 'node_systemd_unit_state{name="influxdb.service", state="inactive"} > 0'
@@ -10,9 +10,8 @@ groups:
         annotations:
           summary: 'InfluxDB service on {{ $labels.instance }} has been stopped'
           description: 'InfluxDB systemd service has been stopped for more than 1 minute.'
-          slack_full_msg: 'InfluxDB systemd service has been stopped for more than 1 minute.'
 
-      - alert: InfluxDBEndpointInaccessable
+      - alert: InfluxDBEndpointInaccessible
         expr: 'up{job="influxdb"} == 0'
         for: 1m
         labels:
@@ -20,4 +19,3 @@ groups:
         annotations:
           summary: 'InfluxDB HTTP endpoint cannot be accessed'
           description: 'Prometheus cannot access InfluxDB HTTP endpoint at {{ $labels.address }} for more than 1 minute.'
-          slack_full_msg: 'Prometheus cannot access InfluxDB HTTP endpoint at `{{ $labels.address }}` for more than 1 minute.'

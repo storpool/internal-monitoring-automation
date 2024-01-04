@@ -5,6 +5,7 @@ metadata:
   namespace: internal-monitoring
 spec:
   replicas: 2
+  externalUrl: http://alertmanager.sof-k8s.storpool.net/
   alertmanagerConfiguration:
     name: internal
     global:
