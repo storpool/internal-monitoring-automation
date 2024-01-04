@@ -220,6 +220,7 @@ groups:
         for: 2m
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'Host clock skew'
           description: "Clock skew detected on host {{ $labels.instance }}. Clock is out of sync."
