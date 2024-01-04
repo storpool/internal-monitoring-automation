@@ -2,7 +2,3 @@
 roles:
   - src: https://github.com/dmrub/ansible-ipmi_exporter
     name: cloudalchemy.ipmi_exporter
-  - src: https://github.com/cloudalchemy/ansible-grafana
-    name: cloudalchemy.grafana
-  - src: https://github.com/storpool/ansible-karma
-    name: storpool.karma
