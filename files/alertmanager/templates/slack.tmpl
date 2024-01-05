@@ -68,3 +68,22 @@
     good
     {{- end }}
 {{- end }}
+
+{{ define "slack.storpool.fallback" }}
+    {{ if eq .Status "firing" }}
+        {{- range .Alerts -}}
+            {{- if .Annotations.description -}}
+                {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
+            {{- end -}}
+            {{- " " -}}
+        {{- end }}
+    {{ else }}
+        {{- range .Alerts -}}
+            {{- if eq (index .CommonLabels "kind") "host" -}}
+                *Host*: `{{ .Labels.instance }}`
+            {{-else -}}
+                *Device*: `{{ .Labels.instance }}`
+            {{- end -}}
+        {{- end -}}
+    {{ end }}
+{{ end }}
