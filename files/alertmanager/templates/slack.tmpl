@@ -11,8 +11,8 @@
 {{- end }}
 
 {{ define "__alert_dashboard_link" -}}
-    {{- if eq .CommonLabels.kind "host" -}}
-        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{ .CommonLables.instance }}
+    {{- if eq (index .CommonLabels "kind") "host" -}}
+        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{ .CommonLabels.instance }}
     {{- end -}}
 {{- end }}
 
@@ -40,16 +40,16 @@
         {{- range .Alerts -}}
             {{- "\n" -}}
             {{- if .Annotations.description -}}
-            {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
+                {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
             {{- end -}}
         {{- end }}
     {{ else }}
         {{- range .Alerts -}}
             {{- "\n" -}}
-            {{- if eq .CommonLabels.kind "host" -}}
-                Host: `{{ .Labels.instance }}`
+            {{- if eq (index .CommonLabels "kind") "host" -}}
+                *Host*: `{{ .Labels.instance }}`
             {{-else -}}
-                Device: `{{ .Labels.instance }}`
+                *Device*: `{{ .Labels.instance }}`
             {{- end -}}
         {{- end -}}
     {{ end }}
