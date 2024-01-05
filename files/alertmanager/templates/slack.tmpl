@@ -17,14 +17,14 @@
 {{- end }}
 
 {{ define "__alert_severity" -}}
-    {{- if eq .CommonLabels.severity "critical" -}}
+    {{- if eq .Labels.severity "critical" -}}
     *Severity:* `Critical`
-    {{- else if eq .CommonLabels.severity "warning" -}}
+    {{- else if eq .Labels.severity "warning" -}}
     *Severity:* `Warning`
-    {{- else if eq .CommonLabels.severity "info" -}}
+    {{- else if eq .Labels.severity "info" -}}
     *Severity:* `Info`
     {{- else -}}
-    *Severity:* :question: {{ .CommonLabels.severity }}
+    *Severity:* :question: {{ .Labels.severity }}
     {{- end }}
 {{- end }}
 
@@ -44,7 +44,7 @@
         {{ if eq .Status "firing" }}
             {{ template "__alert_severity" . }}
         {{- end -}}
-        {{- if eq (index .CommonLabels "kind") "host" -}}
+        {{- if eq (index .Labels "kind") "host" -}}
             *Host*: `{{ .Labels.instance }}`
         {{- else -}}
             *Device*: `{{ .Labels.instance }}`
@@ -81,7 +81,7 @@
         {{- end }}
     {{ else }}
         {{- range .Alerts -}}
-            {{- if eq (index .CommonLabels "kind") "host" -}}
+            {{- if eq (index .Labels "kind") "host" -}}
                 *Host*: `{{ .Labels.instance }}`
             {{- else -}}
                 *Device*: `{{ .Labels.instance }}`
