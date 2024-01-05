@@ -46,7 +46,7 @@
         {{- end -}}
         {{- if eq (index .CommonLabels "kind") "host" -}}
             *Host*: `{{ .Labels.instance }}`
-        {{-else -}}
+        {{- else -}}
             *Device*: `{{ .Labels.instance }}`
         {{- end -}}
         {{- if eq .Status "firing" -}}
@@ -83,7 +83,7 @@
         {{- range .Alerts -}}
             {{- if eq (index .CommonLabels "kind") "host" -}}
                 *Host*: `{{ .Labels.instance }}`
-            {{-else -}}
+            {{- else -}}
                 *Device*: `{{ .Labels.instance }}`
             {{- end -}}
         {{- end -}}
