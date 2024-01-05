@@ -25,6 +25,7 @@ spec:
         - channel: '#infrastructure-alerts'
           color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
           title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
+          titleLink: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
           text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
           fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
           sendResolved: true
@@ -40,6 +41,7 @@ spec:
         - channel: '#infrastructure-alerts'
           color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
           title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
+          titleLink: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
           text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
           fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
           sendResolved: false

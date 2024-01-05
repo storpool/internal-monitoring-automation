@@ -1,3 +1,7 @@
+{{ define "__alert_title_link" -}}
+    http://internal-alerts.storpool.net/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
+{{- end }}
+
 {{ define "__alert_silence_link" -}}
     {{- if eq .Status "firing" -}}
         {{ .ExternalURL }}/#/silences/new?filter=%7B
@@ -35,24 +39,22 @@
 {{- end }}
 
 {{ define "slack.storpool.text" -}}
-    {{ if eq .Status "firing" }}
-        {{ template "__alert_severity" . }}
-        {{- range .Alerts -}}
-            {{- "\n" -}}
-            {{- if .Annotations.description -}}
-                {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
-            {{- end -}}
-        {{- end }}
-    {{ else }}
-        {{- range .Alerts -}}
-            {{- "\n" -}}
-            {{- if eq (index .CommonLabels "kind") "host" -}}
-                *Host*: `{{ .Labels.instance }}`
-            {{-else -}}
-                *Device*: `{{ .Labels.instance }}`
+    {{- range .Alerts -}}
+        {{- "\n" -}}
+        {{ if eq .Status "firing" }}
+            {{ template "__alert_severity" . }}
+        {{- end -}}
+        {{- if eq (index .CommonLabels "kind") "host" -}}
+            *Host*: `{{ .Labels.instance }}`
+        {{-else -}}
+            *Device*: `{{ .Labels.instance }}`
+        {{- end -}}
+        {{- if eq .Status "firing" -}}
+            {{- if index .Annotations "description" -}}
+                {{ .Annotations.description }}
             {{- end -}}
         {{- end -}}
-    {{ end }}
+    {{- end -}}
 {{- end }}
 
 {{ define "slack.storpool.color" -}}
@@ -72,8 +74,8 @@
 {{ define "slack.storpool.fallback" }}
     {{ if eq .Status "firing" }}
         {{- range .Alerts -}}
-            {{- if .Annotations.description -}}
-                {{ regexp.Replace "Host ([a-zA-z0-9-]*) " "Host `{$1}` " .Annotations.description }}
+            {{- if index .Annotations "description" -}}
+                {{ .Annotations.description }}
             {{- end -}}
             {{- " " -}}
         {{- end }}
