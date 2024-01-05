@@ -44,11 +44,12 @@
         {{ if eq .Status "firing" }}
             {{ template "__alert_severity" . }}
         {{- end -}}
+        {{- "\n" -}}
         {{- if eq (index .Labels "kind") "host" -}}
             *Host*: `{{ .Labels.instance }}`
-        {{- else -}}
-            *Device*: `{{ .Labels.instance }}`
-        {{- end -}}
+        {{ else -}}
+            *Instance*: `{{ .Labels.instance }}`
+        {{ end -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
                 {{ .Annotations.description }}
