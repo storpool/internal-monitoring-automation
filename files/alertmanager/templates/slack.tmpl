@@ -1,7 +1,3 @@
-{{ define "__alert_title_link" -}}
-    http://internal-alerts.storpool.net/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
-{{- end }}
-
 {{ define "__alert_silence_link" -}}
     {{- if eq .Status "firing" -}}
         {{ .ExternalURL }}/#/silences/new?filter=%7B
@@ -30,6 +26,10 @@
     {{- else -}}
     *Severity:* :question: {{ .CommonLabels.severity }}
     {{- end }}
+{{- end }}
+
+{{ define "slack.storpool.title_link" -}}
+    http://internal-alerts.storpool.net/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
 {{- end }}
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
