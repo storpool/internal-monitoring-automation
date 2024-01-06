@@ -17,14 +17,14 @@
 {{- end }}
 
 {{ define "__alert_severity" -}}
-    {{- if eq .Labels.severity "critical" -}}
+    {{- if eq .CommonLabels.severity "critical" -}}
     *Severity:* `Critical`
-    {{- else if eq .Labels.severity "warning" -}}
+    {{- else if eq .CommonLabels.severity "warning" -}}
     *Severity:* `Warning`
-    {{- else if eq .Labels.severity "info" -}}
+    {{- else if eq .CommonLabels.severity "info" -}}
     *Severity:* `Info`
     {{- else -}}
-    *Severity:* :question: {{ .Labels.severity }}
+    *Severity:* :question: {{ .CommonLabels.severity }}
     {{- end }}
 {{- end }}
 
@@ -39,19 +39,19 @@
 {{- end }}
 
 {{ define "slack.storpool.text" -}}
+    {{- if eq .Status "firing" -}}
+        {{ template "__alert_severity" . }}
+        {{- "\n" -}}
+    {{- end -}}
+    {{- if eq (index .CommonLabels "kind") "host" -}}
+        *Host*: `{{ .GroupLabels.instance }}`
+    {{- else -}}
+        *Instance*: `{{ .GroupLabels.instance }}`
+    {{- end -}}
     {{- range .Alerts -}}
-        {{- "\n" -}}
-        {{ if eq .Status "firing" }}
-            {{ template "__alert_severity" . }}
-        {{- end -}}
-        {{- "\n" -}}
-        {{- if eq (index .Labels "kind") "host" -}}
-            *Host*: `{{ .Labels.instance }}`
-        {{ else -}}
-            *Instance*: `{{ .Labels.instance }}`
-        {{ end -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
+                {{- "\n" -}}
                 {{ .Annotations.description }}
             {{- end -}}
         {{- end -}}
