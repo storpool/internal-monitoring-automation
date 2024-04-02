@@ -1,0 +1,19 @@
+{% for host in groups["all"] %}
+{% if "services" in hostvars[host] and ("http" in hostvars[host]["services"] or "https" in hostvars[host]["services"]) %}
+- targets:
+{% if "http" in hostvars[host]["services"] %}
+    - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["http"] }}/health
+{% endif %}
+{% if "https" in hostvars[host]["services"] %}
+    - {{ hostvars[host]["ansible_host"] }}:{{ hostvars[host]["services"]["https"] }}/health
+{% endif %}
+  labels:
+    instance: {{ host }}
+{% if host in groups['baremetal_machines'] %}
+    location: {{ hostvars[host]['site'] }}
+{% else %}
+    location: moonstone
+{% endif %}
+    environment: production
+{% endif %}
+{% endfor %}
