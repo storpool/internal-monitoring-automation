@@ -9,10 +9,12 @@ spec:
   metricsPath: /probe
   scrapeInterval: 5s
   params:
-    module: [ ping_v4 ]
+    module: [ ssh_banner ]
   relabelings:
-    - sourceLabels: [ __address__ ]
-      targetLabel: __param_target
+    - source_labels: [ __address__ ]
+      target_label: __param_target
+      regex: '([^:]+)(:[0-9]+)?'
+      replacement: '${1}:22'
     - targetLabel: __address__
       replacement: blackbox-exporter:9115
   staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/icmp.yaml.j2') | from_yaml }}
