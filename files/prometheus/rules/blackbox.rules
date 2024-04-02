@@ -1,0 +1,22 @@
+---
+groups:
+  - name: ICMP
+    rules:
+      - alert: NoPing
+        expr: 'probe_success{job=~".*ping-v4"} == 0'
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.instance }} not reachable'
+          description: 'IPv4 connectivity to {{ $labels.instance }} has been unavailable for more than 2 minutes.'
+  - name: SSH
+    rules:
+      - alert: NoSSH
+        expr: 'probe_success{job=~".*ssh-service"} == 0'
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.instance }} not reachable'
+          description: 'SSH access at {{ $labels.instance }} has been unavailable for more than 2 minutes.'

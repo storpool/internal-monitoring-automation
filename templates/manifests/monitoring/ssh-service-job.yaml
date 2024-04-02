@@ -17,4 +17,4 @@ spec:
       replacement: '${1}:22'
     - targetLabel: __address__
       replacement: blackbox-exporter:9115
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/icmp.yaml.j2') | from_yaml }}
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/ssh_service.yaml.j2') | from_yaml }}
