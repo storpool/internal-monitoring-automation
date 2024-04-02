@@ -29,9 +29,6 @@
         release_namespace: prometheus-operator
         chart_ref: prometheus-community/kube-prometheus-stack
         values: "{{ lookup('file', 'helm/values/kube-prometheus-stack.yaml') | from_yaml }}"
-        set_values:
-          - value: "prometheusOperator.image.tag={{ prometheus_operator }}"
-          - value: "prometheusOperator.prometheusConfigReloader.image.tag={{ prometheus_operator }}"
 
     - name: Deploying the VictoriaMetrics Operator
       kubernetes.core.helm:
@@ -40,7 +37,6 @@
         chart_ref: vm/victoria-metrics-operator
         set_values:
           - value: "createCRD=false"
-          - value: "image.tag={{ victoriametrics_operator }}"
         create_namespace: yes
   vars_files:
     - vars/operators.yaml
