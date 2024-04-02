@@ -6,6 +6,7 @@ metadata:
   labels:
     storpool.com/env: production
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/name: karma
