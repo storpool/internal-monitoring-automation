@@ -18,6 +18,7 @@ spec:
       containers:
         - name: karma
           image: ghcr.io/prymitive/karma:latest
+          imagePullPolicy: always
           args:
             - --config.file=/etc/karma/config.yaml
           ports:
