@@ -7,6 +7,7 @@ groups:
         for: 60s
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Host IPMI module is down'
           description: 'Host {{ $labels.instance }} IPMI module {{ $labels.collector }} is down'
@@ -16,6 +17,7 @@ groups:
         for: 60s
         labels:
           severity: critical
+          host: kind
         annotations:
           summary: 'Host IPMI sensor {{ $labels.name }} state is critical'
           description: 'Host {{ $labels.instance }} IPMI sensor {{ $labels.name }} of type {{ $labels.type }} is in critical state.'
@@ -25,6 +27,7 @@ groups:
         for: 60s
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Host fan speed is over critical limit'
           description: 'Host {{ $labels.instance }} {{ $labels.name }} speed is over the critical limit.'

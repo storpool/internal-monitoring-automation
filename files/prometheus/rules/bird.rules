@@ -7,6 +7,7 @@ groups:
         for: 4s
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'BGP session is down'
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} is down.'
@@ -16,6 +17,7 @@ groups:
         for: 30s
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'BGP session did not accept any prefix'
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not import any prefix from its neighbour.'

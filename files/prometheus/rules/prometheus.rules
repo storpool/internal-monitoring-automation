@@ -7,6 +7,7 @@ groups:
         for: 30s
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus self-monitoring job'
           description: 'Prometheus self-monitoring job is missing, Prometheus might have crashed'
@@ -16,6 +17,7 @@ groups:
         for: 1m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus target down'
           description: 'Prometheus target {{ $labels.instance }} from job {{ $labels.job }} is down.'
@@ -25,6 +27,7 @@ groups:
         for: 15s
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus all targets missing'
           description: 'A Prometheus job does not have any living target anymore.'
@@ -34,6 +37,7 @@ groups:
         for: 0s
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus configuration reload failure'
           description: 'Prometheus `{{ $labels.instance }}` configuration failed to reload. Please inspect the configuration file.'
@@ -43,6 +47,7 @@ groups:
         for: 10m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus too many restarts'
           description: 'Prometheus instance {{ $labels.instance }} has restarted more than twice in the last 15 minutes.'
@@ -52,6 +57,7 @@ groups:
         for: 0s
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus AlertManager configuration reload failure'
           description: 'AlertManager instance {{ $labels.instance }} configuration failed to reload.'
@@ -61,6 +67,7 @@ groups:
         for: 0s
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus AlertManager config not synced'
           description: 'Configurations of AlertManager cluster instances are out of sync.'
@@ -70,6 +77,7 @@ groups:
         for: 0s
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus not connected to Alertmanager'
           description: 'Prometheus instance {{ $labels.instance }} does not have any Alertmanager connected to it.'
@@ -79,6 +87,7 @@ groups:
         for: 1m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus rule evaluation failures'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} rule evaluation failures, leading to potentially ignored alerts.'
@@ -88,6 +97,7 @@ groups:
         for: 1m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus template text expansion failures'
           description: 'Prometheus instance `{{ $labels.instance }}` encountered {{ $value }} template text expansion failures.'
@@ -97,6 +107,7 @@ groups:
         for: 5m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus rule evaluation slow'
           description: 'Prometheus rule evaluation on instance `{{ $labels.instance }}` took more time than the scheduled interval. It indicates a slower storage backend access or too complex queries.'
@@ -106,6 +117,7 @@ groups:
         for: 30m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus notifications backlog too high'
           description: 'The Prometheus notification queue on instance {{ $labels.instance }} has not been empty for 1 hour'
@@ -115,6 +127,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus AlertManager notification failing'
           description: 'Alertmanager instance {{ $labels.instance }} is failing to send notifications.'
@@ -124,6 +137,7 @@ groups:
         for: 0m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus has no targets'
           description: 'Prometheus instance {{ $labels.instance }} has no target in service discovery.'
@@ -133,6 +147,7 @@ groups:
         for: 5m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus target scraping slow'
           description: 'Prometheus instance {{ $labels.instance }} is scraping exporters slowly.'
@@ -142,6 +157,7 @@ groups:
         for: 5m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus large scrape'
           description: 'Prometheus instance {{ $labels.instance }} has many scrapes that exceed the sample limit.'
@@ -151,6 +167,7 @@ groups:
         for: 0m
         labels:
           severity: warning
+          kind: instance
         annotations:
           summary: 'Prometheus target scrape duplicate'
           description: 'Prometheus has many samples rejected due to duplicate timestamps but different values.'
@@ -160,6 +177,7 @@ groups:
         for: 30s
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB checkpoint creation failures'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} checkpoint creation failures.'
@@ -169,6 +187,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB checkpoint deletion failures'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} checkpoint deletion failures.'
@@ -178,6 +197,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB compactions failed'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB compactions failures.'
@@ -187,6 +207,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB head truncations failed'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB head truncation failures.'
@@ -196,6 +217,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instnace
         annotations:
           summary: 'Prometheus TSDB reload failures'
           description: 'Prometheus instance {{ $labels.instance }} encountered {{ $value }} TSDB reload failures.'
@@ -205,6 +227,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB WAL corruptions'
           description: 'Prometheus encountered {{ $value }} TSDB WAL corruptions.'
@@ -214,6 +237,7 @@ groups:
         for: 0m
         labels:
           severity: critical
+          kind: instance
         annotations:
           summary: 'Prometheus TSDB WAL truncations failed'
           description: 'Prometheus encountered {{ $value }} TSDB WAL truncation failures.'

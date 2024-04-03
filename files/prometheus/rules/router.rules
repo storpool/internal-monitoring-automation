@@ -7,6 +7,7 @@ groups:
         for: 30s
         labels:
           severity: warning
+          kind: host
         annotations:
           summary: 'NIC lost carrier'
           description: 'NIC {{ $labels.device }} on host {{ $labels.instance }} lost carrier.'

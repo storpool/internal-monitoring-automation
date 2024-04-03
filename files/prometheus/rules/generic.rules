@@ -11,20 +11,12 @@ groups:
           summary: 'Ensure entire alerting pipeline is functional'
           description: 'This is an alert meant to ensure that the entire alerting pipeline is functional. This alert is always firing, therefore it should always be firing in Alertmanager and always fire against a receiver. There are integrations with various notification mechanisms that send a notification when this alert is not firing.'
 
-      - alert: OpenVPNServiceDown
-        expr: 'node_systemd_unit_state{name=~"openvpn.*", state="failed"} == 1'
-        for: 2m
-        labels:
-          severity: warning
-        annotations:
-          summary: 'OpenVPN service is down'
-          description: 'OpenVPN service {{ $labels.name }} on host {{ $labels.instance }} failed.'
-
       - alert: ReceiveReportServiceDown
         expr: 'node_systemd_unit_state{name="receive_reports.service", state="failed"} == 1'
         for: 2m
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Receiving reports service is down'
           description: 'Receiving reports service {{ $labels.name }} on host {{ $labels.instance }} failed.'
@@ -34,6 +26,7 @@ groups:
         for: 2m
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'Automatic report processing service is down'
           description: 'Automatic report processing service {{ $labels.name }} on host {{ $labels.instance }} failed.'

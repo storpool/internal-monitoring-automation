@@ -7,6 +7,7 @@ groups:
         for: 1m
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'InfluxDB service on {{ $labels.instance }} has been stopped'
           description: 'InfluxDB systemd service has been stopped for more than 1 minute.'
@@ -16,6 +17,7 @@ groups:
         for: 1m
         labels:
           severity: critical
+          kind: host
         annotations:
           summary: 'InfluxDB HTTP endpoint cannot be accessed'
           description: 'Prometheus cannot access InfluxDB HTTP endpoint at {{ $labels.address }} for more than 1 minute.'
