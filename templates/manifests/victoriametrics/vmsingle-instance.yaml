@@ -6,6 +6,7 @@ metadata:
 spec:
   extraArgs:
     search.maxConcurrentRequests: '16'
+    dedup.minScrapeInterval: 3s
   removePvcAfterDelete: true
   resources:
     limits:
