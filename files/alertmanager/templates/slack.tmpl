@@ -41,7 +41,7 @@
 {{ define "slack.storpool.text" -}}
     {{- if eq .Status "firing" -}}
         {{ template "__alert_severity" . }}
-        {{- "\n" -}}
+        {{- "\n" }}
     {{- end -}}
     {{- if eq (index .CommonLabels "kind") "host" -}}
         *Host*: `{{ .GroupLabels.instance }}`
@@ -53,7 +53,7 @@
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
-                {{- "\n" -}}
+                {{- "\n" }}
                 {{ .Annotations.description }}
             {{- end -}}
         {{- end -}}
