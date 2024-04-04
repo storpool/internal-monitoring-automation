@@ -6,6 +6,7 @@ compose:
   ansible_host: (name | replace(" ", "")) + "." + (network_id_domain_map | dict2items(key_name="network_id", value_name="domain_name") | first)["domain_name"] if network_id_domain_map | length else (nic | selectattr("ip", "defined") | first)["ip"]
   running: state == "active" and lcm_state == "running"
   services: dict(user_attributes.services | split(",") | map("split", ":")) if user_attributes.services is defined else {}
+  healthchecks: list(user_attributes.healthchecks | split(",")) if user_attributes.healthchecks is defined else {}
 groups:
   virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
   deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'

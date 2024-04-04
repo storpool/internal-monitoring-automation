@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
-  name: ssh-service
+  name: web-service
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
@@ -11,8 +11,8 @@ spec:
   params:
     module: [ http_2xx ]
   relabelings:
-    - source_labels: [ __address__ ]
-      target_label: __param_target
+    - sourceLabels: [ __address__ ]
+      targetLabel: __param_target
     - targetLabel: __address__
       replacement: blackbox-exporter:9115
   staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/web_service.yaml.j2') | from_yaml }}
