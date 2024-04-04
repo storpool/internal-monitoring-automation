@@ -11,6 +11,11 @@
         resource_definition: "{{ lookup('template', 'manifests/monitoring/ssh-service-job.yaml') | from_yaml }}"
         apply: yes
 
+    - name: Creating the web-service ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/web-service-job.yaml') | from_yaml }}"
+        apply: yes
+
 - name: Configuring snmp-exporter jobs
   hosts: localhost
   tasks:
