@@ -3,7 +3,7 @@
 - targets:
 {% for endpoint in hostvars[host]["healthchecks"] %}
     - {{ endpoint }}
-{% endif %}
+{% endfor %}
   labels:
     instance: {{ host }}
     location: moonstone
