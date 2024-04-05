@@ -11,8 +11,8 @@ spec:
   params:
     module: [ ssh_banner ]
   relabelings:
-    - source_labels: [ __address__ ]
-      target_label: __param_target
+    - sourceLabels: [ __address__ ]
+      targetLabel: __param_target
       regex: '([^:]+)(:[0-9]+)?'
       replacement: '${1}:22'
     - targetLabel: __address__
