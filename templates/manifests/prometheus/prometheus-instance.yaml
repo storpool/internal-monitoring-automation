@@ -59,11 +59,6 @@ spec:
         capacity: 20000
         maxShards: 30
         maxSamplesPerSend: 10000
-      writeRelabelConfigs:
-        - separator: ;
-          regex: prometheus_replica
-          replacement: $1
-          action: labeldrop
   resources:
     requests:
       memory: 400Mi
