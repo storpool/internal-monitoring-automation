@@ -53,8 +53,8 @@
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
-                {{- "\n" }}
-                {{ .Annotations.description }}
+                {{- "\n" -}}
+                {{- .Annotations.description -}}
             {{- end -}}
         {{- end -}}
     {{- end -}}
