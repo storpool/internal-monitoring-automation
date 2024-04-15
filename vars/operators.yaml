@@ -1,2 +1,2 @@
-prometheus_operator: v0.72.0
-victoriametrics_operator: v0.42.3
+prometheus_operator: v0.73.1
+victoriametrics_operator: v0.42.4
