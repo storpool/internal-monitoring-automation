@@ -5,6 +5,7 @@ metadata:
   namespace: internal-monitoring
 spec:
   extraArgs:
+    dedup.minScrapeInterval: '3s'
     search.maxConcurrentRequests: '16'
   removePvcAfterDelete: true
   resources:
@@ -17,6 +18,6 @@ spec:
       - ReadWriteOnce
     resources:
       requests:
-        storage: 1Ti
+        storage: 2Ti
     storageClassName: storpool-nvme-database
     volumeName: pv-victoriametrics-data

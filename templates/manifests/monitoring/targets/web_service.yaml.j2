@@ -1,8 +1,8 @@
 {% for host in groups["all"] %}
-{% if "healthchecks" in hostvars[host] and hostvars[host]["healthchecks"] | length %}
+{% if "healthchecks" in hostvars[host] and hostvars[host]["healthcheck_url"] | length %}
 - targets:
-{% for endpoint in hostvars[host]["healthchecks"] %}
-    - {{ endpoint }}
+{% for url in hostvars[host]["healthcheck_url"] %}
+    - {{ url }}
 {% endfor %}
   labels:
     instance: {{ host }}
