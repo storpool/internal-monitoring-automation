@@ -9,5 +9,7 @@ compose:
   healthcheck_url: user_attributes.healthcheck_url | split(",") if user_attributes.healthcheck_url is defined else []
 groups:
   virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
-  deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'
   daily_upgrades: 'user_attributes.labels is defined and "autoupdate" in user_attributes.labels'
+  mysql_hosts: 'user_attributes.labels is defined and "mysql" in user_attributes.labels'
+  postgresql_hosts: 'user_attributes.labels is defined and "postgresql" in user_attributes.labels'
+  deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'

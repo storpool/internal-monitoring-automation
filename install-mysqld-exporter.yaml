@@ -1,0 +1,22 @@
+---
+- name: Deploy mysqld exporter
+  hosts: mysql_hosts
+  pre_tasks:
+    - name: Installing PyMySQL
+      ansible.builtin.package:
+        name: "{{ 'python-pymysql' if ansible_pkg_mgr == 'apt' else 'python3-PyMySQL' }}"
+        state: present
+    - name: Checking if the mysql exporter user password is defined
+      ansible.builtin.assert:
+        that:
+          - mysqld_exporter_password is defined
+        fail_msg: Please set the MySQL exporter user password via mysqld_exporter_password
+    - name: Creating the mysqld-exporter user
+      community.mysql.mysql_user:
+        name: exporter
+        password: "{{ mysql_exporter_password }}"
+        priv: '*.*: PROCESS, REPLICATION CLIENT, SELECT'
+        login_unix_socket: /run/mysqld/mysqld.sock
+  roles:
+    - prometheus.prometheus.mysqld_exporter
+
