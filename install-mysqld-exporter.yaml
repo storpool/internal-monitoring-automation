@@ -4,7 +4,7 @@
   pre_tasks:
     - name: Installing PyMySQL
       ansible.builtin.package:
-        name: "{{ 'python-pymysql' if ansible_pkg_mgr == 'apt' else 'python3-PyMySQL' }}"
+        name: "{{ 'python3-pymysql' if ansible_pkg_mgr == 'apt' else 'python3-PyMySQL' }}"
         state: present
     - name: Checking if the mysql exporter user password is defined
       ansible.builtin.assert:
