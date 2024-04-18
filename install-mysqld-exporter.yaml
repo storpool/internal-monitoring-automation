@@ -15,7 +15,7 @@
     - name: Creating the mysqld-exporter user
       community.mysql.mysql_user:
         name: exporter
-        password: "{{ mysql_exporter_password }}"
+        password: "{{ mysqld_exporter_password  }}"
         priv: '*.*: PROCESS, REPLICATION CLIENT, SELECT'
         login_unix_socket: /run/mysqld/mysqld.sock
   roles:
