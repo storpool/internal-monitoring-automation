@@ -3,6 +3,7 @@
   hosts: mysql_hosts
   pre_tasks:
     - name: Installing PyMySQL
+      become: yes
       ansible.builtin.package:
         name: "{{ 'python3-pymysql' if ansible_pkg_mgr == 'apt' else 'python3-PyMySQL' }}"
         state: present
