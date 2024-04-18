@@ -11,23 +11,3 @@ groups:
         annotations:
           summary: 'InfluxDB HTTP endpoint cannot be accessed'
           description: 'Prometheus cannot access InfluxDB HTTP endpoint at {{ $labels.address }} for more than 1 minute.'
-
-      - alert: InfluxDBServiceInactive
-        expr: 'node_systemd_unit_state{name="influxdb.service", state="active"} == 0'
-        for: 1m
-        labels:
-          severity: critical
-          kind: host
-        annotations:
-          summary: 'InfluxDB service on {{ $labels.instance }} is not running'
-          description: 'InfluxDB systemd service has been stopped for more than 1 minute.'
-
-      - alert: CQSchedServiceInactive
-        expr: 'node_systemd_unit_state{name="cqsched.service", state="active"} == 0'
-        for: 1m
-        labels:
-          severity: critical
-          kind: host
-        annotations:
-          summary: 'InfluxDB cqsched service on {{ $labels.instance }} is not running'
-          description: 'InfluxDB systemd service has been stopped for more than 1 minute.'

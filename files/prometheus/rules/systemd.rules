@@ -1,0 +1,13 @@
+---
+groups:
+  - name: systemd
+    rules:
+      - alert: SystemdUnitFailed
+        expr: 'node_systemd_unit_state{state="failed", type=~"simple|forking", name=~".*.service"} != 0'
+        for: 2m
+        labels:
+          severity: critical
+          kind: host
+        annotations:
+          summary: 'Systemd unit transitioned to failed state'
+          description: 'Systemd unit {{ $labels.name }} went into failed state'

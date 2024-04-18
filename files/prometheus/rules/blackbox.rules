@@ -19,4 +19,14 @@ groups:
           severity: warning
         annotations:
           summary: '{{ $labels.instance }} not reachable'
-          description: 'SSH access at {{ $labels.instance }} has been unavailable for more than 2 minutes.'
+          description: 'SSH service at {{ $labels.instance }} has been unavailable for more than 2 minutes.'
+  - name: HTTP
+    rules:
+      - alert: NoHTTP
+        expr: 'probe_success{job=~".*web-service"} == 0'
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.instance }} HTTP service not accessible'
+          description: 'HTTP service at {{ $labels.instance }} has been unavailable for more than 2 minutes.'
