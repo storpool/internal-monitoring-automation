@@ -78,3 +78,11 @@
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bird-service-job.yaml') | from_yaml }}"
         apply: yes
+
+- name: Configuring MySQL job
+  hosts: localhost
+  tasks:
+    - name: Creating the MySQL ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/mysql-service-job.yaml') | from_yaml }}"
+        apply: yes
