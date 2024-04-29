@@ -6,6 +6,7 @@ collections:
   - community.general
   - community.grafana
   - community.mysql
+  - community.postgresql
   - netbox.netbox
   - name: netcho.opennebula
     type: git
