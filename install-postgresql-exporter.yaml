@@ -3,6 +3,10 @@
   hosts: postgresql_hosts
   become: yes
   pre_tasks:
+    - name: Installing psycopg2 package
+      ansible.builtin.package:
+        name: python3-psycopg2
+        state: present
     - name: Creating exporter user
       community.postgresql.postgresql_user:
         name: "{{ postgres_exporter_system_user }}"
