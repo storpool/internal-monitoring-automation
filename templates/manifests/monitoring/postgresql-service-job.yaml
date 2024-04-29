@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: postgresql-service
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  honorLabels: true
+  relabelings:
+    - sourceLabels: [ __address__ ]
+      targetLabel: __address__
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/postgresql_service.yaml.j2') | from_yaml }}

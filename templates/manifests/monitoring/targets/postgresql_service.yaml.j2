@@ -1,0 +1,8 @@
+{% for host in groups["postgresql_hosts"] %}
+- targets:
+    - {{ hostvars[host]["ansible_host"] }}:9178
+  labels:
+    instance: {{ host }}
+    location: moonstone
+    environment: production
+{% endfor %}

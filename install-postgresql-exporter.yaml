@@ -1,0 +1,6 @@
+---
+- name: Deploy postgres exporter
+  hosts: postgresql_hosts
+  become: yes
+  roles:
+    - prometheus.prometheus.postgres_exporter
