@@ -2,6 +2,11 @@
 - name: Deploy postgres exporter
   hosts: postgresql_hosts
   pre_tasks:
+    - name: Installing acl package
+      become: yes
+      ansible.builtin.package:
+        name: acl
+        state: present
     - name: Installing psycopg2 package
       become: yes
       ansible.builtin.package:
