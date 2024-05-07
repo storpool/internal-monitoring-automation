@@ -1,25 +1,32 @@
 ---
 - name: Deploy postgres exporter
   hosts: postgresql_hosts
-  become: yes
   pre_tasks:
     - name: Installing psycopg2 package
+      become: yes
       ansible.builtin.package:
         name: python3-psycopg2
         state: present
     - name: Creating exporter user
+      become: yes
+      become_user: postgres
       community.postgresql.postgresql_user:
         name: "{{ postgres_exporter_system_user }}"
     - name: Allowing the exporter user to connect to the postgres database
+      become: yes
+      become_user: postgres
       community.postgresql.postgresql_privs:
         db: postgres
         privs: CONNECT
         type: database
         roles: "{{ postgres_exporter_system_user }}"
     - name: Granting monitoring permissions to the exporter user
+      become: yes
+      become_user: postgres
       community.postgresql.postgresql_privs:
         db: postgres
         privs: pg_monitor
         roles: "{{ postgres_exporter_system_user }}"
   roles:
-    - prometheus.prometheus.postgres_exporter
+    - name: prometheus.prometheus.postgres_exporter
+      become: yes
