@@ -1,6 +1,6 @@
 {% for host in groups["postgresql_hosts"] %}
 - targets:
-    - {{ hostvars[host]["ansible_host"] }}:9178
+    - {{ hostvars[host]["ansible_host"] }}:9187
   labels:
     instance: {{ host }}
     location: moonstone
