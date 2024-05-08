@@ -28,10 +28,9 @@
     - name: Granting monitoring permissions to the exporter user
       become: yes
       become_user: postgres
-      community.postgresql.postgresql_privs:
-        db: postgres
-        privs: pg_monitor
-        roles: "{{ postgres_exporter_system_user }}"
+      community.postgresql.postgresql_membership:
+        group: pg_monitor
+        target_role: "{{ postgres_exporter_system_user }}"
   roles:
     - name: prometheus.prometheus.postgres_exporter
       become: yes
