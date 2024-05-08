@@ -94,3 +94,12 @@
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/postgresql-service-job.yaml') | from_yaml }}"
         apply: yes
+
+- name: Configuring Jenkins job
+  hosts: localhost
+  tasks:
+    - name: Creating the PostgreSQL ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('file', 'monitoring/jenkins-job.yaml') | from_yaml }}"
+        apply: yes
+

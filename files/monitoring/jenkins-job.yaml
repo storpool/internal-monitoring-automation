@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: host-metrics
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  honorLabels: true
+  staticConfigs:
+    - targets:
+      - http://jenkins.storpool.net/prometheus
+      labels:
+        instance: jenkins
+        type: virtual-machine
+        location: mars
+        environment: production
+
