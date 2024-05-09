@@ -7,9 +7,10 @@ metadata:
     storpool.com/env: production
 spec:
   honorLabels: true
+  metricsPath: /prometheus
   staticConfigs:
     - targets:
-      - http://jenkins.storpool.net/prometheus
+      - jenkins.storpool.net
       labels:
         instance: jenkins
         type: virtual-machine
