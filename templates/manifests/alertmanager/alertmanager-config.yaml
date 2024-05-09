@@ -21,8 +21,8 @@ spec:
             matchType: =
       - receiver: slack_send_pre_merge
         matchers:
-          - name: instance
-            value: jenkins
+          - name: jenkins_job
+            value: new-kernels-check
             matchType: =
   receivers:
     - name: 'slack_send_resolved'
