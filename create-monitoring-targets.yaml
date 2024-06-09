@@ -5,17 +5,17 @@
     - name: Creating the ping-v4 ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/ping-v4-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
     - name: Creating the ssh-banner ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/ssh-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
     - name: Creating the web-service ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/web-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring snmp-exporter jobs
   hosts: localhost
@@ -24,12 +24,12 @@
     - name: Creating the network-devices ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/network-devices-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
     - name: Creating the power-devices ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/power-devices-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring host jobs
   hosts: localhost
@@ -51,12 +51,12 @@
     - name: Creating the host-metrics ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/host-metrics-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
     - name: Creating the bmc-metrics ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring InfluxDB job
   hosts: localhost
@@ -73,7 +73,7 @@
     - name: Creating the InfluxDB ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring BIRD job
   hosts: localhost
@@ -82,7 +82,7 @@
     - name: Creating the BIRD ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bird-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring MySQL job
   hosts: localhost
@@ -91,7 +91,7 @@
     - name: Creating the MySQL ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/mysql-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring PostgreSQL job
   hosts: localhost
@@ -99,7 +99,7 @@
     - name: Creating the PostgreSQL ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/postgresql-service-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
 - name: Configuring Jenkins job
   hosts: localhost
@@ -108,5 +108,5 @@
     - name: Creating the Jenkins ScrapeConfig
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('file', 'monitoring/jenkins-job.yaml') | from_yaml }}"
-        apply: yes
+        apply: no
 
