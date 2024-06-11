@@ -29,4 +29,4 @@ groups:
           severity: warning
         annotations:
           summary: 'BGP did not import into the FIB any prefix'
-          description: 'No anycast endpoint was inserted into the FIN from BGP session {{ $labels.name }} on {{ $labels.instance }}.'
+          description: 'No anycast endpoint was inserted into the FIB from BGP session {{ $labels.name }} on {{ $labels.instance }}.'
