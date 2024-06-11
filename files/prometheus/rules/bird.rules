@@ -21,3 +21,12 @@ groups:
         annotations:
           summary: 'BGP session did not accept any prefix'
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not import any prefix from its neighbour.'
+
+      - name: BGPAnycastEndpointDown
+        expr: 'bird_protocol_prefix_preferred_count{import_filter="int_anycast"} == 0'
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'BGP did not import into the FIB any prefix'
+          description: 'No anycast endpoint was inserted into the FIN from BGP session {{ $labels.name }} on {{ $labels.instance }}.'
