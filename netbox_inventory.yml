@@ -15,3 +15,4 @@ groups:
   power_devices: '(role == "pdu" or role == "ups") and "omit-monitor" not in tags'
   routers: 'role == "router" and "omit-monitor" not in tags'
   daily_upgrades: '"autoupdate" in tags'
+  mysql_hosts: 'role == "server" and (services | select_attr("name", "eq", "mysql") | list | length == 1)'
