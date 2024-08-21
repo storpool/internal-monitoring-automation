@@ -1,0 +1,21 @@
+---
+- name: Installing Intel Performance counter monitor
+  become: true
+  ansible.builtin.package:
+    name: pcm
+    state: present
+
+- name: Adding the systemd service unit file
+  become: yes
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/pcm_sensor_server.service
+    src: pcm_sensor_server.service
+    mode: "0644"
+
+- name: Starting the pcm_sensor_server service
+  become: yes
+  ansible.builtin.systemd_service:
+    name: pcm_sensor_server
+    state: started
+    enabled: true
+    daemon_reload: true

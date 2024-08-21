@@ -1,0 +1,12 @@
+[Unit]
+Description=Intel Performance counter monitor exporter
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cgexec -g cpuset:/ /usr/sbin/pcm-sensor-server
+SyslogIdentifier=pcm_sensor_server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
