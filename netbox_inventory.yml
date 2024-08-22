@@ -16,4 +16,4 @@ groups:
   routers: 'role == "router" and "omit-monitor" not in tags'
   daily_upgrades: '"autoupdate" in tags'
   mysql_hosts: 'role == "server" and (services | select_attr("name", "eq", "mysql") | list | length == 1)'
-  intel_baremetal: 'role == "server" and custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "Intel"'
+  intel_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "Intel")'

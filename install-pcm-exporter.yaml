@@ -1,0 +1,4 @@
+- name: Deploying the pcm-exporter on Intel hosts
+  hosts: intel_baremetal,!sp-mgmt
+  roles:
+    - name: pcm-exporter
