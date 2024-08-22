@@ -1,0 +1,9 @@
+{% for host in groups['intel_baremetal'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9738
+  labels:
+    instance: {{ host }}
+    type: bare-metal
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+{% endfor %}

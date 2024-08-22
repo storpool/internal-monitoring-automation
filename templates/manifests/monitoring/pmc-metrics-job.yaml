@@ -1,0 +1,9 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: pmc-metrics
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+spec:
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/intel_baremetal.yaml.j2') | from_yaml }}

@@ -58,6 +58,11 @@
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
         apply: no
 
+    - name: Creating the pmc-metrics ScrapeConfig
+      kubernetes.core.k8s:
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/pmc-metrics-job.yaml') | from_yaml }}"
+        apply: no
+
 - name: Configuring InfluxDB job
   hosts: localhost
   gather_facts: no
