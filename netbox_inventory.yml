@@ -17,3 +17,4 @@ groups:
   daily_upgrades: '"autoupdate" in tags'
   mysql_hosts: 'role == "server" and (services | select_attr("name", "eq", "mysql") | list | length == 1)'
   intel_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "Intel")'
+  amd_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "AMD")'

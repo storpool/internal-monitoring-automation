@@ -7,3 +7,12 @@
     location: {{ hostvars[host]['site'] }}
     environment: production
 {% endfor %}
+{% for host in groups['amd_baremetal'] %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9710
+  labels:
+    instance: {{ host }}
+    type: bare-metal
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+{% endfor %}

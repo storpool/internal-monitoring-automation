@@ -6,4 +6,4 @@ metadata:
   labels:
     storpool.com/env: production
 spec:
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/intel_baremetal.yaml.j2') | from_yaml }}
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/pcm_baremetal.yaml.j2') | from_yaml }}
