@@ -23,7 +23,7 @@ groups:
           description: 'BGP session {{ $labels.name }} on {{ $labels.instance }} located at {{ $labels.location }} did not import any prefix from its neighbour.'
 
       - alert: BGPAnycastEndpointDown
-        expr: 'bird_protocol_prefix_preferred_count{import_filter="int_anycast"} == 0'
+        expr: 'bird_protocol_prefix_preferred_count{import_filter="int_anycast", name !~ ".*wireguard.*"} == 0'
         for: 2m
         labels:
           severity: warning
