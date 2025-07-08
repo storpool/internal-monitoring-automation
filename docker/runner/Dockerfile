@@ -1,4 +1,4 @@
-FROM quay.io/ansible/awx-ee:latest
+FROM quay.io/ansible/awx-ee:24.6.1
 
 USER root
 RUN dnf install -y patch && dnf clean all
