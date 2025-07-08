@@ -6,15 +6,11 @@ metadata:
 spec:
   extraArgs:
     search.maxConcurrentRequests: '16'
-  removePvcAfterDelete: true
   resources:
     limits:
       cpu: '2'
       memory: 5000Mi
   retentionPeriod: '12'
-  image:
-    repository: victoriametrics/victoria-metrics
-    tag: v1.97.1
   storage:
     accessModes:
       - ReadWriteOnce
@@ -22,3 +18,4 @@ spec:
       requests:
         storage: 1536Gi
     storageClassName: storpool-nvme-database
+    volumeName: pvc-3c81dcaa-efe8-4f21-9aca-28066a874a92
