@@ -6,7 +6,6 @@
         resource_definition: "{{ lookup('url', url, split_lines=False) | from_yaml_all | list }}"
       loop:
         - "https://github.com/prometheus-operator/prometheus-operator/releases/download/{{ prometheus_operator }}/stripped-down-crds.yaml"
-        - "https://github.com/VictoriaMetrics/operator/releases/download/{{ victoriametrics_operator }}/crd.yaml"
       loop_control:
         loop_var: url
 
@@ -35,8 +34,6 @@
         release_name: vmoperator
         release_namespace: victoriametrics-operator
         chart_ref: vm/victoria-metrics-operator
-        set_values:
-          - value: "createCRD=false"
         create_namespace: yes
   vars_files:
     - vars/operators.yaml
