@@ -11,5 +11,6 @@ collections:
   - name: netcho.opennebula
     type: git
     source: https://github.com/netcho/opennebula-collection
-  - prometheus.prometheus
-
+  - name: prometheus.prometheus
+    type: git
+    source: https://github.com/storpool/prometheus-ansible
