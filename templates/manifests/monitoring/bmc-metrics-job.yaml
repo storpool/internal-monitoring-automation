@@ -1,5 +1,5 @@
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
 metadata:
   name: bmc-metrics
   namespace: internal-monitoring
@@ -7,9 +7,9 @@ metadata:
     storpool.com/env: production
 spec:
   honorLabels: true
-  scrapeInterval: 15s
+  interval: 15s
   scrapeTimeout: 10s
-  relabelings:
+  relabelConfigs:
     - sourceLabels: [ ipmi_module ]
       targetLabel: __param_module
   staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bmcs.yaml.j2') | from_yaml }}

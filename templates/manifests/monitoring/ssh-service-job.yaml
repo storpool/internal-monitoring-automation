@@ -1,16 +1,16 @@
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
 metadata:
   name: ssh-service
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
 spec:
-  metricsPath: /probe
-  scrapeInterval: 5s
+  path: /probe
+  interval: 5s
   params:
     module: [ ssh_banner ]
-  relabelings:
+  relabelConfigs:
     - sourceLabels: [ __address__ ]
       targetLabel: __param_target
       regex: '([^:]+)(:[0-9]+)?'

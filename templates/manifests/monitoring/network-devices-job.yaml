@@ -1,16 +1,16 @@
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
 metadata:
   name: network-devices
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
 spec:
-  metricsPath: /snmp
+  path: /snmp
   honorLabels: true
-  scrapeInterval: 57s
+  interval: 57s
   scrapeTimeout: 55s
-  relabelings:
+  relabelConfigs:
     - sourceLabels: [ snmp_mib ]
       targetLabel: __param_module
     - sourceLabels: [ __address__ ]
