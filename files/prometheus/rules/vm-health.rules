@@ -102,7 +102,7 @@ groups:
           See more at https://docs.victoriametrics.com/victoriametrics/troubleshooting/#slow-queries.
     
           '
-        summary: 'Read queries fail with timeout for {{ $labels.job `}} on instance {{ $labels.instance }}'
+        summary: 'Read queries fail with timeout for {{ $labels.job }} on instance {{ $labels.instance }}'
       expr: increase(vm_concurrent_select_limit_timeout_total[5m]) > 0
       for: 15m
       labels:
