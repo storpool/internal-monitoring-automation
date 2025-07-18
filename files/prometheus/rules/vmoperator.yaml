@@ -4,9 +4,8 @@ groups:
     rules:
     - alert: LogErrors
       annotations:
-        description: 'Operator has too many errors at logs: {{`{{`}} $value{{`}}`}}, check operator logs'
-        summary: 'Too many errors at logs of operator: {{`{{`}} $value{{`}}`}}'
-      condition: '{{ true }}'
+        description: 'Operator has too many errors at logs: {{ $value }}, check operator logs'
+        summary: 'Too many errors at logs of operator: {{ $value }}'
       expr: |-
         sum(
           rate(
@@ -21,9 +20,8 @@ groups:
         show_at: dashboard
     - alert: ReconcileErrors
       annotations:
-        description: 'Operator cannot parse response from k8s api server, possible bug: {{`{{`}} $value {{`}}`}}, check operator logs'
-        summary: 'Too many errors at reconcile loop of operator: {{`{{`}} $value{{`}}`}}'
-      condition: '{{ true }}'
+        description: 'Operator cannot parse response from k8s api server, possible bug: {{ $value }}, check operator logs'
+        summary: 'Too many errors at reconcile loop of operator: {{ $value }}'
       expr: |-
         sum(
           rate(
@@ -38,9 +36,8 @@ groups:
         show_at: dashboard
     - alert: HighQueueDepth
       annotations:
-        description: 'Operator cannot handle reconciliation load for controller: `{{`{{`}}- $labels.name {{`}}`}}`, current depth: {{`{{`}} $value {{`}}`}}'
-        summary: 'Too many `{{`{{`}}- $labels.name {{`}}`}}` in queue: {{`{{`}} $value {{`}}`}}'
-      condition: '{{ true }}'
+        description: 'Operator cannot handle reconciliation load for controller: {{ $labels.name }}, current depth: {{ $value }}'
+        summary: 'Too many {{ $labels.name }} in queue: {{ $value }}'
       expr: |-
         sum(
           workqueue_depth{
