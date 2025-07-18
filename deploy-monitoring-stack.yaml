@@ -21,40 +21,15 @@
             repository: cts.storpool.com/public/snmp-exporter
             tag: latest
 
-    - name: Creating a VMSingle instance
+    - name: Creating VictoriaMetrics components
       kubernetes.core.k8s:
         state: present
-        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
+        resource_definition: "{{ lookup('file', manifest) | from_yaml }}"
         apply: yes
       loop:
-        - manifests/victoriametrics/vmsingle-instance.yaml
-        - manifests/victoriametrics/servicemonitor.yaml
-      loop_control:
-        loop_var: manifest
-
-    - name: Creating an empty set of static scrape configurations
-      ansible.builtin.set_fact:
-        scrape_configs: []
-
-    - name: Adding Prometheus Pod Monitors
-      kubernetes.core.k8s:
-        state: present
-        resource_definition: "{{ (lookup('file', config_path) | from_yaml) }}"
-        apply: yes
-      loop: "{{ lookup('fileglob', 'prometheus/pod-monitors/*.yaml', wantlist=True) }}"
-      loop_control:
-        loop_var: config_path
-
-    - name: Creating a Prometheus instance
-      kubernetes.core.k8s:
-        state: present
-        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
-        apply: yes
-      loop:
-        - manifests/prometheus/service-account.yaml
-        - manifests/prometheus/cluster-role.yaml
-        - manifests/prometheus/cluster-role-binding.yaml
-        - manifests/prometheus/prometheus-instance.yaml
+        - victoriametrics/vmsingle-metrics.yaml
+        - victoriametrics/vmagent-internal.yaml
+        - victoriametrics/vmalert-internal.yaml
       loop_control:
         loop_var: manifest
 
@@ -121,8 +96,8 @@
       kubernetes.core.k8s:
         state: present
         resource_definition:
-          apiVersion: monitoring.coreos.com/v1
-          kind: PrometheusRule
+          apiVersion: operator.victoriametrics.com/v1beta1
+          kind: VMRule
           metadata:
             name: "{{ rules_file | basename | split('.') | first }}"
             namespace: internal-monitoring

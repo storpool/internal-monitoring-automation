@@ -1,0 +1,16 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: internal
+  namespace: internal-monitoring
+spec:
+  maxScrapeInterval: 60s
+  remoteWrite:
+  - url: http://vmsingle-metrics:8428/api/v1/write
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 2
+      memory: 2048Mi
+  scrapeInterval: 3s
+  selectAllByDefault: true

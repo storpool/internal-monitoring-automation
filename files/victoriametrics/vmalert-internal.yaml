@@ -1,0 +1,26 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlert
+metadata:
+  name: internal
+  namespace: internal-monitoring
+spec:
+  datasource:
+    url: http://vmsingle-metrics:8429
+  evaluationInterval: 3s
+  notifiers:
+  - url: http://alertmanager-internal-0.alertmanager-operated:9093
+  - url: http://alertmanager-internal-1.alertmanager-operated:9093
+  remoteWrite:
+    url: http://vmsingle-metrics:8429
+  replicaCount: 2
+  ruleNamespaceSelector:
+    matchExpressions:
+    - key: storpool.com/kind
+      operator: In
+      values:
+      - service
+      - system
+  ruleSelector:
+    matchLabels:
+      storpool.com/env: production
+  selectAllByDefault: true
