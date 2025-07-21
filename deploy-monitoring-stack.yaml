@@ -65,8 +65,6 @@
       loop:
         - manifests/alertmanager/alertmanager-config.yaml
         - manifests/alertmanager/alertmanager-instance.yaml
-        - manifests/alertmanager/alertmanager-service.yaml
-        - manifests/alertmanager/alertmanager-ingress-route.yaml
       loop_control:
         loop_var: manifest
 
@@ -129,8 +127,9 @@
         resource_definition: "{{ (lookup('template', manifest_path) | from_yaml) }}"
       loop:
         - manifests/karma/karma-configmap.yaml
-        - manifests/karma/karma-service.yaml
         - manifests/karma/karma-deployment.yaml
+        - manifests/karma/karma-service.yaml
+        - manifests/karma/karma-ingressroute.yaml
       loop_control:
         loop_var: manifest_path
       vars:
