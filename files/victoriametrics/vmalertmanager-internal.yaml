@@ -8,6 +8,7 @@ spec:
   replicaCount: 2
   externalURL: http://alertmanager.sof-k8s.storpool.net/
   selectAllByDefault: true
+  disableNamespaceMatcher: true
   templates:
     - key: slack.tmpl
       name: alertmanager-templates

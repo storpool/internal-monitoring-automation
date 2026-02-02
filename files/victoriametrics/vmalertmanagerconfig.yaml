@@ -9,7 +9,6 @@ spec:
     receiver: slack_send_resolved
     group_by:
       - alertname
-      - instance
     group_wait: 1m
     group_interval: 5m
     repeat_interval: 12h
@@ -27,57 +26,57 @@ spec:
           api_url:
             name: alerting-slack-api
             key: url
-          color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
-          title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
-          text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
-          fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
+          color: '{{ template "slack.storpool.color" . }}'
+          title: '{{ template "slack.storpool.title" . }}'
+          title_link: '{{ template "slack.storpool.title_link" . }}'
+          text: '{{ template "slack.storpool.text" . }}'
+          fallback: '{{ template "slack.storpool.fallback" . }}'
           send_resolved: true
           actions:
             - type: button
               text: 'Dashboard :grafana:'
-              url: '{% raw %}{{ template "__alert_dashboard_link" . }}{% endraw %}'
+              url: '{{ template "__alert_dashboard_link" . }}'
             - type: button
               text: 'Silence :no_bell:'
-              url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
+              url: '{{ template "__alert_silence_link" . }}'
     - name: 'slack_dont_send_resolved'
       slack_configs:
         - channel: '#infrastructure-alerts'
           api_url:
             name: alerting-slack-api
             key: url
-          color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
-          title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
-          text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
-          fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
+          color: '{{ template "slack.storpool.color" . }}'
+          title: '{{ template "slack.storpool.title" . }}'
+          title_link: '{{ template "slack.storpool.title_link" . }}'
+          text: '{{ template "slack.storpool.text" . }}'
+          fallback: '{{ template "slack.storpool.fallback" . }}'
           send_resolved: false
           actions:
             - type: button
               text: 'Dashboard :grafana:'
-              url: '{% raw %}{{ (index .Alerts 0).Annotations.node_stats_url }}{% endraw %}'
+              url: '{{ (index .Alerts 0).Annotations.node_stats_url }}'
             - type: button
               text: 'Silence :no_bell:'
-              url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
+              url: '{{ template "__alert_silence_link" . }}'
     - name: 'slack_send_pre_merge'
       slack_configs:
         - channel: '#pre-merge'
           api_url:
             name: alerting-slack-api
             key: url
-          color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
-          title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
-          text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
-          fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
+          color: '{{ template "slack.storpool.color" . }}'
+          title: '{{ template "slack.storpool.title" . }}'
+          title_link: '{{ template "slack.storpool.title_link" . }}'
+          text: '{{ template "slack.storpool.text" . }}'
+          fallback: '{{ template "slack.storpool.fallback" . }}'
           send_resolved: true
           actions:
             - type: button
               text: 'Dashboard :grafana:'
-              url: '{% raw %}{{ template "__alert_dashboard_link" . }}{% endraw %}'
+              url: '{{ template "__alert_dashboard_link" . }}'
             - type: button
               text: 'Silence :no_bell:'
-              url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
+              url: '{{ template "__alert_silence_link" . }}'
   inhibit_rules:
     - source_matchers:
         - severity = critical
@@ -85,7 +84,7 @@ spec:
         - severity = warning
       equal: [ 'alertname', 'instance', 'location' ]
     - source_matchers:
-        - BGPSessionDown
+        - alertname = BGPSessionDown
       target_matchers:
-        - BGPNoImportedPrefixes
+        - alertname = BGPNoImportedPrefixes
       equal: [ 'name', 'instance' ]
