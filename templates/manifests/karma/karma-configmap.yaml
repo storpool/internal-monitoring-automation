@@ -10,7 +10,7 @@ data:
       servers:
     {% for alertmanager_endpoint_address in alertmanager_endpoint_subset.addresses +%}
         - name: {{ alertmanager_endpoint_address.hostname }}
-          uri: http://{{ alertmanager_endpoint_address.hostname }}.alertmanager-operated:9093
+          uri: http://{{ alertmanager_endpoint_address.hostname }}.vmalertmanager-internal:9093
           proxy: true
           timeout: 5m
           healthcheck:

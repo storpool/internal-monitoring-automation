@@ -90,7 +90,7 @@
         api_version: v1
         kind: Endpoints
         namespace: internal-monitoring
-        name: alertmanager-operated
+        name: vmalertmanager-internal
       register: alertmanager_endpoints_result
       tags:
         - karma
