@@ -8,8 +8,8 @@ spec:
     url: http://vmsingle-metrics:8429
   evaluationInterval: 3s
   notifiers:
-  - url: http://alertmanager-internal-0.alertmanager-operated:9093
-  - url: http://alertmanager-internal-1.alertmanager-operated:9093
+  - url: http://vmalertmanager-internal-0.vmalertmanager-internal:9093
+  - url: http://vmalertmanager-internal-1.vmalertmanager-internal:9093
   remoteWrite:
     url: http://vmsingle-metrics:8429
   replicaCount: 2
