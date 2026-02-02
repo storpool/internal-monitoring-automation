@@ -1,0 +1,13 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanager
+metadata:
+  name: internal
+  namespace: internal-monitoring
+spec:
+  replicaCount: 2
+  externalURL: http://alertmanager.sof-k8s.storpool.net/
+  selectAllByDefault: true
+  templates:
+    - key: slack.tmpl
+      name: alertmanager-templates

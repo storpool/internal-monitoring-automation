@@ -30,21 +30,10 @@
         - victoriametrics/vmsingle-metrics.yaml
         - victoriametrics/vmagent-internal.yaml
         - victoriametrics/vmalert-internal.yaml
+        - victoriametrics/vmalertmanagerconfig.yaml
+        - victoriametrics/vmalertmanager-internal.yaml
       loop_control:
         loop_var: manifest
-
-    - name: Searching for a Slack API URL secret
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Secret
-        namespace: internal-monitoring
-        name: "{{ slack_api_url_secret }}"
-      register: slack_api_url_secret_result
-
-    - name: Checking if a Slack API URL secret exists
-      ansible.builtin.assert:
-        that: slack_api_url_secret_result.resources | length == 1
-        fail_msg: Please define a Slack API URL for the Alertmanager to use
 
     - name: Creating a ConfigMap to hold Alertmanager templates
       kubernetes.core.k8s:
@@ -57,16 +46,6 @@
             namespace: internal-monitoring
           data:
             slack.tmpl: "{{ lookup('file', 'alertmanager/templates/slack.tmpl') }}"
-
-    - name: Creating an Alertmanager instance
-      kubernetes.core.k8s:
-        state: present
-        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
-      loop:
-        - manifests/alertmanager/alertmanager-config.yaml
-        - manifests/alertmanager/alertmanager-instance.yaml
-      loop_control:
-        loop_var: manifest
 
     - name: Creating Kubernetes control plane metrics services
       kubernetes.core.k8s:

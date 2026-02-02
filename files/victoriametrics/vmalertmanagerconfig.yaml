@@ -1,18 +1,18 @@
 ---
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: AlertmanagerConfig
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
 metadata:
   name: internal
   namespace: internal-monitoring
 spec:
   route:
     receiver: slack_send_resolved
-    groupBy:
+    group_by:
       - alertname
       - instance
-    groupWait: 1m
-    groupInterval: 5m
-    repeatInterval: 12h
+    group_wait: 1m
+    group_interval: 5m
+    repeat_interval: 12h
     routes:
       - receiver: slack_dont_send_resolved
         matchers:
@@ -26,14 +26,17 @@ spec:
             matchType: =
   receivers:
     - name: 'slack_send_resolved'
-      slackConfigs:
+      slack_configs:
         - channel: '#infrastructure-alerts'
+          api_url:
+            name: alerting-slack-api
+            key: url
           color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
           title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          titleLink: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
+          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
           text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
           fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
-          sendResolved: true
+          send_resolved: true
           actions:
             - type: button
               text: 'Dashboard :grafana:'
@@ -42,14 +45,17 @@ spec:
               text: 'Silence :no_bell:'
               url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
     - name: 'slack_dont_send_resolved'
-      slackConfigs:
+      slack_configs:
         - channel: '#infrastructure-alerts'
+          api_url:
+            name: alerting-slack-api
+            key: url
           color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
           title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          titleLink: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
+          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
           text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
           fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
-          sendResolved: false
+          send_resolved: false
           actions:
             - type: button
               text: 'Dashboard :grafana:'
@@ -58,14 +64,17 @@ spec:
               text: 'Silence :no_bell:'
               url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
     - name: 'slack_send_pre_merge'
-      slackConfigs:
+      slack_configs:
         - channel: '#pre-merge'
+          api_url:
+            name: alerting-slack-api
+            key: url
           color: '{% raw %}{{ template "slack.storpool.color" . }}{% endraw %}'
           title: '{% raw %}{{ template "slack.storpool.title" . }}{% endraw %}'
-          titleLink: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
+          title_link: '{% raw %}{{ template "slack.storpool.title_link" . }}{% endraw %}'
           text: '{% raw %}{{ template "slack.storpool.text" . }}{% endraw %}'
           fallback: '{% raw %}{{ template "slack.storpool.fallback" . }}{% endraw %}'
-          sendResolved: true
+          send_resolved: true
           actions:
             - type: button
               text: 'Dashboard :grafana:'
@@ -73,18 +82,14 @@ spec:
             - type: button
               text: 'Silence :no_bell:'
               url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
-  inhibitRules:
-    - sourceMatch:
-        - name: severity
-          value: critical
-      targetMatch:
-        - name: severity
-          value: warning
+  inhibit_rules:
+    - source_matchers:
+        - critical
+      target_matchers:
+        - warning
       equal: [ 'alertname', 'instance', 'location' ]
-    - sourceMatch:
-        - name: alertname
-          value: BGPSessionDown
-      targetMatch:
-        - name: alertname
-          value: BGPNoImportedPrefixes
+    - source_matchers:
+        - BGPSessionDown
+      target_matchers:
+        - BGPNoImportedPrefixes
       equal: [ 'name', 'instance' ]
