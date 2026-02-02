@@ -16,14 +16,10 @@ spec:
     routes:
       - receiver: slack_dont_send_resolved
         matchers:
-          - name: severity
-            value: info
-            matchType: =
+          - name: severity = info
       - receiver: slack_send_pre_merge
         matchers:
-          - name: jenkins_job
-            value: new-kernels-check
-            matchType: =
+          - name: jenkins_job = new-kernels-check
   receivers:
     - name: 'slack_send_resolved'
       slack_configs:
@@ -84,9 +80,9 @@ spec:
               url: '{% raw %}{{ template "__alert_silence_link" . }}{% endraw %}'
   inhibit_rules:
     - source_matchers:
-        - critical
+        - severity = critical
       target_matchers:
-        - warning
+        - severity = warning
       equal: [ 'alertname', 'instance', 'location' ]
     - source_matchers:
         - BGPSessionDown
