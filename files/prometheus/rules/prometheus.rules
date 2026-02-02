@@ -2,16 +2,6 @@
 groups:
   - name: Prometheus self-monitor rules
     rules:
-      - alert: PrometheusJobMissing
-        expr: 'absent(up{job="prometheus"})'
-        for: 30s
-        labels:
-          severity: warning
-          kind: instance
-        annotations:
-          summary: 'Prometheus self-monitoring job'
-          description: 'Prometheus self-monitoring job is missing, Prometheus might have crashed'
-
       - alert: PrometheusTargetMissing
         expr: up == 0
         for: 1m
