@@ -8,6 +8,7 @@
     environment: production
 {% endfor %}
 {% for host in groups['amd_baremetal'] %}
+{% if "EPYC" in hostvars[host]["custom_fields"]["cpu_model"] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9710
   labels:
@@ -15,4 +16,5 @@
     type: bare-metal
     location: {{ hostvars[host]['site'] }}
     environment: production
+{% endif %}
 {% endfor %}
