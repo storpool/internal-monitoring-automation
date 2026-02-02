@@ -44,11 +44,11 @@
         {{- "\n" }}
     {{- end -}}
     {{- if eq (index .CommonLabels "kind") "host" -}}
-        *Host*: `{{ .GroupLabels.instance }}`
+        *Host*: `{{ .CommonLabels.instance }}`
     {{- else if eq (index .CommonLabels "kind") "instance" -}}
-        *Instance*: `{{ .GroupLabels.instance }}`
+        *Instance*: `{{ .CommonLabels.instance }}`
     {{- else if eq (index .CommonLabels "kind") "device" -}}
-        *Device*: `{{ .GroupLabels.instance }}`
+        *Device*: `{{ .CommonLabels.instance }}`
     {{- end -}}
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
