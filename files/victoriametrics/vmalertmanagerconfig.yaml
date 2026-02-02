@@ -16,10 +16,10 @@ spec:
     routes:
       - receiver: slack_dont_send_resolved
         matchers:
-          - name: severity = info
+          - severity = info
       - receiver: slack_send_pre_merge
         matchers:
-          - name: jenkins_job = new-kernels-check
+          - jenkins_job = new-kernels-check
   receivers:
     - name: 'slack_send_resolved'
       slack_configs:
