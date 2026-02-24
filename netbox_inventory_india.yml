@@ -1,0 +1,22 @@
+plugin: netbox.netbox.nb_inventory
+validate_certs: true
+config_context: true
+plurals: false
+device_query_filters:
+  - has_primary_ip: "true"
+  - region: "india"
+interfaces: true
+group_by:
+  - site
+groups:
+  baremetal_machines: '(role == "server" or role == "router") and not is_virtual and "omit-monitor" not in tags'
+  virtual_machines: '(role == "server" or role == "router") and is_virtual and "omit-monitor" not in tags'
+  deploy_node_exporter: '"monitor-autodeploy" in tags'
+  network_devices: '("switch" in role or role == "ap") and "omit-monitor" not in tags'
+  power_devices: '(role == "pdu" or role == "ups") and "omit-monitor" not in tags'
+  routers: 'role == "router" and "omit-monitor" not in tags'
+  daily_upgrades: '"autoupdate" in tags'
+  mysql_hosts: 'role == "server" and (services | select_attr("name", "eq", "mysql") | list | length == 1)'
+  intel_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "Intel") and "omit-monitor" not in tags'
+  amd_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "AMD") and "omit-monitor" not in tags'
+  dns_servers: 'role == "router" and (services | select_attr("name", "eq", "Internal DNS") | list | length == 1)'
