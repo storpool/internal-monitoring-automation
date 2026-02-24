@@ -4,6 +4,7 @@ config_context: true
 plurals: false
 device_query_filters:
   - has_primary_ip: "true"
+  - region: "sofia"
 interfaces: true
 group_by:
   - site
