@@ -2,9 +2,10 @@ plugin: netbox.netbox.nb_inventory
 validate_certs: true
 config_context: true
 plurals: false
+query_filters:
+  - region: "india"
 device_query_filters:
   - has_primary_ip: "true"
-  - region: "india"
 interfaces: true
 group_by:
   - site
