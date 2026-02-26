@@ -1,4 +1,4 @@
-lugin: "netcho.opennebula.opennebula"
+plugin: "netcho.opennebula.opennebula"
 one_hostname_preference: name
 strict: true
 use_extra_vars: true
