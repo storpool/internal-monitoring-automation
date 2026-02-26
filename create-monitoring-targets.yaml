@@ -4,8 +4,15 @@
   tasks:
     - name: Creating the ping-v4 ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if
+          (groups['virtual_machines'] | default([])) | length > 0 or
+          (groups['baremetal_machines'] | default([])) | length > 0 or
+          (groups['network_devices'] | default([])) | length > 0 or
+          (groups['power_devices'] | default([])) | length > 0
+          else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/ping-v4-job.yaml') | from_yaml }}"
         apply: no
+
 
     - name: Creating the ssh-banner ScrapeConfig
       kubernetes.core.k8s:
@@ -23,11 +30,13 @@
   tasks:
     - name: Creating the network-devices ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['network_devices'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/network-devices-job.yaml') | from_yaml }}"
         apply: no
 
     - name: Creating the power-devices ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['power_devices'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/power-devices-job.yaml') | from_yaml }}"
         apply: no
 
@@ -52,9 +61,14 @@
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/host-metrics-job.yaml') | from_yaml }}"
         apply: no
+        state: "{{ 'present' if
+          (groups['virtual_machines'] | default([])) | length > 0 or
+          (groups['baremetal_machines'] | default([])) | length > 0 
+          else 'absent' }}"
 
     - name: Creating the bmc-metrics ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['baremetal_machines'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
         apply: no
 
@@ -62,6 +76,10 @@
       kubernetes.core.k8s:
         resource_definition: "{{ lookup('template', 'manifests/monitoring/pmc-metrics-job.yaml') | from_yaml }}"
         apply: no
+        state: "{{ 'present' if
+          (groups['intel_baremetal'] | default([])) | length > 0 or
+          (groups['amd_baremetal'] | default([])) | length > 0 
+          else 'absent' }}"
 
 - name: Configuring InfluxDB job
   hosts: localhost
@@ -86,6 +104,7 @@
   tasks:
     - name: Creating the BIRD ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['routers'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bird-service-job.yaml') | from_yaml }}"
         apply: no
 
@@ -95,6 +114,7 @@
   tasks:
     - name: Creating the MySQL ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['mysql_hosts'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/mysql-service-job.yaml') | from_yaml }}"
         apply: no
 
@@ -103,6 +123,7 @@
   tasks:
     - name: Creating the PostgreSQL ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['postgresql_hosts'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/postgresql-service-job.yaml') | from_yaml }}"
         apply: no
 
@@ -112,6 +133,6 @@
   tasks:
     - name: Creating the Jenkins ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['jenkins_hosts'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('file', 'monitoring/jenkins-job.yaml') | from_yaml }}"
         apply: no
-
