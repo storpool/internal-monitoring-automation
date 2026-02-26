@@ -1,4 +1,4 @@
-{% for host in groups["mysql_hosts"] %}
+{% for host in (groups['mysql_hosts'] | default([]))  %}
 - targets:
     - {{ hostvars[host]["ansible_host"] }}:9104
   labels:

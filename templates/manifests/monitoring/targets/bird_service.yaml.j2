@@ -1,4 +1,4 @@
-{% for host in groups['routers'] %}
+{% for host in (groups['routers'] | default([])) %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9324
   labels:

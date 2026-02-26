@@ -1,4 +1,7 @@
-{% for host in (groups['virtual_machines'] + groups['baremetal_machines']) %}
+{% for host in 
+   (groups['virtual_machines'] | default([])) +
+   (groups['baremetal_machines'] | default([]))  
+%}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
