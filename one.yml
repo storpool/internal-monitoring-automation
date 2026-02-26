@@ -3,19 +3,17 @@ one_hostname_preference: name
 strict: true
 use_extra_vars: true
 compose:
-  labels: "{{ user_attributes.labels if user_attributes.labels is defined else [] }}"
-  is_production: "{{ 'Production' in labels }}"
   ansible_host: (name | replace(" ", "")) + "." + (network_id_domain_map | dict2items(key_name="network_id", value_name="domain_name") | first)["domain_name"] if network_id_domain_map | length else (nic | selectattr("ip", "defined") | first)["ip"]
   running: state == "active" and lcm_state == "running"
   services: dict(user_attributes.services | split(",") | map("split", ":")) if user_attributes.services is defined else {}
   healthcheck_url: user_attributes.healthcheck_url | split(",") if user_attributes.healthcheck_url is defined else []
 groups:
-  virtual_machines: "{{ is_production }}"
-  jenkins_hosts: "{{ is_production and 'jenkins' in labels }}"
-  daily_upgrades: "{{ 'autoupdate' in labels }}"
-  mysql_hosts: "{{ 'mysql' in labels }}"
-  postgresql_hosts: "{{ 'postgresql' in labels }}"
-  deploy_node_exporter: "{{ is_production and ('no_monitor_deploy' not in labels) }}"
-  influxdb_service: "{{ is_production and 'influxdb' in services }}"
-  ssh_service: "{{ is_production and 'ssh' in services }}"
-  web_service: "{{ is_production and (healthcheck_url | length > 0) }}"
+  virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
+  jenkins_hosts: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "jenkins" in user_attributes.labels'
+  daily_upgrades: 'user_attributes.labels is defined and "autoupdate" in user_attributes.labels'
+  mysql_hosts: 'user_attributes.labels is defined and "mysql" in user_attributes.labels'
+  postgresql_hosts: 'user_attributes.labels is defined and "postgresql" in user_attributes.labels'
+  deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'
+  influxdb_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is defined and "influxdb" in services'
+  ssh_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is defined and "ssh" in services'
+  web_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is  defined and "healthcheck_url" in services'
