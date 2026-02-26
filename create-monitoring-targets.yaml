@@ -16,11 +16,13 @@
 
     - name: Creating the ssh-banner ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['ssh_service'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/ssh-service-job.yaml') | from_yaml }}"
         apply: no
 
     - name: Creating the web-service ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['web_service'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/web-service-job.yaml') | from_yaml }}"
         apply: no
 
@@ -95,6 +97,7 @@
         verbosity: 3
     - name: Creating the InfluxDB ScrapeConfig
       kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['influxdb_service'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') | from_yaml }}"
         apply: no
 
