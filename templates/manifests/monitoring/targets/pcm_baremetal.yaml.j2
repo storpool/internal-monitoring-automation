@@ -1,4 +1,4 @@
-{% for host in groups['intel_baremetal'] %}
+{% for host in (groups['intel_baremetal'] | default([])) %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9738
   labels:
@@ -7,7 +7,7 @@
     location: {{ hostvars[host]['site'] }}
     environment: production
 {% endfor %}
-{% for host in groups['amd_baremetal'] %}
+{% for host in (groups['amd_baremetal'] | default([])) %}
 {% if "EPYC" in hostvars[host]["custom_fields"]["cpu_model"] %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}:9710
