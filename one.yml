@@ -1,4 +1,4 @@
-plugin: "netcho.opennebula.opennebula"
+lugin: "netcho.opennebula.opennebula"
 one_hostname_preference: name
 strict: true
 use_extra_vars: true
@@ -9,6 +9,7 @@ compose:
   healthcheck_url: user_attributes.healthcheck_url | split(",") if user_attributes.healthcheck_url is defined else []
 groups:
   virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels'
+  jenkins_hosts: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "jenkins" in user_attributes.labels'
   daily_upgrades: 'user_attributes.labels is defined and "autoupdate" in user_attributes.labels'
   mysql_hosts: 'user_attributes.labels is defined and "mysql" in user_attributes.labels'
   postgresql_hosts: 'user_attributes.labels is defined and "postgresql" in user_attributes.labels'
