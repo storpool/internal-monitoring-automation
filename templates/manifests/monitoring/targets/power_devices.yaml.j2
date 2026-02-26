@@ -1,4 +1,4 @@
-{% for host in groups['power_devices'] %}
+{% for host in (groups['power_devices'] | default([])) %}
 - targets:
     - {{ hostvars[host]['ansible_host'] }}
   labels:

@@ -1,4 +1,9 @@
-{% for host in (groups['virtual_machines'] + groups['baremetal_machines'] + groups['network_devices'] + groups['power_devices']) %}
+{% for host in
+   (groups['virtual_machines'] | default([])) +
+   (groups['baremetal_machines'] | default([])) +
+   (groups['network_devices'] | default([])) +
+   (groups['power_devices'] | default([]))
+%}
 - targets:
 {% if hostvars[host]['ansible_host'] | ansible.utils.ipaddr %}
     - {{ hostvars[host]['ansible_host'] }}
