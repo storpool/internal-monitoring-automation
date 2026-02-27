@@ -16,4 +16,4 @@ groups:
   deploy_node_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "no_monitor_deploy" not in user_attributes.labels'
   influxdb_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is defined and "influxdb" in services'
   ssh_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is defined and "ssh" in services'
-  web_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and services is  defined and "healthcheck_url" in services'
+  web_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and healthcheck_url | length > 0'
