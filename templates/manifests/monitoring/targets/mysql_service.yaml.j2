@@ -3,6 +3,6 @@
     - {{ hostvars[host]["ansible_host"] }}:9104
   labels:
     instance: {{ host }}
-    location: moonstone
+    location: {{ hostvars[host]["location"] | default("undefined") }}
     environment: production
 {% endfor %}

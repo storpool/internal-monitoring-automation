@@ -6,7 +6,7 @@
 {% endfor %}
   labels:
     instance: {{ host }}
-    location: moonstone
+    location: {{ hostvars[host]["location"] | default("undefined") }}
     environment: production
 {% endif %}
 {% endfor %}

@@ -15,7 +15,7 @@
 {% if 'site' in hostvars[host] %}
     location: {{ hostvars[host]['site'] }}
 {% else %}
-    location: moonstone
+    location: {{ hostvars[host]["location"] | default("undefined") }}
 {% endif %}
     environment: production
 {% endfor %}

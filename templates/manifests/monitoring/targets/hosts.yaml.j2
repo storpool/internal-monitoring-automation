@@ -12,7 +12,7 @@
     location: {{ hostvars[host]['site'] }}
 {% else %}
     type: virtual-machine
-    location: moonstone
+    location: {{ hostvars[host]["location"] | default("undefined") }}
 {% endif %}
     environment: production
 {% endfor %}
