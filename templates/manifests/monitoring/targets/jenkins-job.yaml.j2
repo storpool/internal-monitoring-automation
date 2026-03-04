@@ -9,7 +9,7 @@ spec:
   honorLabels: true
   path: /prometheus
   staticConfigs:
-{% for host in groups['jenkins_hosts'] %}
+{% for host in (groups['jenkins_hosts'] | default([])) %}
     - targets:
       - jenkins.storpool.net
       labels:
