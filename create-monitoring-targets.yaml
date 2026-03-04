@@ -137,5 +137,5 @@
     - name: Creating the Jenkins ScrapeConfig
       kubernetes.core.k8s:
         state: "{{ 'present' if (groups['jenkins_hosts'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('file', 'monitoring/jenkins-job.yaml.j2') | from_yaml }}"
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/targets/jenkins-job.yaml.j2') | from_yaml }}"
         apply: no
