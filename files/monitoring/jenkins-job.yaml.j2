@@ -11,9 +11,10 @@ spec:
   staticConfigs:
 {% for host in groups['jenkins_hosts'] %}
     - targets:
-        - jenkins.storpool.net
+      - jenkins.storpool.net
       labels:
         instance: "{{ host }}"
+        type: virtual-machine
         location: "{{ hostvars[host]['location'] | default('undefined') }}"
         environment: production
 {% endfor %}
