@@ -13,7 +13,7 @@ spec:
     - targets:
         - jenkins.storpool.net
       labels:
-        instance: "{{host}}""
+        instance: "{{ host }}"
         location: "{{ hostvars[host]['location'] | default('undefined') }}"
         environment: production
 {% endfor %}
