@@ -14,6 +14,6 @@ spec:
       labels:
         instance: jenkins
         type: virtual-machine
-        location: mars
+        location: {{ hostvars[host]["location"] | default("undefined") }}
         environment: production
 
