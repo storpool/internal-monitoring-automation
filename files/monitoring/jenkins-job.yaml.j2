@@ -9,11 +9,11 @@ spec:
   honorLabels: true
   path: /prometheus
   staticConfigs:
+{% for host in groups['jenkins_hosts'] %}
     - targets:
-      - jenkins.storpool.net
+        - jenkins.storpool.net
       labels:
-        instance: jenkins
-        type: virtual-machine
-        location: {{ hostvars[host]["location"] | default("undefined") }}
+        instance: "{{host}}""
+        location: "{{ hostvars[host]['location'] | default('undefined') }}"
         environment: production
-
+{% endfor %}
