@@ -1,4 +1,4 @@
-{{ define "__alert_silence_link" -}}
+{% raw %}{{ define "__alert_silence_link" -}}
     {{- if eq .Status "firing" -}}
         {{ .ExternalURL }}/#/silences/new?filter=%7B
         {{- range .CommonLabels.SortedPairs -}}
@@ -29,7 +29,7 @@
 {{- end }}
 
 {{ define "slack.storpool.title_link" -}}
-    http://{{ alertmanager_internal_domain }}/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
+    http://{% raw %}{{ alertmanager_internal_domain }}{% endraw %}/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
 {{- end }}
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
@@ -92,3 +92,4 @@
         {{- end -}}
     {{ end }}
 {{ end }}
+{% endraw %}
