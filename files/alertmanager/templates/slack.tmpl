@@ -29,7 +29,7 @@
 {{- end }}
 
 {{ define "slack.storpool.title_link" -}}
-    http://internal-alerts.storpool.net/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
+    http://{{ alertmanager_internal_domain }}/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
 {{- end }}
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}

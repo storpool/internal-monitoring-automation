@@ -45,7 +45,7 @@
             name: alertmanager-templates
             namespace: internal-monitoring
           data:
-            slack.tmpl: "{{ lookup('template', 'manifests/slack.tmpl.j2') }}"
+            slack.tmpl: "{{ lookup('file', 'alertmanager/templates/slack.tmpl') | replace('{{ alertmanager_internal_domain }}', alertmanager_internal_domain) }}"
 
     - name: Creating Kubernetes control plane metrics services
       kubernetes.core.k8s:
