@@ -4,3 +4,5 @@ storpool_monitoring_labels:
   metadata:
     labels:
       storpool.com/env: production
+
+alertmanager_internal_domain: "internal-alerts.storpool.net"

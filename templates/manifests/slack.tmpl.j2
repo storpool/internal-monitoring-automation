@@ -1,0 +1,94 @@
+{{ define "__alert_silence_link" -}}
+    {{- if eq .Status "firing" -}}
+        {{ .ExternalURL }}/#/silences/new?filter=%7B
+        {{- range .CommonLabels.SortedPairs -}}
+            {{- if ne .Name "alertname" -}}
+                {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
+            {{- end -}}
+        {{- end -}}
+        alertname%3D"{{- .CommonLabels.alertname -}}"%7D
+    {{- end -}}
+{{- end }}
+
+{{ define "__alert_dashboard_link" -}}
+    {{- if eq (index .CommonLabels "kind") "host" -}}
+        https://inframon.storpool.com/d/rYdddlPWk/node-exporter-full?orgId=1&var-node={{ .CommonLabels.instance }}
+    {{- end -}}
+{{- end }}
+
+{{ define "__alert_severity" -}}
+    {{- if eq .CommonLabels.severity "critical" -}}
+    *Severity:* `Critical`
+    {{- else if eq .CommonLabels.severity "warning" -}}
+    *Severity:* `Warning`
+    {{- else if eq .CommonLabels.severity "info" -}}
+    *Severity:* `Info`
+    {{- else -}}
+    *Severity:* :question: {{ .CommonLabels.severity }}
+    {{- end }}
+{{- end }}
+
+{{ define "slack.storpool.title_link" -}}
+    http://{{ alertmanager_internal_domain }}/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
+{{- end }}
+
+{{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
+
+{{ define "slack.storpool.title" -}}
+  [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}
+{{- end }}
+
+{{ define "slack.storpool.text" -}}
+    {{- if eq .Status "firing" -}}
+        {{ template "__alert_severity" . }}
+        {{- "\n" }}
+    {{- end -}}
+    {{- if eq (index .CommonLabels "kind") "host" -}}
+        *Host*: `{{ .CommonLabels.instance }}`
+    {{- else if eq (index .CommonLabels "kind") "instance" -}}
+        *Instance*: `{{ .CommonLabels.instance }}`
+    {{- else if eq (index .CommonLabels "kind") "device" -}}
+        *Device*: `{{ .CommonLabels.instance }}`
+    {{- end -}}
+    {{- range .Alerts -}}
+        {{- if eq .Status "firing" -}}
+            {{- if index .Annotations "description" -}}
+                {{- "\n" -}}
+                {{- .Annotations.description -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end }}
+
+{{ define "slack.storpool.color" -}}
+    {{ if eq .Status "firing" -}}
+        {{ if eq .CommonLabels.severity "warning" -}}
+            warning
+        {{- else if eq .CommonLabels.severity "critical" -}}
+            danger
+        {{- else -}}
+            #439FE0
+        {{- end -}}
+    {{ else -}}
+    good
+    {{- end }}
+{{- end }}
+
+{{ define "slack.storpool.fallback" }}
+    {{ if eq .Status "firing" }}
+        {{- range .Alerts -}}
+            {{- if index .Annotations "description" -}}
+                {{ .Annotations.description }}
+            {{- end -}}
+            {{- " " -}}
+        {{- end }}
+    {{ else }}
+        {{- range .Alerts -}}
+            {{- if eq (index .Labels "kind") "host" -}}
+                *Host*: `{{ .Labels.instance }}`
+            {{- else -}}
+                *Device*: `{{ .Labels.instance }}`
+            {{- end -}}
+        {{- end -}}
+    {{ end }}
+{{ end }}
