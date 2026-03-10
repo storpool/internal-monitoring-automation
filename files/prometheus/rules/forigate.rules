@@ -123,15 +123,17 @@ groups:
       # NETWORK TRAFFIC
       # -------------------------
 
-      - alert: FortigateHighNetworkUsage
-        expr: fortigate_ha_member_network_usage_ratio > 90
-        for: 2m
+      - alert: FortigateHAUnexpectedFailover
+        expr: |
+          (fortigate_ha_member_network_usage_ratio{role="primary"} 
+          - fortigate_ha_member_network_usage_ratio{role="secondary"}) < 10
+        for: 3m
         labels:
           severity: warning
           kind: firewall
         annotations:
-          summary: 'High network utilization'
-          description: 'Network utilization above 90% on HA member {{ $labels.hostname }}.'
+          summary: "HA traffic gap too small"
+          description: "Network usage on primary HA member is unexpectedly close to secondary, possible failover or misconfiguration."
 
       - alert: FortigateTrafficSpikeRX
         expr: rate(fortigate_interface_receive_bytes_total[1m]) > 1000000000
@@ -167,15 +169,26 @@ groups:
           summary: 'High session count'
           description: 'Fortigate has more than 200k active sessions.'
 
-      - alert: FortigateSessionImbalance
-        expr: max(fortigate_ha_member_sessions) / min(fortigate_ha_member_sessions) > 5
-        for: 5m
+      - alert: FortigateHASessionSyncBroken
+        expr: min(fortigate_ha_member_sessions) == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: HA session synchronization broken
+          description: Secondary firewall reports zero sessions.
+
+      - alert: FortigateHASessionSyncLag
+        expr: |
+          (max(fortigate_ha_member_sessions) > 1000)
+          and
+          (min(fortigate_ha_member_sessions) / max(fortigate_ha_member_sessions) < 0.95)
+        for: 3m
         labels:
           severity: warning
-          kind: firewall
         annotations:
-          summary: 'HA session imbalance'
-          description: 'Session load imbalance between HA members.'
+          summary: HA session tables diverging
+          description: Session count on HA members differs by more than 5%.
 
       # -------------------------
       # LOG SYSTEM
