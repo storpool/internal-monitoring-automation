@@ -90,14 +90,14 @@ groups:
       # -------------------------
 
       - alert: FortigateInterfaceDown
-        expr: fortigate_interface_link_up == 0
+        expr: fortigate_interface_link_up{alias!=""} == 0
         for: 1m
         labels:
-          severity: warning
+          severity: critical
           kind: firewall
         annotations:
           summary: 'Interface down'
-          description: 'Interface {{ $labels.name }} is down.'
+          description: 'Interface {{ $labels.name }} ({{ $labels.alias }}) is down.'
 
       - alert: FortigateInterfaceErrorsRX
         expr: rate(fortigate_interface_receive_errors_total[5m]) > 0
