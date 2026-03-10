@@ -1,6 +1,6 @@
-{% for host in (groups['fortigate'] | default([])) %}
+{% for host in (groups['fortigate_firewalls'] | default([])) %}
 - targets:
-    - https://{{ hostvars[host]['ansible_host'] }}:8443
+    - https://{{ hostvars[host]['oob_ip'] | default(hostvars[host]['ansible_host']) }}:8443
   labels:
     instance: {{ host }}
     type: fortigate

@@ -146,6 +146,6 @@
   tasks:
     - name: Creating the Fortigate ScrapeConfig
       kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['fortigate'] | default([])) | length > 0 else 'absent' }}"
+        state: "{{ 'present' if (groups['fortigate_firewalls'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/fortigate-job.yaml') | from_yaml }}"
         apply: no

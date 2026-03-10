@@ -21,3 +21,4 @@ groups:
   intel_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "Intel") and "omit-monitor" not in tags'
   amd_baremetal: 'role == "server" and (custom_fields["cpu_maker"] is defined and custom_fields["cpu_maker"] == "AMD") and "omit-monitor" not in tags'
   dns_servers: 'role == "router" and (services | select_attr("name", "eq", "Internal DNS") | list | length == 1)'
+  fortigate_firewalls: 'role == "firewall" and platform == "fortios" and "omit-monitor" not in tags'
