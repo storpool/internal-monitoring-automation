@@ -1,0 +1,9 @@
+{% for host in (groups['fortigate'] | default([])) %}
+- targets:
+    - https://{{ hostvars[host]['ansible_host'] }}:8443
+  labels:
+    instance: {{ host }}
+    type: fortigate
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+{% endfor %}

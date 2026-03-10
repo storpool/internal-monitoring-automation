@@ -1,0 +1,254 @@
+---
+groups:
+  - name: FortigateRules
+    rules:
+
+      # -------------------------
+      # CPU
+      # -------------------------
+
+      - alert: FortigateHighCPU
+        expr: fortigate_cpu_usage_ratio > 0.85
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High CPU usage'
+          description: 'CPU usage above 85% on Fortigate processor {{ $labels.processor }}.'
+
+      - alert: FortigateHighVDOMCPU
+        expr: fortigate_vdom_cpu_usage_ratio > 0.85
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High VDOM CPU usage'
+          description: 'VDOM {{ $labels.vdom }} CPU usage above 85%.'
+
+      - alert: FortigateHighCPUIOWait
+        expr: fortigate_system_performance_status_cpu_iowait_ratio > 0.30
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High CPU IO wait'
+          description: 'CPU IO wait above 30% on VDOM {{ $labels.vdom }}.'
+
+      # -------------------------
+      # MEMORY
+      # -------------------------
+
+      - alert: FortigateHighMemoryUsage
+        expr: fortigate_memory_usage_ratio > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High memory usage'
+          description: 'Memory usage above 85% on Fortigate.'
+
+      - alert: FortigateHAMemberHighMemory
+        expr: fortigate_ha_member_memory_usage_ratio > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'HA member memory high'
+          description: 'HA member {{ $labels.hostname }} memory usage above 85%.'
+
+      # -------------------------
+      # HA CLUSTER
+      # -------------------------
+
+      - alert: FortigateHANodeDown
+        expr: absent(fortigate_ha_member_info)
+        for: 2m
+        labels:
+          severity: critical
+          kind: firewall
+        annotations:
+          summary: 'HA member missing'
+          description: 'One Fortigate HA member is not reporting metrics.'
+
+      - alert: FortigateHANoPrimary
+        expr: sum(fortigate_ha_peer_primary) != 1
+        for: 1m
+        labels:
+          severity: critical
+          kind: firewall
+        annotations:
+          summary: 'HA primary missing'
+          description: 'No HA primary detected in Fortigate cluster.'
+
+      # -------------------------
+      # INTERFACES
+      # -------------------------
+
+      - alert: FortigateInterfaceDown
+        expr: fortigate_interface_link_up == 0
+        for: 1m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Interface down'
+          description: 'Interface {{ $labels.name }} is down.'
+
+      - alert: FortigateInterfaceErrorsRX
+        expr: rate(fortigate_interface_receive_errors_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Interface RX errors'
+          description: 'Receive errors detected on interface {{ $labels.name }}.'
+
+      - alert: FortigateInterfaceErrorsTX
+        expr: rate(fortigate_interface_transmit_errors_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Interface TX errors'
+          description: 'Transmit errors detected on interface {{ $labels.name }}.'
+
+      # -------------------------
+      # NETWORK TRAFFIC
+      # -------------------------
+
+      - alert: FortigateHighNetworkUsage
+        expr: fortigate_ha_member_network_usage_ratio > 90
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High network utilization'
+          description: 'Network utilization above 90% on HA member {{ $labels.hostname }}.'
+
+      - alert: FortigateTrafficSpikeRX
+        expr: rate(fortigate_interface_receive_bytes_total[1m]) > 1000000000
+        for: 1m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'RX traffic spike'
+          description: 'High receive traffic on interface {{ $labels.name }}.'
+
+      - alert: FortigateTrafficSpikeTX
+        expr: rate(fortigate_interface_transmit_bytes_total[1m]) > 1000000000
+        for: 1m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'TX traffic spike'
+          description: 'High transmit traffic on interface {{ $labels.name }}.'
+
+      # -------------------------
+      # SESSIONS
+      # -------------------------
+
+      - alert: FortigateHighSessionCount
+        expr: fortigate_current_sessions > 200000
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High session count'
+          description: 'Fortigate has more than 200k active sessions.'
+
+      - alert: FortigateSessionImbalance
+        expr: max(fortigate_ha_member_sessions) / min(fortigate_ha_member_sessions) > 5
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'HA session imbalance'
+          description: 'Session load imbalance between HA members.'
+
+      # -------------------------
+      # LOG SYSTEM
+      # -------------------------
+
+      - alert: FortigateLogDiskUsageHigh
+        expr: fortigate_log_disk_used_bytes / fortigate_log_disk_total_bytes > 0.80
+        for: 10m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Log disk usage high'
+          description: 'Log disk usage above 80% on VDOM {{ $labels.vdom }}.'
+
+      - alert: FortigateFortianalyzerQueueFailure
+        expr: fortigate_log_fortianalyzer_queue_logs{state="failed"} > 0
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Fortianalyzer log queue failure'
+          description: 'Logs failing to send to Fortianalyzer.'
+
+      # -------------------------
+      # DNS
+      # -------------------------
+
+      - alert: FortigateDNSLatencyHigh
+        expr: fortigate_network_dns_latency_seconds > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High DNS latency'
+          description: 'DNS latency above 500ms to {{ $labels.ip }}.'
+
+      # -------------------------
+      # NTP
+      # -------------------------
+
+      - alert: FortigateNTPHighOffset
+        expr: abs(fortigate_system_ntp_offset_seconds) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'High NTP offset'
+          description: 'Clock offset above 500ms from NTP server {{ $labels.server }}.'
+
+      # -------------------------
+      # CERTIFICATES
+      # -------------------------
+
+      - alert: FortigateCertificateExpiringSoon
+        expr: (fortigate_certificate_valid_to_seconds - time()) < 604800
+        for: 1h
+        labels:
+          severity: warning
+          kind: firewall
+        annotations:
+          summary: 'Certificate expiring soon'
+          description: 'Certificate {{ $labels.name }} expires within 7 days.'
+
+      - alert: FortigateCertificateExpired
+        expr: fortigate_certificate_valid_to_seconds < time()
+        for: 5m
+        labels:
+          severity: critical
+          kind: firewall
+        annotations:
+          summary: 'Certificate expired'
+          description: 'Certificate {{ $labels.name }} has expired.'

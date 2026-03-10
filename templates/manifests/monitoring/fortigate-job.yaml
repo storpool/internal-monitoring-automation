@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMScrapeConfig
+metadata:
+  name: fortigate-exporter
+  namespace: internal-monitoring
+  labels:
+    storpool.com/env: production
+    app: fortigate-exporter
+
+spec:
+  interval: 15s
+  path: /probe
+
+  relabelConfigs:
+  - sourceLabels: [__address__]
+    targetLabel: __param_target
+
+  - targetLabel: __address__
+    replacement: fortigate-exporter:9710
+
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/fortigate_targets.yaml.j2') | from_yaml }}

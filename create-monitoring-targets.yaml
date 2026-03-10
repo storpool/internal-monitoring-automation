@@ -139,3 +139,13 @@
         state: "{{ 'present' if (groups['jenkins_hosts'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/targets/jenkins-job.yaml.j2') | from_yaml }}"
         apply: no
+
+- name: Configuring Fortigate job
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Creating the Fortigate ScrapeConfig
+      kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['fortigate'] | default([])) | length > 0 else 'absent' }}"
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/fortigate-job.yaml') | from_yaml }}"
+        apply: no
