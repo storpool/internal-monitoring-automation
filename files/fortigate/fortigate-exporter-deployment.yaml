@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortigate-exporter
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortigate-exporter
+  template:
+    metadata:
+      labels:
+        app: fortigate-exporter
+    spec:
+      containers:
+      - name: fortigate-exporter
+        image: prometheuscommunity/fortigate-exporter:main
+        ports:
+          - containerPort: 9710
+        volumeMounts:
+          - name: config-volume
+            mountPath: /config
+        args:
+          - "-auth-file=/config/fortigate-key.yaml"
+          - "-insecure"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fortigate-config

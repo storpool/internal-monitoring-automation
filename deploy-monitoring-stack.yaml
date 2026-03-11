@@ -116,5 +116,22 @@
       tags:
         - karma
 
+    - name: Install Reloader in internal-monitoring namespace
+      kubernetes.core.helm:
+        name: reloader
+        chart_ref: stakater/reloader
+        release_namespace: internal-monitoring
+        create_namespace: true
+        values:
+          watchGlobally: false
+
+    - name: Deploy Fortigate monitoring stack
+      kubernetes.core.k8s:
+        namespace: internal-monitoring
+        resource_definition: "{{ lookup('file', manifest) | from_yaml }}"
+      loop_control:
+        loop_var: manifest
+      loop: "{{ lookup('fileglob', 'fortigate/*.yaml', wantlist=True) }}"
+
   vars_files:
     - vars/monitoring-stack.yaml
