@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fortigate-config
-data:
-  fortigate-key.yaml: |
-      "https://fortigate:8443":
-          token: fortigate_api_token

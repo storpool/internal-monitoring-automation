@@ -125,6 +125,28 @@
         values:
           watchGlobally: false
 
+    - name: Check if fortigate-config exists
+      kubernetes.core.k8s_info:
+        kind: ConfigMap
+        name: fortigate-config
+        namespace: internal-monitoring
+      register: fortigate_config
+
+    - name: Create fortigate-config if missing
+      kubernetes.core.k8s:
+        state: present
+        resource_definition:
+          kind: ConfigMap
+          metadata:
+            name: fortigate-config
+           namespace: internal-monitoring
+          data:
+            fortigate-key.yaml: |
+                "https://fortigate:8443":
+                    token: fortigate_api_token
+          data:
+      when: fortigate_config.resources | length == 0
+
     - name: Deploy Fortigate monitoring stack
       kubernetes.core.k8s:
         namespace: internal-monitoring
