@@ -139,7 +139,7 @@
           kind: ConfigMap
           metadata:
             name: fortigate-config
-           namespace: internal-monitoring
+            namespace: internal-monitoring
           data:
             fortigate-key.yaml: |
                 "https://fortigate:8443":
