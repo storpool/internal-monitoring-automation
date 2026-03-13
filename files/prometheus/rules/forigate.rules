@@ -182,13 +182,13 @@ groups:
         expr: |
           (max(fortigate_ha_member_sessions) > 1000)
           and
-          (min(fortigate_ha_member_sessions) / max(fortigate_ha_member_sessions) < 0.95)
+          (min(fortigate_ha_member_sessions) / max(fortigate_ha_member_sessions) < 0.90)
         for: 3m
         labels:
           severity: warning
         annotations:
           summary: HA session tables diverging
-          description: Session count on HA members differs by more than 5%.
+          description: Session count on HA members differs by more than 10%.
 
       # -------------------------
       # LOG SYSTEM
