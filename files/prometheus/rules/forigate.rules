@@ -182,7 +182,7 @@ groups:
         expr: |
           (max(fortigate_ha_member_sessions) > 1000)
           and
-          (min(fortigate_ha_member_sessions) / max(fortigate_ha_member_sessions) < 0.90)
+          (min(fortigate_ha_member_sessions) / max(fortigate_ha_member_sessions) > 0.10)
         for: 3m
         labels:
           severity: warning
