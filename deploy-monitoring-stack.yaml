@@ -18,7 +18,7 @@
         values:
           fullnameOverride: snmp-exporter
           image:
-            repository: cts.storpool.com/public/snmp-exporter
+            repository: cts.storpool.com/snmp-exporter/snmp-exporter
             tag: latest
 
     - name: Creating VictoriaMetrics components
