@@ -4,7 +4,6 @@ groups:
     rules:
       - alert: Watchdog
         expr: vector(1)
-        for: 24h
         labels:
           severity: warning
         annotations:
