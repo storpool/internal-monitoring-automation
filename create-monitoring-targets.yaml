@@ -149,3 +149,13 @@
         state: "{{ 'present' if (groups['fortigate_firewalls'] | default([])) | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/fortigate-job.yaml') | from_yaml }}"
         apply: no
+
+- name: Configuring IPSec job
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Creating the IPSec ScrapeConfig
+      kubernetes.core.k8s:
+        state: "{{ 'present' if (groups['ipsec_service'] | default([])) | length > 0 else 'absent' }}"
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/ipsec_service.yaml') | from_yaml }}"
+        apply: no

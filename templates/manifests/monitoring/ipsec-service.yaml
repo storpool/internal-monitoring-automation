@@ -7,7 +7,6 @@ metadata:
     storpool.com/env: production
 spec:
   interval: 15s
-  path: /probe
   relabelConfigs:
   - sourceLabels: [__address__]
     targetLabel: __param_target
