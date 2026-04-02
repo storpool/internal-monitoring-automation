@@ -1,0 +1,9 @@
+{% for host in (groups['ipsec_service'] | default([])) %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9814
+  labels:
+    instance: {{ host }}
+    type: ipsec_service
+    location: {{ hostvars[host]['site'] }}
+    environment: production
+{% endfor %}
