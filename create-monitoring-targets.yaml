@@ -157,5 +157,5 @@
     - name: Creating the IPSec ScrapeConfig
       kubernetes.core.k8s:
         state: "{{ 'present' if (groups['ipsec_service'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/ipsec_service.yaml') | from_yaml }}"
+        resource_definition: "{{ lookup('template', 'manifests/monitoring/ipsec-service.yaml') | from_yaml }}"
         apply: no
