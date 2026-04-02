@@ -4,6 +4,10 @@
   labels:
     instance: {{ host }}
     type: ipsec_service
+{% if host in groups['baremetal_machines'] %}
     location: {{ hostvars[host]['site'] }}
+{% else %}
+    location: {{ hostvars[host]["location"] | default("undefined") }}
+{% endif %}
     environment: production
 {% endfor %}
