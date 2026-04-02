@@ -8,6 +8,6 @@ metadata:
 spec:
   interval: 15s
   relabelConfigs:
-  - sourceLabels: [__address__]
-    targetLabel: __param_target
+    - sourceLabels: [__address__]
+      targetLabel: __param_target
   staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/ipsec_targets.yaml.j2') | from_yaml }}
