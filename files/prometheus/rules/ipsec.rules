@@ -33,17 +33,17 @@ groups:
           description: "Traffic tunnel is not established"
 
       - alert: IKEFlapping
-        expr: changes(strongswan_ike_established_second[10m]) > 1
+        expr: count without (uniqueid) (last_over_time(strongswan_ike_established_second[10m])) > 1
         for: 2m
         labels:
           severity: warning
           kind: ipsec_health
         annotations:
-          summary: "IKE flapping"
-          description: "IKE is frequently reconnecting"
+          summary: "IKE flapping on {{ $labels.instance }}"
+          description: "Tunnel {{ $labels.name }} has reset its connection {{ $value }} times in the last 10 minutes."
 
       - alert: ChildSAFlapping
-        expr: changes(strongswan_sa_established_second[10m]) > 2 and changes(strongswan_ike_established_second[10m]) <= 1 and strongswan_ike_state == 1
+        expr: count without (child_id,ike_id) (last_over_time(strongswan_sa_established_second[10m])) > 1 and strongswan_ike_state == 1
         for: 2m
         labels:
           severity: warning
