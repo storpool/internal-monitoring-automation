@@ -1,0 +1,272 @@
+---
+groups:
+  - name: IPSec-alerts
+    rules:
+      - alert: IKEDown
+        expr: strongswan_ike_state != 1
+        for: 1m
+        labels:
+          severity: critical
+          kind: ipsec_health
+        annotations:
+          summary: "IKE down"
+          description: "IKE tunnel is not established"
+
+      - alert: NoActiveIKEs
+        expr: (strongswan_number_of_ikes_connected == 0) and absent(strongswan_ike_state != 1)
+        for: 1m
+        labels:
+          severity: critical
+          kind: ipsec_health
+        annotations:
+          summary: "No active IKEs"
+          description: "All VPN tunnels are down"
+
+      - alert: ChildSADown
+        expr: strongswan_sa_state{job="ipsec_exporter"} != 1 and strongswan_ike_state == 1
+        for: 1m
+        labels:
+          severity: critical
+          kind: ipsec_health
+        annotations:
+          summary: "Child SA down"
+          description: "Traffic tunnel is not established"
+
+      - alert: IKEFlapping
+        expr: changes(strongswan_ike_established_second[5m]) > 2
+        for: 2m
+        labels:
+          severity: warning
+          kind: ipsec_health
+        annotations:
+          summary: "IKE flapping"
+          description: "IKE is frequently reconnecting"
+
+      - alert: ChildSAFlapping
+        expr: changes(strongswan_sa_established_second[5m]) > 2
+        for: 2m
+        labels:
+          severity: warning
+          kind: ipsec_health
+        annotations:
+          summary: "Child SA flapping"
+          description: "Child SA is unstable"
+
+      - alert: IKERapidRekey
+        expr: strongswan_ike_rekey_second > 0 and strongswan_ike_rekey_second < 60
+        for: 1m
+        labels:
+          severity: warning
+          kind: ipsec_health
+        annotations:
+          summary: "IKE rekey too frequent"
+          description: "IKE is rekeying too often"
+
+      - alert: SARapidRekey
+        expr: (strongswan_sa_rekey_second > 0) and (strongswan_sa_rekey_second < 60)
+        for: 1m
+        labels:
+          severity: warning
+          kind: ipsec_health
+        annotations:
+          summary: "SA rekey too frequent"
+          description: "Child SA is rekeying too often"
+
+      - alert: SALifetimeExpiring
+        expr: strongswan_sa_lifetime_second < 120
+        for: 1m
+        labels:
+          severity: warning
+          kind: ipsec_health
+        annotations:
+          summary: "SA lifetime expiring"
+          description: "Child SA may expire soon"
+
+      - alert: NoChildSA
+        expr: strongswan_ike_children == 0 and strongswan_ike_state == 1
+        for: 1m
+        labels:
+          severity: critical
+          kind: ipsec_health
+        annotations:
+          summary: "No child SAs"
+          description: "IKE has no active tunnels"
+
+      - alert: NoInboundTraffic
+        expr: rate(strongswan_sa_bytes_inbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "No inbound traffic"
+          description: "Tunnel has no inbound traffic"
+
+      - alert: NoOutboundTraffic
+        expr: rate(strongswan_sa_bytes_outbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "No outbound traffic"
+          description: "Tunnel has no outbound traffic"
+
+      - alert: TrafficAsymmetry
+        expr: rate(strongswan_sa_bytes_outbound[5m]) > 0 and rate(strongswan_sa_bytes_inbound[5m]) / rate(strongswan_sa_bytes_outbound[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "Traffic asymmetry"
+          description: "Inbound/outbound traffic ratio is abnormal"
+
+      - alert: NoRecentInbound
+        expr: strongswan_sa_last_inbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        for: 2m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "No recent inbound packets"
+          description: "No inbound packets recently"
+
+      - alert: NoRecentOutbound
+        expr: strongswan_sa_last_outbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        for: 2m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "No recent outbound packets"
+          description: "No outbound packets recently"
+
+      - alert: PacketRateDrop
+        expr: rate(strongswan_sa_packets_inbound[5m]) < 1 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_traffic
+        annotations:
+          summary: "Low packet rate"
+          description: "Inbound packet rate is very low"
+
+      - alert: WeakSAEncryption
+        expr: strongswan_sa_encryption_keysize < 256
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Weak SA encryption"
+          description: "Child SA uses weak encryption key size"
+
+      - alert: WeakIKEEncryption
+        expr: strongswan_ike_encryption_keysize < 256
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Weak IKE encryption"
+          description: "IKE uses weak encryption"
+
+      - alert: MissingIntegrityProtection
+        expr: strongswan_sa_integrity_keysize == 0 and strongswan_sa_encryption_keysize < 256
+        for: 5m
+        labels:
+          severity: critical
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Missing integrity protection"
+          description: "Traffic may lack integrity protection"
+
+      - alert: WeakIKEIntegrity
+        expr: strongswan_ike_integrity_keysize < 128
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Weak IKE integrity"
+          description: "IKE integrity algorithm is weak"
+
+      - alert: LegacyIKEVersion
+        expr: strongswan_ike_version != 2
+        for: 5m
+        labels:
+          severity: critical
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Legacy IKE version"
+          description: "IKEv1 detected"
+
+      # Info alert. Only fire if explicitly enabled via label later
+      - alert: NATDetected
+        expr: strongswan_ike_nat_remote == 1 and on() vector(0)
+        for: 10m
+        labels:
+          severity: info
+          kind: ipsec_security_condition
+        annotations:
+          summary: "NAT detected"
+          description: "Tunnel uses NAT traversal"
+
+      # Info alert. Only fire if explicitly enabled via label later
+      - alert: UDPEncapsulationUsed
+        expr: strongswan_sa_encap == 1 and on() vector(0)
+        for: 10m
+        labels:
+          severity: info
+          kind: ipsec_security_condition
+        annotations:
+          summary: "UDP encapsulation"
+          description: "ESP is encapsulated in UDP"
+
+      - alert: RekeyTooLong
+        expr: strongswan_sa_rekey_second > 86400
+        for: 10m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Rekey interval too long"
+          description: "Keys are rotated too infrequently"
+
+      - alert: RekeyDisabled
+        expr: strongswan_sa_rekey_second == 0
+        for: 5m
+        labels:
+          severity: critical
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Rekey disabled"
+          description: "Child SA does not rekey"
+
+      - alert: IKEReauthDisabled
+        expr: strongswan_ike_reauth_second == 0
+        for: 5m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "IKE reauth disabled"
+          description: "IKE is not reauthenticating"
+
+      - alert: SessionTooOld
+        expr: strongswan_ike_established_second > 86400
+        for: 10m
+        labels:
+          severity: warning
+          kind: ipsec_security_condition
+        annotations:
+          summary: "Session too old"
+          description: "IKE session lifetime is too long"
+
+    inhibit_rules:
+      - source_match:
+          alertname: IKEDown
+        target_match_re:
+          alertname: ".*SA.*|No.*Traffic"
+        equal: ["instance"]
