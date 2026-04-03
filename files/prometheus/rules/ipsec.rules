@@ -33,7 +33,7 @@ groups:
           description: "Traffic tunnel is not established"
 
       - alert: IKEFlapping
-        expr: changes(strongswan_ike_established_second[5m]) > 2
+        expr: changes(strongswan_ike_established_second[10m]) > 1
         for: 2m
         labels:
           severity: warning
@@ -43,7 +43,7 @@ groups:
           description: "IKE is frequently reconnecting"
 
       - alert: ChildSAFlapping
-        expr: changes(strongswan_sa_established_second[5m]) > 2
+        expr: changes(strongswan_sa_established_second[10m]) > 2 and changes(strongswan_ike_established_second[10m]) <= 1 and strongswan_ike_state == 1
         for: 2m
         labels:
           severity: warning
@@ -113,7 +113,32 @@ groups:
           description: "Tunnel has no outbound traffic"
 
       - alert: TrafficAsymmetry
-        expr: rate(strongswan_sa_bytes_outbound[5m]) > 0 and rate(strongswan_sa_bytes_inbound[5m]) / rate(strongswan_sa_bytes_outbound[5m]) > 10
+        expr: |
+          rate(strongswan_sa_bytes_outbound[5m]) > 50000
+          and
+          (
+            (
+              rate(strongswan_sa_bytes_inbound[5m]) 
+              / rate(strongswan_sa_bytes_outbound[5m])
+            )
+            >
+            (
+              avg_over_time(
+                (
+                  rate(strongswan_sa_bytes_inbound[5m]) 
+                  / rate(strongswan_sa_bytes_outbound[5m])
+                )[1h]
+              )
+              +
+              2 *
+              stddev_over_time(
+                (
+                  rate(strongswan_sa_bytes_inbound[5m]) 
+                  / rate(strongswan_sa_bytes_outbound[5m])
+                )[1h]
+              )
+            )
+          )
         for: 5m
         labels:
           severity: warning
@@ -183,7 +208,7 @@ groups:
           description: "Traffic may lack integrity protection"
 
       - alert: WeakIKEIntegrity
-        expr: strongswan_ike_integrity_keysize < 128
+        expr: strongswan_ike_integrity_keysize != 0 and strongswan_ike_integrity_keysize < 128
         for: 5m
         labels:
           severity: warning
@@ -203,26 +228,26 @@ groups:
           description: "IKEv1 detected"
 
       # Info alert. Only fire if explicitly enabled via label later
-      - alert: NATDetected
-        expr: strongswan_ike_nat_remote == 1 and on() vector(0)
-        for: 10m
-        labels:
-          severity: info
-          kind: ipsec_security_condition
-        annotations:
-          summary: "NAT detected"
-          description: "Tunnel uses NAT traversal"
+      #- alert: NATDetected
+      #  expr: strongswan_ike_nat_remote == 1 and on() vector(0)
+      #  for: 10m
+      #  labels:
+      #    severity: info
+      #    kind: ipsec_security_condition
+      #  annotations:
+      #    summary: "NAT detected"
+      #    description: "Tunnel uses NAT traversal"
 
       # Info alert. Only fire if explicitly enabled via label later
-      - alert: UDPEncapsulationUsed
-        expr: strongswan_sa_encap == 1 and on() vector(0)
-        for: 10m
-        labels:
-          severity: info
-          kind: ipsec_security_condition
-        annotations:
-          summary: "UDP encapsulation"
-          description: "ESP is encapsulated in UDP"
+      #- alert: UDPEncapsulationUsed
+      #  expr: strongswan_sa_encap == 1 and on() vector(0)
+      #  for: 10m
+      #  labels:
+      #    severity: info
+      #    kind: ipsec_security_condition
+      #  annotations:
+      #    summary: "UDP encapsulation"
+      #    description: "ESP is encapsulated in UDP"
 
       - alert: RekeyTooLong
         expr: strongswan_sa_rekey_second > 86400
@@ -244,15 +269,16 @@ groups:
           summary: "Rekey disabled"
           description: "Child SA does not rekey"
 
-      - alert: IKEReauthDisabled
-        expr: strongswan_ike_reauth_second == 0
+      - alert: IKERenewalDisabled
+        expr: strongswan_ike_reauth_second == 0 and strongswan_ike_rekey_second == 0
         for: 5m
         labels:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "IKE reauth disabled"
-          description: "IKE is not reauthenticating"
+          summary: "IKE Renewal mechanisms disabled"
+          description: "Both reauthentication and rekeying are disabled for a connection. The IKE SA will eventually expire without being renewed."
+
 
       - alert: SessionTooOld
         expr: strongswan_ike_established_second > 86400
