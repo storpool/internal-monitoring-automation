@@ -24,7 +24,15 @@ groups:
       annotations:
         description: 'Job "{{ $labels.job }}" on instance {{ $labels.instance }} fails to scrape targets for last 15m'
         summary: 'Vmagent fails to scrape one or more targets'
-      expr: sum without (status_code, error_type) (  rate(vm_promscrape_scrapes_failed_total[5m])) / sum without (status_code, error_type) ( rate(vm_promscrape_scrapes_total[5m]) ) > 0.05
+      expr: |
+        sum without (status_code, error_type) (
+          rate(vm_promscrape_scrapes_failed_total[5m])
+        )
+        /
+        sum without (status_code, error_type) (
+          rate(vm_promscrape_scrapes_total[5m])
+        )
+        > 0.05
       for: 15m
       labels:
         severity: warning
