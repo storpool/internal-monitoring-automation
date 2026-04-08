@@ -108,7 +108,10 @@ groups:
           description: 'Disk {{ $labels.device }} on host {{ $labels.instance }} write latency is growing ({{ printf "%.2f" $value }} ms)'
 
       - alert: HostHighCPULoad
-        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
+          and
+          and on(instance) (node_cpu_seconds_total{usage_profile!="burst|heavy"})
         for: 10m
         labels:
           severity: warning
@@ -116,6 +119,34 @@ groups:
         annotations:
           summary: 'Host CPU load is more than 80%'
           description: 'Host {{ $labels.instance }} CPU load is {{ printf "%.2f" $value }}.'
+
+      - alert: HostHighCPULoadHeavyUsage
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 90
+          and
+          and on(instance) (node_cpu_seconds_total{usage_profile="heavy"})
+        for: 10m
+        labels:
+          severity: warning
+          kind: host
+        annotations:
+          summary: 'Host CPU load is more than 80%'
+          description: 'Host {{ $labels.instance }} CPU load is {{ printf "%.2f" $value }}.'
+
+      - alert: HostHighCPULoadBurstUsage
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 95
+          and
+          and on(instance) (node_cpu_seconds_total{usage_profile="burst"})
+        for: 10m
+        labels:
+          severity: warning
+          kind: host
+        annotations:
+          summary: 'Host CPU load is more than 80%'
+          description: 'Host {{ $labels.instance }} CPU load is {{ printf "%.2f" $value }}.'
+
+
 
       - alert: HostCPUStealNoisyNeighbor
         expr: avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 20
