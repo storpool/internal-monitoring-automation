@@ -15,7 +15,7 @@
     location: {{ hostvars[host]["location"] | default(hostvars[host]["site"], true) | default("undefined") }}
 {% endif %}
     environment: production
-{% if hostvars[host]['usage_profile'] is defined %}
-    usage_profile: {{ hostvars[host]['usage_profile'] }}
+{% if hostvars[host]['custom_fields']['usage_profile'] is defined %}
+    usage_profile: {{ hostvars[host]['custom_fields']['usage_profile'] }}
 {% endif %}
 {% endfor %}
