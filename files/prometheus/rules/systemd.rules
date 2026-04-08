@@ -11,3 +11,17 @@ groups:
         annotations:
           summary: 'Systemd unit transitioned to failed state'
           description: 'Systemd unit {{ $labels.name }} went into failed state'
+
+      # Enable to monitor SystemdUnitStoppedButEnabled
+      #- alert: SystemdUnitStoppedButEnabled
+      #  expr: |
+      #    node_systemd_unit_state{state="inactive", type=~"simple|forking", name=~".*.service"} != 0
+      #    and on (instance, name)
+      #    node_systemd_unit_state{state="failed", type=~"simple|forking", name=~".*.service"} == 0 
+      #  for: 2m
+      #  labels:
+      #    severity: warning
+      #    kind: host
+      #  annotations:
+      #    summary: 'Systemd unit is stopped but enabled'
+      #    description: 'Systemd unit {{ $labels.name }} is enabled but not running'
