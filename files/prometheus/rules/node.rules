@@ -111,7 +111,7 @@ groups:
         expr: |
           100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 80
           and
-          and on(instance) (node_cpu_seconds_total{usage_profile!="burst|heavy"})
+          on(instance) (node_cpu_seconds_total{usage_profile!="burst|heavy"})
         for: 10m
         labels:
           severity: warning
@@ -124,7 +124,7 @@ groups:
         expr: |
           100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 90
           and
-          and on(instance) (node_cpu_seconds_total{usage_profile="heavy"})
+          on(instance) (node_cpu_seconds_total{usage_profile="heavy"})
         for: 10m
         labels:
           severity: warning
@@ -137,7 +137,7 @@ groups:
         expr: |
           100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[10m])) * 100) > 95
           and
-          and on(instance) (node_cpu_seconds_total{usage_profile="burst"})
+          on(instance) (node_cpu_seconds_total{usage_profile="burst"})
         for: 10m
         labels:
           severity: warning
