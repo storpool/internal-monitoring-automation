@@ -10,7 +10,7 @@ groups:
           kind: ipsec_health
         annotations:
           summary: "IKE down"
-          description: "IKE tunnel is not established"
+          description: "IKE tunnel is not established (strongswan_ike_state). Verify peer reachability, credentials, and phase1 configuration. Check logs and restart the IKE service if needed."
 
       - alert: NoActiveIKEs
         expr: (strongswan_number_of_ikes_connected == 0) and absent(strongswan_ike_state != 1)
@@ -20,7 +20,7 @@ groups:
           kind: ipsec_health
         annotations:
           summary: "No active IKEs"
-          description: "All VPN tunnels are down"
+          description: "All VPN tunnels are down (strongswan_number_of_ikes_connected). Validate remote endpoints, firewall rules, and daemon status. Ensure configs are loaded correctly."
 
       - alert: ChildSADown
         expr: strongswan_sa_state{job="ipsec_exporter"} != 1 and strongswan_ike_state == 1
@@ -30,7 +30,7 @@ groups:
           kind: ipsec_health
         annotations:
           summary: "Child SA down"
-          description: "Traffic tunnel is not established"
+          description: "Traffic tunnel not established (strongswan_sa_state) while IKE is up. Check phase2 proposals, routing, and policy mismatches."
 
       - alert: IKEFlapping
         expr: count without (uniqueid) (last_over_time(strongswan_ike_established_second[10m])) > 1
@@ -40,7 +40,7 @@ groups:
           kind: ipsec_health
         annotations:
           summary: "IKE flapping on {{ $labels.instance }}"
-          description: "Tunnel {{ $labels.name }} has reset its connection {{ $value }} times in the last 10 minutes."
+          description: "Tunnel {{ $labels.name }} has reset its connection {{ $value }} times in the last 10 minutes. Investigate network instability, DPD settings, or mismatched lifetimes."
 
       - alert: ChildSAFlapping
         expr: count without (child_id,ike_id) (last_over_time(strongswan_sa_established_second[10m])) > 1 and strongswan_ike_state == 1
@@ -49,8 +49,8 @@ groups:
           severity: warning
           kind: ipsec_health
         annotations:
-          summary: "Child SA flapping"
-          description: "Child SA is unstable"
+          summary: "Child SA flapping (strongswan_sa_established_second resets)"
+          description: "Child SA unstable. Check rekey timers, packet drops, and crypto mismatches."
 
       - alert: IKERapidRekey
         expr: strongswan_ike_rekey_second > 0 and strongswan_ike_rekey_second < 60
@@ -59,8 +59,8 @@ groups:
           severity: warning
           kind: ipsec_health
         annotations:
-          summary: "IKE rekey too frequent"
-          description: "IKE is rekeying too often"
+          summary: "Frequent IKE rekey (<60s, strongswan_ike_rekey_second)"
+          description: "IKE rekey interval too low (strongswan_ike_rekey_second). Increase lifetime settings and verify both peers use consistent timers."
 
       - alert: SARapidRekey
         expr: (strongswan_sa_rekey_second > 0) and (strongswan_sa_rekey_second < 60)
@@ -69,8 +69,8 @@ groups:
           severity: warning
           kind: ipsec_health
         annotations:
-          summary: "SA rekey too frequent"
-          description: "Child SA is rekeying too often"
+          summary: "Frequent SA rekey (<60s, strongswan_sa_rekey_second)"
+          description: "Child SA rekeys too often. Adjust SA lifetime and check for instability or packet loss."
 
       - alert: SALifetimeExpiring
         expr: strongswan_sa_lifetime_second < 120
@@ -79,8 +79,8 @@ groups:
           severity: warning
           kind: ipsec_health
         annotations:
-          summary: "SA lifetime expiring"
-          description: "Child SA may expire soon"
+          summary: "SA lifetime expiring (<120s, strongswan_sa_lifetime_second)"
+          description: "Child SA about to expire. Ensure rekey is functioning and timers are properly configured."
 
       - alert: NoChildSA
         expr: strongswan_ike_children == 0 and strongswan_ike_state == 1
@@ -89,8 +89,8 @@ groups:
           severity: critical
           kind: ipsec_health
         annotations:
-          summary: "No child SAs"
-          description: "IKE has no active tunnels"
+          summary: "No child SAs (strongswan_ike_children == 0)"
+          description: "IKE established but no active tunnels. Verify traffic selectors, policies, and routing."
 
       - alert: NoInboundTraffic
         expr: rate(strongswan_sa_bytes_inbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
@@ -99,8 +99,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "No inbound traffic"
-          description: "Tunnel has no inbound traffic"
+          summary: "No inbound traffic (rate(strongswan_sa_bytes_inbound[5m]) == 0)"
+          description: "No inbound traffic detected. Check routing, firewall rules, and remote peer transmission."
 
       - alert: NoOutboundTraffic
         expr: rate(strongswan_sa_bytes_outbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
@@ -109,8 +109,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "No outbound traffic"
-          description: "Tunnel has no outbound traffic"
+          summary: "No outbound traffic (rate(strongswan_sa_bytes_outbound[5m]) == 0)"
+          description: "No outbound traffic detected. Verify local routing, policies, and application flow."
 
       - alert: TrafficAsymmetry
         expr: |
@@ -144,8 +144,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "Traffic asymmetry"
-          description: "Inbound/outbound traffic ratio is abnormal"
+          summary: "Traffic asymmetry detected (inbound/outbound ratio anomaly)"
+          description: "Inbound/outbound ratio deviates from baseline. Investigate packet drops, asymmetric routing, or remote-side issues."
 
       - alert: NoRecentInbound
         expr: strongswan_sa_last_inbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
@@ -154,8 +154,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "No recent inbound packets"
-          description: "No inbound packets recently"
+          summary: "No recent inbound packets (>60s, strongswan_sa_last_inbound_seconds)"
+          description: "Inbound traffic idle. Verify connectivity, remote activity, and firewall rules."
 
       - alert: NoRecentOutbound
         expr: strongswan_sa_last_outbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
@@ -164,8 +164,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "No recent outbound packets"
-          description: "No outbound packets recently"
+          summary: "No recent outbound packets (>60s, strongswan_sa_last_outbound_seconds)"
+          description: "Outbound traffic idle. Check local applications and routing."
 
       - alert: PacketRateDrop
         expr: rate(strongswan_sa_packets_inbound[5m]) < 1 and strongswan_sa_state{job="ipsec_exporter"} == 1
@@ -174,8 +174,8 @@ groups:
           severity: warning
           kind: ipsec_traffic
         annotations:
-          summary: "Low packet rate"
-          description: "Inbound packet rate is very low"
+          summary: "Low packet rate (<1 pkt/s, strongswan_sa_packets_inbound)"
+          description: "Inbound packet rate very low. Investigate congestion, drops, or application inactivity."
 
       - alert: WeakSAEncryption
         expr: strongswan_sa_encryption_keysize < 256
@@ -184,8 +184,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "Weak SA encryption"
-          description: "Child SA uses weak encryption key size"
+          summary: "Weak SA encryption (<256 bits, strongswan_sa_encryption_keysize)"
+          description: "Encryption strength below recommended level. Upgrade cipher suites to AES-256 or stronger."
 
       - alert: WeakIKEEncryption
         expr: strongswan_ike_encryption_keysize < 256
@@ -194,8 +194,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "Weak IKE encryption"
-          description: "IKE uses weak encryption"
+          summary: "Weak IKE encryption (<256 bits, strongswan_ike_encryption_keysize)"
+          description: "IKE encryption is weak. Update phase1 proposals to stronger algorithms."
 
       - alert: MissingIntegrityProtection
         expr: strongswan_sa_integrity_keysize == 0 and strongswan_sa_encryption_keysize < 256
@@ -204,8 +204,8 @@ groups:
           severity: critical
           kind: ipsec_security_condition
         annotations:
-          summary: "Missing integrity protection"
-          description: "Traffic may lack integrity protection"
+          summary: "Missing integrity protection (strongswan_sa_integrity_keysize == 0)"
+          description: "Traffic may lack integrity protection. Enable authentication (e.g., SHA-256) and avoid weak encryption."
 
       - alert: WeakIKEIntegrity
         expr: strongswan_ike_integrity_keysize != 0 and strongswan_ike_integrity_keysize < 128
@@ -214,8 +214,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "Weak IKE integrity"
-          description: "IKE integrity algorithm is weak"
+          summary: "Weak IKE integrity (<128 bits, strongswan_ike_integrity_keysize)"
+          description: "Integrity algorithm is weak. Upgrade to SHA-256 or better."
 
       - alert: LegacyIKEVersion
         expr: strongswan_ike_version != 2
@@ -224,8 +224,8 @@ groups:
           severity: critical
           kind: ipsec_security_condition
         annotations:
-          summary: "Legacy IKE version"
-          description: "IKEv1 detected"
+          summary: "Legacy IKE version detected (strongswan_ike_version != 2)"
+          description: "IKEv1 in use. Migrate to IKEv2 for improved security and stability."
 
       # Info alert. Only fire if explicitly enabled via label later
       #- alert: NATDetected
@@ -256,8 +256,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "Rekey interval too long"
-          description: "Keys are rotated too infrequently"
+          summary: "Rekey interval too long (>86400s, strongswan_sa_rekey_second)"
+          description: "Keys rotated too infrequently. Reduce rekey interval to improve security."
 
       - alert: RekeyDisabled
         expr: strongswan_sa_rekey_second == 0
@@ -266,8 +266,8 @@ groups:
           severity: critical
           kind: ipsec_security_condition
         annotations:
-          summary: "Rekey disabled"
-          description: "Child SA does not rekey"
+          summary: "Rekey disabled (strongswan_sa_rekey_second == 0)"
+          description: "No rekey configured. Enable rekeying to prevent stale sessions and security risks."
 
       - alert: IKERenewalDisabled
         expr: strongswan_ike_reauth_second == 0 and strongswan_ike_rekey_second == 0
@@ -276,9 +276,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "IKE Renewal mechanisms disabled"
+          summary: "IKE renewal disabled (reauth + rekey == 0)"
           description: "Both reauthentication and rekeying are disabled for a connection. The IKE SA will eventually expire without being renewed."
-
 
       - alert: SessionTooOld
         expr: strongswan_ike_established_second > 86400
@@ -287,8 +286,8 @@ groups:
           severity: warning
           kind: ipsec_security_condition
         annotations:
-          summary: "Session too old"
-          description: "IKE session lifetime is too long"
+          summary: "IKE session too old (>86400s, strongswan_ike_established_second)"
+          description: "Session running too long without renewal. Configure proper lifetimes and reauthentication."
 
     inhibit_rules:
       - source_match:
