@@ -2,28 +2,19 @@
 groups:
   - name: IPSec-alerts
     rules:
-      - alert: IKEDown
-        expr: strongswan_ike_state != 1
-        for: 1m
-        labels:
-          severity: critical
-          kind: ipsec_health
-        annotations:
-          summary: "IKE down"
-          description: "IKE tunnel is not established (strongswan_ike_state). Verify peer reachability, credentials, and phase1 configuration. Check logs and restart the IKE service if needed."
 
-      - alert: NoActiveIKEs
-        expr: (strongswan_number_of_ikes_connected == 0) and absent(strongswan_ike_state != 1)
+      - alert: IKEDown
+        expr: sum((strongswan_ike_state != 1) * 1) > 0
         for: 1m
         labels:
           severity: critical
           kind: ipsec_health
         annotations:
-          summary: "No active IKEs"
-          description: "All VPN tunnels are down (strongswan_number_of_ikes_connected). Validate remote endpoints, firewall rules, and daemon status. Ensure configs are loaded correctly."
+          summary: "One or more IKE tunnels are not established"
+          description: "At least one IKE tunnel is not in ESTABLISHED state. Check peer reachability, credentials, phase1 config, and strongSwan logs."
 
       - alert: ChildSADown
-        expr: strongswan_sa_state{job="ipsec_exporter"} != 1 and strongswan_ike_state == 1
+        expr: (strongswan_sa_state != 1) and  on(ike_id) (label_replace(strongswan_ike_state,"ike_id", "$1", "uniqueid", "(.*)") == 1)
         for: 1m
         labels:
           severity: critical
@@ -52,38 +43,28 @@ groups:
           summary: "Child SA flapping (strongswan_sa_established_second resets)"
           description: "Child SA unstable. Check rekey timers, packet drops, and crypto mismatches."
 
-      - alert: IKERapidRekey
-        expr: strongswan_ike_rekey_second > 0 and strongswan_ike_rekey_second < 60
-        for: 1m
+      - alert: IKERekeyIntervalTooLong
+        expr: (strongswan_ike_established_second + strongswan_ike_rekey_second) > 28800
+        for: 5m
         labels:
           severity: warning
-          kind: ipsec_health
+          kind: ipsec_security_condition
         annotations:
-          summary: "Frequent IKE rekey (<60s, strongswan_ike_rekey_second)"
-          description: "IKE rekey interval too low (strongswan_ike_rekey_second). Increase lifetime settings and verify both peers use consistent timers."
+          summary: "IKE rekey interval exceeds 8 hours"
+          description: "Derived IKE rekey interval is greater than 8h. This may violate security policy. Check lifetime/rekey configuration on both peers."
 
-      - alert: SARapidRekey
-        expr: (strongswan_sa_rekey_second > 0) and (strongswan_sa_rekey_second < 60)
-        for: 1m
+      - alert: SARekeyIntervalTooLong
+        expr: (strongswan_sa_established_second + strongswan_sa_rekey_second) > 3600
+        for: 5m
         labels:
           severity: warning
-          kind: ipsec_health
+          kind: ipsec_security_condition
         annotations:
-          summary: "Frequent SA rekey (<60s, strongswan_sa_rekey_second)"
-          description: "Child SA rekeys too often. Adjust SA lifetime and check for instability or packet loss."
-
-      - alert: SALifetimeExpiring
-        expr: strongswan_sa_lifetime_second < 120
-        for: 1m
-        labels:
-          severity: warning
-          kind: ipsec_health
-        annotations:
-          summary: "SA lifetime expiring (<120s, strongswan_sa_lifetime_second)"
-          description: "Child SA about to expire. Ensure rekey is functioning and timers are properly configured."
+          summary: "Child SA rekey interval exceeds policy"
+          description: "Derived Child SA rekey interval is higher than expected. Verify SA lifetime and rekey timers."
 
       - alert: NoChildSA
-        expr: strongswan_ike_children == 0 and strongswan_ike_state == 1
+        expr: (strongswan_ike_children != 1) and on(name,uniqueid) (strongswan_ike_state == 1)
         for: 1m
         labels:
           severity: critical
@@ -93,7 +74,7 @@ groups:
           description: "IKE established but no active tunnels. Verify traffic selectors, policies, and routing."
 
       - alert: NoInboundTraffic
-        expr: rate(strongswan_sa_bytes_inbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        expr: (rate(strongswan_sa_bytes_inbound[5m]) < 1 ) and on(child_id, ike_id) (strongswan_sa_state == 1)
         for: 5m
         labels:
           severity: warning
@@ -103,7 +84,7 @@ groups:
           description: "No inbound traffic detected. Check routing, firewall rules, and remote peer transmission."
 
       - alert: NoOutboundTraffic
-        expr: rate(strongswan_sa_bytes_outbound[5m]) == 0 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        expr: (rate(strongswan_sa_bytes_outbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)
         for: 5m
         labels:
           severity: warning
@@ -112,43 +93,8 @@ groups:
           summary: "No outbound traffic (rate(strongswan_sa_bytes_outbound[5m]) == 0)"
           description: "No outbound traffic detected. Verify local routing, policies, and application flow."
 
-      - alert: TrafficAsymmetry
-        expr: |
-          rate(strongswan_sa_bytes_outbound[5m]) > 50000
-          and
-          (
-            (
-              rate(strongswan_sa_bytes_inbound[5m]) 
-              / rate(strongswan_sa_bytes_outbound[5m])
-            )
-            >
-            (
-              avg_over_time(
-                (
-                  rate(strongswan_sa_bytes_inbound[5m]) 
-                  / rate(strongswan_sa_bytes_outbound[5m])
-                )[1h]
-              )
-              +
-              2 *
-              stddev_over_time(
-                (
-                  rate(strongswan_sa_bytes_inbound[5m]) 
-                  / rate(strongswan_sa_bytes_outbound[5m])
-                )[1h]
-              )
-            )
-          )
-        for: 5m
-        labels:
-          severity: warning
-          kind: ipsec_traffic
-        annotations:
-          summary: "Traffic asymmetry detected (inbound/outbound ratio anomaly)"
-          description: "Inbound/outbound ratio deviates from baseline. Investigate packet drops, asymmetric routing, or remote-side issues."
-
       - alert: NoRecentInbound
-        expr: strongswan_sa_last_inbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        expr: (strongswan_sa_last_inbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)
         for: 2m
         labels:
           severity: warning
@@ -158,7 +104,7 @@ groups:
           description: "Inbound traffic idle. Verify connectivity, remote activity, and firewall rules."
 
       - alert: NoRecentOutbound
-        expr: strongswan_sa_last_outbound_seconds > 60 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        expr: (strongswan_sa_last_outbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)
         for: 2m
         labels:
           severity: warning
@@ -168,7 +114,7 @@ groups:
           description: "Outbound traffic idle. Check local applications and routing."
 
       - alert: PacketRateDrop
-        expr: rate(strongswan_sa_packets_inbound[5m]) < 1 and strongswan_sa_state{job="ipsec_exporter"} == 1
+        expr: (rate(strongswan_sa_packets_inbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)
         for: 5m
         labels:
           severity: warning
@@ -227,38 +173,6 @@ groups:
           summary: "Legacy IKE version detected (strongswan_ike_version != 2)"
           description: "IKEv1 in use. Migrate to IKEv2 for improved security and stability."
 
-      # Info alert. Only fire if explicitly enabled via label later
-      #- alert: NATDetected
-      #  expr: strongswan_ike_nat_remote == 1 and on() vector(0)
-      #  for: 10m
-      #  labels:
-      #    severity: info
-      #    kind: ipsec_security_condition
-      #  annotations:
-      #    summary: "NAT detected"
-      #    description: "Tunnel uses NAT traversal"
-
-      # Info alert. Only fire if explicitly enabled via label later
-      #- alert: UDPEncapsulationUsed
-      #  expr: strongswan_sa_encap == 1 and on() vector(0)
-      #  for: 10m
-      #  labels:
-      #    severity: info
-      #    kind: ipsec_security_condition
-      #  annotations:
-      #    summary: "UDP encapsulation"
-      #    description: "ESP is encapsulated in UDP"
-
-      - alert: RekeyTooLong
-        expr: strongswan_sa_rekey_second > 86400
-        for: 10m
-        labels:
-          severity: warning
-          kind: ipsec_security_condition
-        annotations:
-          summary: "Rekey interval too long (>86400s, strongswan_sa_rekey_second)"
-          description: "Keys rotated too infrequently. Reduce rekey interval to improve security."
-
       - alert: RekeyDisabled
         expr: strongswan_sa_rekey_second == 0
         for: 5m
@@ -278,16 +192,6 @@ groups:
         annotations:
           summary: "IKE renewal disabled (reauth + rekey == 0)"
           description: "Both reauthentication and rekeying are disabled for a connection. The IKE SA will eventually expire without being renewed."
-
-      - alert: SessionTooOld
-        expr: strongswan_ike_established_second > 86400
-        for: 10m
-        labels:
-          severity: warning
-          kind: ipsec_security_condition
-        annotations:
-          summary: "IKE session too old (>86400s, strongswan_ike_established_second)"
-          description: "Session running too long without renewal. Configure proper lifetimes and reauthentication."
 
     inhibit_rules:
       - source_match:
