@@ -4,7 +4,7 @@ groups:
     rules:
 
       - alert: IKEDown
-        expr: sum((strongswan_ike_state != 1) * 1) > 0
+        expr: strongswan_ike_state != 1
         for: 1m
         labels:
           severity: critical
@@ -124,7 +124,7 @@ groups:
           description: "Inbound packet rate very low. Investigate congestion, drops, or application inactivity."
 
       - alert: WeakSAEncryption
-        expr: strongswan_sa_encryption_keysize < 256
+        expr: strongswan_ike_state == 1 and strongswan_sa_encryption_keysize < 256
         for: 5m
         labels:
           severity: warning
@@ -164,7 +164,7 @@ groups:
           description: "Integrity algorithm is weak. Upgrade to SHA-256 or better."
 
       - alert: LegacyIKEVersion
-        expr: strongswan_ike_version != 2
+        expr: strongswan_ike_state == 1 and strongswan_ike_version != 2 
         for: 5m
         labels:
           severity: critical
@@ -184,7 +184,7 @@ groups:
           description: "No rekey configured. Enable rekeying to prevent stale sessions and security risks."
 
       - alert: IKERenewalDisabled
-        expr: strongswan_ike_reauth_second == 0 and strongswan_ike_rekey_second == 0
+        expr: strongswan_ike_state == 1 and strongswan_ike_reauth_second == 0 and strongswan_ike_rekey_second == 0
         for: 5m
         labels:
           severity: warning
