@@ -134,7 +134,7 @@ groups:
           description: "Encryption strength below recommended level. Upgrade cipher suites to AES-256 or stronger."
 
       - alert: WeakIKEEncryption
-        expr: strongswan_ike_encryption_keysize < 256
+        expr: strongswan_ike_state == 1 and strongswan_ike_encryption_keysize < 256
         for: 5m
         labels:
           severity: warning
