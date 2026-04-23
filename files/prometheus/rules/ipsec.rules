@@ -10,8 +10,8 @@ groups:
           severity: critical
           kind: ipsec_health
         annotations:
-          summary: "One or more IKE tunnels are not established"
-          description: "At least one IKE tunnel is not in ESTABLISHED state. Check peer reachability, credentials, phase1 config, and strongSwan logs."
+          summary: "IKE tunnel {{ $labels.name }} is not established"
+          description: "Check peer reachability, credentials, phase1 config, and strongSwan logs."
 
       - alert: ChildSADown
         expr: (strongswan_sa_state != 1) and  on(ike_id) (label_replace(strongswan_ike_state,"ike_id", "$1", "uniqueid", "(.*)") == 1)
