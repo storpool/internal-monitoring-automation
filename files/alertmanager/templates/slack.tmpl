@@ -1,6 +1,6 @@
 {{ define "__alert_silence_link" -}}
     {{- if eq .Status "firing" -}}
-        {{ .ExternalURL }}/#/silences/new?filter=%7B
+        http://{{ alertmanager_internal_domain }}/#/silences/new?filter=%7B
         {{- range .CommonLabels.SortedPairs -}}
             {{- if ne .Name "alertname" -}}
                 {{- .Name }}%3D"{{- .Value | urlquery -}}"%2C%20
@@ -31,6 +31,7 @@
 {{ define "slack.storpool.title_link" -}}
     http://{{ alertmanager_internal_domain }}/?q=instance%3D{{- .CommonLabels.instance | urlquery }}&q=alertname%3D{{- .CommonLabels.alertname | urlquery -}}
 {{- end }}
+
 
 {{ define "slack.storpool.username" }}Infrastructure Alert{{ end }}
 
