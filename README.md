@@ -108,3 +108,86 @@ data:
 
   * `internal-monitoring` namespace
 
+---
+
+## FortiGate Monitoring (Optional)
+
+To enable monitoring of FortiGate devices, create/update`fortigate-config` ConfigMap in the `internal-monitoring` namespace.
+
+### Steps
+
+1. Retrieve the current ConfigMap:
+
+```bash
+kubectl -n internal-monitoring get configmap fortigate-config -o yaml
+```
+
+2. Add or update FortiGate endpoints in the following format:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fortigate-config
+  namespace: internal-monitoring
+data:
+  fortigate-key.yaml: |-
+    "https://hostname1:8443":
+        token: <api-token-1>
+    "https://hostname2:8443":
+        token: <api-token-2>
+```
+
+### Notes
+
+* Each entry represents a FortiGate device API endpoint
+* Tokens must be valid API access tokens from the FortiGate device
+* Ensure HTTPS connectivity from the cluster to the FortiGate hosts
+
+---
+## External Access to VictoriaMetrics (Optional)
+
+If external access to VictoriaMetrics is required (e.g. for external Grafana dashboards), enable it via an AWX extra variable.
+
+### Configuration
+
+Set the following variable in the AWX workflow/job template:
+
+```yaml id="u3k9sd"
+victoria_metrics_external_endpoint: "https://<victoria-metrics-external-url>"
+```
+
+### Behavior
+
+* When defined, the `deploy-monitoring-stack.yaml` playbook will:
+
+  * Create a Traefik `IngressRoute`
+  * Expose the VictoriaMetrics endpoint externally
+
+### Notes
+
+* Ensure DNS resolves to your Traefik entrypoint
+* TLS configuration should be handled by Traefik (if enabled)
+* Do not expose publicly unless properly secured
+
+---
+
+## Alertmanager Endpoint Configuration (Optional)
+
+The Alertmanager URL can be configured via an AWX extra variable in the same workflow.
+
+### Configuration
+
+```yaml
+alertmanager_internal_domain: "<alertmanager-url-domain>"
+```
+
+### Behavior
+
+* When defined, the `deploy-monitoring-stack.yaml` configures Alertmanager with the provided endpoint
+* Used for alert routing and integrations (e.g. Slack notifications)
+
+### Notes
+
+* Ensure the URL is reachable from within the cluster
+* If exposed externally, secure it appropriately (TLS, auth, etc.)
