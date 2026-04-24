@@ -172,7 +172,7 @@
               match: Host(`{{ victoria_metrics_external_endpoint }}`)
               services:
               - name: vmsingle-metrics
-                port: "{{ victoria_metrics_port | default(8429) }}"
+                port: 8429
       when: victoria_metrics_external_endpoint is defined
 
   vars_files:
