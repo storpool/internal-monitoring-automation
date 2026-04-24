@@ -154,6 +154,26 @@
       loop_control:
         loop_var: manifest
       loop: "{{ lookup('fileglob', 'fortigate/*.yaml', wantlist=True) }}"
+      
+    - name: Export VictoriaMetrics host
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: traefik.io/v1alpha1
+          kind: IngressRoute
+          metadata:
+            name: victoria-metrics
+            namespace: internal-monitoring
+          spec:
+            entryPoints:
+            - webinternal
+            routes:
+            - kind: Rule
+              match: Host(`{{ victoria_metrics_external_endpoint }}`)
+              services:
+              - name: vmsingle-metrics
+                port: {{ victoria_metrics_port | default(8429) }}
+      when: victoria_metrics_external_endpoint is defined
 
   vars_files:
     - vars/monitoring-stack.yaml
