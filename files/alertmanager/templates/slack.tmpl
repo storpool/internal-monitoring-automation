@@ -46,13 +46,17 @@
     {{- end -}}
 
     {{- $kind := index .CommonLabels "kind" -}}
-    {{- if not $kind -}}
-      {{- $kind = index .Labels "kind" -}}
+    {{- if not $kind }}
+    {{- with index .Alerts 0 }}
+        {{- $kind = index .Labels "kind" }}
+    {{- end }}
     {{- end -}}
 
     {{- $instance := index .CommonLabels "instance" -}}
-    {{- if not $instance -}}
-      {{- $instance = index .Labels "instance" -}}
+    {{- if not $instance }}
+    {{- with index .Alerts 0 }}
+        {{- $instance = index .Labels "instance" }}
+    {{- end }}
     {{- end -}}
 
     {{- $label := "Instance" -}}
