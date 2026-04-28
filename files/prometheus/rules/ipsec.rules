@@ -24,7 +24,7 @@ groups:
           description: "Traffic tunnel not established (strongswan_sa_state) while IKE is up. Check phase2 proposals, routing, and policy mismatches."
 
       - alert: IKEFlapping
-        expr: count without (uniqueid) (last_over_time(strongswan_ike_established_second[10m])) > 1
+        expr: count without (uniqueid) (last_over_time(strongswan_ike_established_second[10m])) > 2
         for: 2m
         labels:
           severity: warning
