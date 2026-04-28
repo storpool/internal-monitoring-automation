@@ -44,12 +44,27 @@
         {{ template "__alert_severity" . }}
         {{- "\n" }}
     {{- end -}}
-    {{- if eq (index .CommonLabels "kind") "host" -}}
-        *Host*: `{{ .CommonLabels.instance }}`
-    {{- else if eq (index .CommonLabels "kind") "instance" -}}
-        *Instance*: `{{ .CommonLabels.instance }}`
-    {{- else if eq (index .CommonLabels "kind") "device" -}}
-        *Device*: `{{ .CommonLabels.instance }}`
+
+    {{- $kind := index .CommonLabels "kind" -}}
+    {{- if not $kind -}}
+      {{- $kind = index .Labels "kind" -}}
+    {{- end -}}
+
+    {{- $instance := index .CommonLabels "instance" -}}
+    {{- if not $instance -}}
+      {{- $instance = index .Labels "instance" -}}
+    {{- end -}}
+
+    {{- if eq $kind "host" -}}
+        *Host*: `$instance`
+    {{- else if eq $kind "instance" -}}
+        *Instance*: `$instance`
+    {{- else if eq $kind "device" -}}
+        *Device*: `$instance`
+    {{- else if eq $kind "firewall" -}}
+        *Firewall*: `$instance`
+    {{- else if eq $kind "ipsec_health" -}}
+        *IPSec Tunnel*: `$instance`
     {{- end -}}
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
