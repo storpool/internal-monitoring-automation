@@ -52,7 +52,7 @@
     {{- if eq $kind "host" }}{{ $label = "Host" }}
     {{- else if eq $kind "device" }}{{ $label = "Device" }}
     {{- else if eq $kind "firewall" }}{{ $label = "Firewall" }}
-    {{- else if regexMatch "^ipsec_.*" $kind }}
+    {{- else if match "^ipsec_.*" $kind }}
         {{- range .Alerts }}
             *IKEName*: `{{ index .Labels "ike_name" }}`
         {{- end }}
