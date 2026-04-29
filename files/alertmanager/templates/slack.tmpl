@@ -49,25 +49,25 @@
     {{- $instance := index .CommonLabels "instance" -}}
     {{- $label := "Instance" -}}
 
-    {{- if eq $kind "host" }}{{ $label = "Host" }}
-    {{- else if eq $kind "device" }}{{ $label = "Device" }}
-    {{- else if eq $kind "firewall" }}{{ $label = "Firewall" }}
-    {{- else if match "^ipsec_.*" $kind }}
-        {{- range .Alerts }}
+    {{- if eq $kind "host" }}{{ $label = "Host" -}}
+    {{- else if eq $kind "device" }}{{ $label = "Device" -}}
+    {{- else if eq $kind "firewall" }}{{ $label = "Firewall" -}}
+    {{- else if match "^ipsec_.*" $kind -}}
+        {{- range .Alerts -}}
         *IKEName*: `{{ index .Labels "ike_name" }}`
-        {{- end }}
-      {{ $label = "IPSec Tunnel" }}
+        {{- end -}}
+      {{- $label = "IPSec Tunnel" -}}
     {{- end -}}
 
-    {{- if $instance }}
+    {{- if $instance -}}
     *{{ $label }}*: `{{ $instance }}`
-    {{- else }}
-        {{- range .Alerts }}
-            {{- if index .Labels "instance" }}
+    {{- else -}}
+        {{- range .Alerts -}}
+            {{- if index .Labels "instance" -}}
     *{{ $label }}*: `{{ index .Labels "instance" }}`
-            {{- end }}
-        {{- end }}
-    {{- end }}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
 
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
