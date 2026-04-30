@@ -64,7 +64,7 @@ groups:
           description: "Derived Child SA rekey interval is higher than expected. Verify SA lifetime and rekey timers."
 
       - alert: NoChildSA
-        expr: (strongswan_ike_children != 1) and on(name,uniqueid) (strongswan_ike_state == 1)
+        expr: (strongswan_ike_children == 0) and on(name,uniqueid) (strongswan_ike_state == 1)
         for: 1m
         labels:
           severity: critical
