@@ -62,16 +62,12 @@
     {{- if $instance -}}
     *{{ $label }}*: `{{ $instance }}`
     {{- else -}}
-        {{- $seen := dict -}}
         {{- range .Alerts -}}
-            {{- $inst := index .Labels "instance" -}}
-            {{- if and $inst (not (index $seen $inst)) -}}
-    *{{ $label }}*: `{{ $inst }}`
-                {{- $_ := set $seen $inst true -}}
-            {{- end -}}
+            {{- if index .Labels "instance" -}}
+    *{{ $label }}*: `{{ index .Labels "instance" }}`
+            {{- end }}
         {{- end -}}
-    {{- end -}}
-
+    {{- end }}
 
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
