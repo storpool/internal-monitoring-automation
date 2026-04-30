@@ -55,19 +55,23 @@
     {{- else if match "^ipsec_.*" $kind -}}
         {{- range .Alerts -}}
         *IKEName*: `{{ index .Labels "ike_name" }}`
-        {{- end -}}
-      {{- $label = "IPSec Tunnel" -}}
+        {{- end }}
+      {{- $label = "IPSec Tunnel" }}
     {{- end -}}
 
     {{- if $instance -}}
     *{{ $label }}*: `{{ $instance }}`
     {{- else -}}
+        {{- $seen := dict -}}
         {{- range .Alerts -}}
-            {{- if index .Labels "instance" -}}
-    *{{ $label }}*: `{{ index .Labels "instance" }}`
+            {{- $inst := index .Labels "instance" -}}
+            {{- if and $inst (not (index $seen $inst)) -}}
+    *{{ $label }}*: `{{ $inst }}`
+                {{- $_ := set $seen $inst true -}}
             {{- end -}}
         {{- end -}}
     {{- end -}}
+
 
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
