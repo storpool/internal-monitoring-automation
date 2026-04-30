@@ -74,7 +74,7 @@ groups:
           description: "IKE established but no active tunnels. Verify traffic selectors, policies, and routing."
 
       - alert: NoInboundTraffic
-        expr: (rate(strongswan_sa_bytes_inbound[5m]) < 1 ) and on(child_id, ike_id) (strongswan_sa_state == 1)
+        expr: sum by (ike_id, ike_name) ((rate(strongswan_sa_bytes_inbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)) == count by (ike_id, ike_name) ( (strongswan_sa_state == 1))
         for: 5m
         labels:
           severity: warning
@@ -84,7 +84,7 @@ groups:
           description: "No inbound traffic detected. Check routing, firewall rules, and remote peer transmission."
 
       - alert: NoOutboundTraffic
-        expr: (rate(strongswan_sa_bytes_outbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)
+        expr: sum by (ike_id, ike_name) ((rate(strongswan_sa_bytes_outbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)) == count by (ike_id, ike_name) ( (strongswan_sa_state == 1))
         for: 5m
         labels:
           severity: warning
@@ -94,7 +94,7 @@ groups:
           description: "No outbound traffic detected. Verify local routing, policies, and application flow."
 
       - alert: NoRecentInbound
-        expr: (strongswan_sa_last_inbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)
+        expr: sum by (ike_id, ike_name) ((strongswan_sa_last_inbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)) == count by (ike_id, ike_name) ( (strongswan_sa_state == 1)) 
         for: 2m
         labels:
           severity: warning
@@ -104,7 +104,7 @@ groups:
           description: "Inbound traffic idle. Verify connectivity, remote activity, and firewall rules."
 
       - alert: NoRecentOutbound
-        expr: (strongswan_sa_last_outbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)
+        expr: sum by (ike_id, ike_name) ((strongswan_sa_last_outbound_seconds > 60) and on(child_id, ike_id) (strongswan_sa_state == 1)) == count by (ike_id, ike_name) ( (strongswan_sa_state == 1)) 
         for: 2m
         labels:
           severity: warning
@@ -114,7 +114,7 @@ groups:
           description: "Outbound traffic idle. Check local applications and routing."
 
       - alert: PacketRateDrop
-        expr: (rate(strongswan_sa_packets_inbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)
+        expr: sum by (ike_id, ike_name) ((rate(strongswan_sa_packets_inbound[5m]) < 1) and on(child_id, ike_id) (strongswan_sa_state == 1)) == count by (ike_id, ike_name) ( (strongswan_sa_state == 1))
         for: 5m
         labels:
           severity: warning
