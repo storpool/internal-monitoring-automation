@@ -53,10 +53,9 @@
     {{- else if eq $kind "device" }}{{ $label = "Device" -}}
     {{- else if eq $kind "firewall" }}{{ $label = "Firewall" -}}
     {{- else if match "^ipsec_.*" $kind -}}
-        {{- range .Alerts -}}
+        {{ range .Alerts }}
         *IKEName*: `{{ index .Labels "ike_name" }}`
         {{- end }}
-      {{- $label = "IPSec Tunnel" }}
     {{- end -}}
 
     {{- if $instance -}}
