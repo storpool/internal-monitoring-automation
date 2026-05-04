@@ -61,12 +61,12 @@
 
     {{- if $instance -}}
     *{{ $label }}*: `{{ $instance }}`
-    {{- else -}}
-        {{- range .Alerts -}}
+    {{- else }}
+        {{ range .Alerts }}
             {{- if index .Labels "instance" -}}
     *{{ $label }}*: `{{ index .Labels "instance" }}`
-            {{- end }}
-        {{- end -}}
+            {{ end }}
+        {{- end }}
     {{- end }}
 
     {{- range .Alerts -}}
