@@ -52,6 +52,7 @@
     {{- if eq $kind "host" }}{{ $label = "Host" -}}
     {{- else if eq $kind "device" }}{{ $label = "Device" -}}
     {{- else if eq $kind "firewall" }}{{ $label = "Firewall" -}}
+    {{- end -}}
 
     {{- if $instance -}}
     *{{ $label }}*: `{{ $instance }}`
