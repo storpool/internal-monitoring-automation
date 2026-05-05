@@ -55,19 +55,20 @@
     {{- end -}}
 
     {{- if $instance -}}
-    *{{ $label }}*: `{{ $instance }}`
-    {{- else }}
-        {{ range .Alerts }}
+        *{{ $label }}*: `{{ $instance }}`
+         {{- "\n" -}}
+    {{- else -}}
+        {{- range .Alerts -}}
             {{- if index .Labels "instance" -}}
-    *{{ $label }}*: `{{ index .Labels "instance" }}`
-            {{ end }}
-        {{- end }}
+                *{{ $label }}*: `{{ index .Labels "instance" }}`
+                 {{- "\n" -}}
+            {{- end -}}
+        {{- end -}}
     {{- end -}}
 
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
-                {{- "\n" -}}
                 {{- .Annotations.description -}}
             {{- end -}}
         {{- end -}}
