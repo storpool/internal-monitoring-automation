@@ -42,7 +42,6 @@
 {{ define "slack.storpool.text" -}}
     {{- if eq .Status "firing" -}}
         {{ template "__alert_severity" . }}
-        {{- "\n" }}
     {{- end -}}
 
     {{- $kind := index .CommonLabels "kind" -}}
@@ -55,13 +54,13 @@
     {{- end -}}
 
     {{- if $instance -}}
-        *{{ $label }}*: `{{ $instance }}`
-         {{- "\n" -}}
+    {{- "\n" }}
+    *{{ $label }}*: `{{ $instance }}`
     {{- else -}}
         {{- range .Alerts -}}
             {{- if index .Labels "instance" -}}
+                {{- "\n" -}}
                 *{{ $label }}*: `{{ index .Labels "instance" }}`
-                 {{- "\n" -}}
             {{- end -}}
         {{- end -}}
     {{- end -}}
@@ -69,6 +68,7 @@
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
+                {{- "\n" -}}
                 {{- .Annotations.description -}}
             {{- end -}}
         {{- end -}}
