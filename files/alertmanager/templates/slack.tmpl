@@ -57,7 +57,7 @@
         {{- if eq .Status "firing" -}}
             {{- if eq .Labels.alertname "Watchdog" -}}
                 {{- "\n" -}}
-                env: {{ index (splitList "." alertmanager_internal_domain) 0 }}
+                env: {{ alertmanager_internal_domain }}
             {{- end -}}
             {{- if index .Labels "instance" -}}
                 {{- "\n" -}}
