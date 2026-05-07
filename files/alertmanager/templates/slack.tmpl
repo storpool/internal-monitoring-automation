@@ -53,20 +53,12 @@
     {{- else if eq $kind "firewall" }}{{ $label = "Firewall" -}}
     {{- end -}}
 
-    {{- if $instance -}}
-    {{- "\n" }}
-    *{{ $label }}*: `{{ $instance }}`
-    {{- else -}}
-        {{- range .Alerts -}}
+    {{- range .Alerts -}}
+        {{- if eq .Status "firing" -}}
             {{- if index .Labels "instance" -}}
                 {{- "\n" -}}
                 *{{ $label }}*: `{{ index .Labels "instance" }}`
             {{- end -}}
-        {{- end -}}
-    {{- end -}}
-
-    {{- range .Alerts -}}
-        {{- if eq .Status "firing" -}}
             {{- if index .Annotations "description" -}}
                 {{- "\n" -}}
                 {{- .Annotations.description -}}
