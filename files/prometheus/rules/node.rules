@@ -258,7 +258,7 @@ groups:
 
       - alert: HostClockNotSynchronising
         expr: 'min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'
-        for: 2m
+        for: 12m
         labels:
           severity: warning
           kind: host

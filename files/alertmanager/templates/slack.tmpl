@@ -55,6 +55,10 @@
 
     {{- range .Alerts -}}
         {{- if eq .Status "firing" -}}
+            {{- if eq $alertname "Watchdog" -}}
+                {{- "\n" -}}
+                env: {{ index (splitList "." alertmanager_internal_domain) 0 }}
+            {{- end -}}
             {{- if index .Labels "instance" -}}
                 {{- "\n" -}}
                 *{{ $label }}*: `{{ index .Labels "instance" }}`

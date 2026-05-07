@@ -86,6 +86,6 @@ groups:
                 )
               )
             ) < 0.98
-          for: 5m
+          for: 10m
           labels:
             severity: warning
