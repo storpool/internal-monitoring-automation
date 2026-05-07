@@ -18,4 +18,8 @@
 {% if hostvars[host]['custom_fields']['usage_profile'] is defined %}
     usage_profile: {{ hostvars[host]['custom_fields']['usage_profile'] }}
 {% endif %}
+{% if hostvars[host]['user_attributes']['labels'] is defined
+      and 'heavy_usage' in hostvars[host]['user_attributes']['labels'].split(',') %}
+    usage_profile: "heavy"
+{% endif %}
 {% endfor %}
