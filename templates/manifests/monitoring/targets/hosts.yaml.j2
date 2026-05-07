@@ -22,4 +22,8 @@
       and 'heavy_usage' in hostvars[host]['user_attributes']['labels'].split(',') %}
     usage_profile: "heavy"
 {% endif %}
+{% if hostvars[host]['user_attributes']['labels'] is defined
+      and 'burst_usage' in hostvars[host]['user_attributes']['labels'].split(',') %}
+    usage_profile: "burst"
+{% endif %}
 {% endfor %}
