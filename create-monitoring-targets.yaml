@@ -68,9 +68,21 @@
           (groups['baremetal_machines'] | default([])) | length > 0 
           else 'absent' }}"
 
+    - name: Selecting the baremetal hosts with a BMC address
+      ansible.builtin.set_fact:
+        bmc_hosts: "{{ (groups['baremetal_machines'] | default([])) | map('extract', hostvars)
+          | selectattr('oob_ip', 'defined') | map(attribute='inventory_hostname') | list }}"
+        bmc_hosts_missing: "{{ (groups['baremetal_machines'] | default([])) | map('extract', hostvars)
+          | rejectattr('oob_ip', 'defined') | map(attribute='inventory_hostname') | list }}"
+
+    - name: Warning about baremetal hosts without a BMC address
+      ansible.builtin.debug:
+        msg: "No oob_ip in NetBox, excluded from BMC monitoring: {{ bmc_hosts_missing | join(', ') }}"
+      when: bmc_hosts_missing | length > 0
+
     - name: Creating the bmc-metrics ScrapeConfig
       kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['baremetal_machines'] | default([])) | length > 0 else 'absent' }}"
+        state: "{{ 'present' if bmc_hosts | length > 0 else 'absent' }}"
         resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
         apply: no
 

@@ -1,9 +1,11 @@
 {% for host in (groups['baremetal_machines'] | default([])) %}
+{% if hostvars[host]['oob_ip'] is defined %}
 - targets:
-    - {{ hostvars[host]['ansible_host'] }}:9290
+    - {{ hostvars[host]['oob_ip'] }}
   labels:
     instance: {{ host }}
     location: {{ hostvars[host]['site'] }}
     environment: production
     ipmi_module: {{ hostvars[host]['config_context']['ipmi_module'] | default('default') }}
+{% endif %}
 {% endfor %}

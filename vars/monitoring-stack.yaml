@@ -1,5 +1,8 @@
 slack_api_url_secret: "alerting-slack-api"
 
+# Must match secretName in files/ipmi-exporter/ipmi-exporter-deployment.yaml
+ipmi_exporter_secret_name: "ipmi-exporter-config"
+
 storpool_monitoring_labels:
   metadata:
     labels:

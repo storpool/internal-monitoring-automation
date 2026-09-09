@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipmi-exporter
+  labels:
+    app.kubernetes.io/name: ipmi-exporter
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ipmi-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ipmi-exporter
+    spec:
+      containers:
+        - name: ipmi-exporter
+          image: prometheuscommunity/ipmi-exporter:v1.10.0
+          args:
+            - "--config.file=/config/ipmi.yml"
+            - "--web.listen-address=:9290"
+          ports:
+            - name: metrics
+              containerPort: 9290
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          resources:
+            limits:
+              cpu: 2
+              memory: 512Mi
+      volumes:
+        - name: config
+          secret:
+            secretName: ipmi-exporter-config

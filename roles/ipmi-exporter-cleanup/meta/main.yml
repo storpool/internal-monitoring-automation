@@ -1,0 +1,9 @@
+galaxy_info:
+  author: Kaloyan Kotlarski
+  description: Removes the host-installed ipmi_exporter
+  company: StorPool Inc.
+  license: license (GPL-2.0-or-later, MIT, etc)
+  min_ansible_version: "2.15"
+  galaxy_tags: []
+
+dependencies: []

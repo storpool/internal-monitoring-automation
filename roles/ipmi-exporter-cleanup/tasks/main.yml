@@ -1,0 +1,79 @@
+---
+- name: Collecting service facts
+  ansible.builtin.service_facts:
+
+- name: Stopping and disabling the ipmi_exporter service
+  ansible.builtin.systemd_service:
+    name: ipmi_exporter
+    state: stopped
+    enabled: false
+  when: "'ipmi_exporter.service' in ansible_facts.services"
+
+- name: Removing the ipmi_exporter systemd unit
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/systemd/system/ipmi_exporter.service
+    - /etc/systemd/system/ipmi_exporter.service.d
+  notify: Reloading systemd
+
+- name: Removing the ipmi_exporter binary, configuration and sudoers grant
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/local/bin/ipmi_exporter
+    - /etc/ipmi_exporter
+    - /etc/sudoers.d/ipmi-exp
+    - /etc/ipmi_exporter.yml
+    - /etc/sudoers.d/ipmi_exporter
+
+- name: Removing the ipmi_exporter system user
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: absent
+    remove: false
+    force: false
+  loop:
+    - ipmi-exp
+    - ipmi_exporter
+
+- name: Removing the ipmi_exporter system group
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - ipmi-exp
+    - ipmi_exporter
+
+- name: Releasing the SELinux port label
+  community.general.seport:
+    ports: "{{ ipmi_exporter_cleanup_port }}"
+    proto: tcp
+    setype: http_port_t
+    state: absent
+  when: ansible_selinux.status | default('disabled') == 'enabled'
+
+- name: Configuring firewalld
+  block:
+    - name: Disabling the ipmi-exporter port
+      ansible.posix.firewalld:
+        port: "{{ ipmi_exporter_cleanup_port }}/tcp"
+        state: disabled
+        permanent: true
+      register: port_disable
+    - name: Reloading firewalld
+      service:
+        name: firewalld
+        state: reloaded
+      when: port_disable.changed
+  when:
+    - "'firewalld.service' in ansible_facts.services"
+    - "ansible_facts.services['firewalld.service'].state == 'running'"
+
+- name: Removing the freeipmi package
+  ansible.builtin.package:
+    name: freeipmi
+    state: absent
+  when: ipmi_exporter_cleanup_remove_freeipmi | bool

@@ -110,6 +110,85 @@ data:
 
 ---
 
+## IPMI / BMC Monitoring
+
+BMC metrics are collected by a single **`ipmi-exporter` Deployment in the `internal-monitoring`
+namespace**, which talks IPMI-over-LAN (RMCP) to each server's BMC. It replaces the previous
+per-host `ipmi_exporter` installation.
+
+### 1. Network reachability (required)
+
+The cluster must be able to reach the BMC management networks on **UDP 623**. Verify before
+rolling out:
+
+```bash
+kubectl -n internal-monitoring run ipmi-probe --rm -it --restart=Never \
+  --image=prometheuscommunity/ipmi-exporter:v1.10.0 --command -- \
+  ipmi-ping <bmc-address>
+```
+
+### 2. BMC credentials Secret (required)
+
+`deploy-monitoring-stack.yaml` fails with a clear message unless an `ipmi-exporter-config` Secret
+holding `ipmi.yml` already exists. Create it out of band — the credentials never live in git or in
+AWX.
+
+```yaml
+modules:
+  default:
+    user: "<bmc-user>"
+    pass: "<bmc-password>"
+    driver: "LAN_2_0"
+    privilege: "admin"
+    timeout: 4000
+    collectors: [bmc, ipmi, chassis, dcmi, sel]
+  no_dcmi:
+    user: "<bmc-user>"
+    pass: "<bmc-password>"
+    driver: "LAN_2_0"
+    privilege: "admin"
+    timeout: 4000
+    collectors: [bmc, ipmi, chassis, sel]
+```
+
+```bash
+kubectl -n internal-monitoring create secret generic ipmi-exporter-config \
+  --from-file=ipmi.yml=./ipmi.yml
+```
+
+> ⚠️ These are **remote-mode** modules. The old host-side config used `collector_cmd: sudo` plus
+> `custom_args` to shell out to local `freeipmi` tools — those keys must not be carried over.
+> `dcmi` and `sel` generally need more than `user` privilege.
+
+Reloader watches the Deployment, so updating the Secret restarts the exporter automatically.
+
+### 3. Targets
+
+* **BMC addresses** come from the NetBox **`oob_ip`** field. A device without one is excluded from
+  BMC monitoring; `create-monitoring-targets.yaml` prints the list of excluded hosts.
+* **Per-host module selection** still comes from the NetBox config context key `ipmi_module`
+  (`default` when unset). It is passed to the exporter as the `module` query parameter, so every
+  value used in NetBox must exist as a module in `ipmi.yml`.
+
+### 4. Removing the old host exporter
+
+Once the in-cluster exporter is confirmed healthy, run the cleanup playbook once against the
+baremetal fleet:
+
+```bash
+ansible-playbook -i netbox_inventory.yml cleanup-ipmi-exporter.yaml
+```
+
+It stops and removes the `ipmi_exporter` systemd unit, binary, config directory, sudoers grant and
+`ipmi-exp` user/group, closes the 9290/tcp firewalld port, releases the SELinux port label, and
+uninstalls `freeipmi`. Set `ipmi_exporter_cleanup_remove_freeipmi: false` to keep `freeipmi` if
+other tooling on the hosts depends on it. The playbook is idempotent and safe to re-run.
+
+> ⚠️ Remove the AWX job template / workflow node that runs the old `install-ipmi-exporter.yaml`,
+> otherwise it will reinstall exactly what the cleanup removes.
+
+---
+
 ## FortiGate Monitoring (Optional)
 
 To enable monitoring of FortiGate devices, create/update`fortigate-config` ConfigMap in the `internal-monitoring` namespace.

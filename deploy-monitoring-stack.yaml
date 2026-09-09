@@ -154,7 +154,30 @@
       loop_control:
         loop_var: manifest
       loop: "{{ lookup('fileglob', 'fortigate/*.yaml', wantlist=True) }}"
-      
+
+    - name: Searching for the ipmi-exporter config secret
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Secret
+        namespace: internal-monitoring
+        name: "{{ ipmi_exporter_secret_name }}"
+      register: ipmi_exporter_secret_result
+
+    - name: Checking if the ipmi-exporter config secret exists
+      ansible.builtin.assert:
+        that: ipmi_exporter_secret_result.resources | length == 1
+        fail_msg: >-
+          Please define the {{ ipmi_exporter_secret_name }} secret holding ipmi.yml with the BMC
+          credentials. See the IPMI/BMC Monitoring section of README.md.
+
+    - name: Deploying the ipmi-exporter
+      kubernetes.core.k8s:
+        namespace: internal-monitoring
+        resource_definition: "{{ lookup('file', manifest) | from_yaml }}"
+      loop_control:
+        loop_var: manifest
+      loop: "{{ lookup('fileglob', 'ipmi-exporter/*.yaml', wantlist=True) }}"
+
     - name: Export VictoriaMetrics host
       kubernetes.core.k8s:
         state: present

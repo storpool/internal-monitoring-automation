@@ -1,0 +1,5 @@
+- name: Removing the host ipmi-exporter from baremetal hosts
+  hosts: baremetal_machines,!sp-mgmt
+  roles:
+    - name: ipmi-exporter-cleanup
+      become: true

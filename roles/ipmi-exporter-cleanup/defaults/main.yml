@@ -1,0 +1,3 @@
+---
+ipmi_exporter_cleanup_port: 9290
+ipmi_exporter_cleanup_remove_freeipmi: true

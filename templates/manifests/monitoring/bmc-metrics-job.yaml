@@ -5,11 +5,17 @@ metadata:
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
+    app.kubernetes.io/name: ipmi-exporter
 spec:
+  path: /ipmi
   honorLabels: true
-  interval: 15s
-  scrapeTimeout: 10s
+  interval: 30s
+  scrapeTimeout: 25s
   relabelConfigs:
     - sourceLabels: [ ipmi_module ]
       targetLabel: __param_module
+    - sourceLabels: [ __address__ ]
+      targetLabel: __param_target
+    - targetLabel: __address__
+      replacement: ipmi-exporter:9290
   staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bmcs.yaml.j2') | from_yaml }}
