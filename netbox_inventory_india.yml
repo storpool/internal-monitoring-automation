@@ -4,6 +4,7 @@ config_context: true
 plurals: false
 query_filters:
   - region: "india"
+  - status: "active"
 device_query_filters:
   - has_primary_ip: "true"
 interfaces: true
