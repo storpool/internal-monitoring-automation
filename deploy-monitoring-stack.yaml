@@ -68,6 +68,7 @@
         - https://raw.githubusercontent.com/prometheus-operator/kube-prometheus/main/manifests/kubernetesControlPlane-serviceMonitorKubelet.yaml
       loop_control:
         loop_var: crd_url
+      register: applied_control_plane_resources
 
     - name: Creating Prometheus alerting rules
       kubernetes.core.k8s:
@@ -80,10 +81,66 @@
             namespace: internal-monitoring
             labels:
               storpool.com/env: production
+              storpool.com/managed-by: internal-monitoring-automation
           spec: "{{ lookup('file', rules_file) | from_yaml }}"
       loop: "{{ lookup('fileglob', 'prometheus/rules/*.rules', wantlist=True) }}"
       loop_control:
         loop_var: rules_file
+      register: applied_vm_rules
+
+    - name: Listing the alerting rules labelled as managed by this repository
+      kubernetes.core.k8s_info:
+        api_version: operator.victoriametrics.com/v1beta1
+        kind: VMRule
+        namespace: internal-monitoring
+        label_selectors:
+          - storpool.com/managed-by=internal-monitoring-automation
+      register: existing_vm_rules
+
+    # Anything we previously created that the rules glob no longer produces is a leftover from
+    # a .rules file that has since been deleted. The selector is the managed-by marker, not
+    # storpool.com/env: production, so rules maintained by hand are never candidates. The
+    # upstream PrometheusRule is converted into a same-named VMRule by the VictoriaMetrics
+    # operator, so deleting that one would only start a delete/recreate fight; its name is
+    # subtracted here rather than hardcoded so future upstream additions need no change. The
+    # ownerReferences rejection is a second line of defence, because the operator's converter
+    # leaves owner references off by default in several releases.
+    - name: Selecting the orphaned alerting rules
+      ansible.builtin.set_fact:
+        orphaned_vm_rules: "{{ existing_vm_rules.resources
+          | rejectattr('metadata.ownerReferences', 'defined')
+          | map(attribute='metadata.name') | list
+          | difference(applied_vm_rules.results | selectattr('result', 'defined')
+                       | map(attribute='result.metadata.name') | list)
+          | difference(applied_control_plane_resources.results | selectattr('result', 'defined')
+                       | map(attribute='result') | selectattr('kind', 'eq', 'PrometheusRule')
+                       | map(attribute='metadata.name') | list)
+          | sort }}"
+
+    - name: Reporting the orphaned alerting rules
+      ansible.builtin.debug:
+        msg: "Deleting orphaned VMRules: {{ orphaned_vm_rules | join(', ') }}"
+      when: orphaned_vm_rules | length > 0
+
+    - name: Refusing to delete an implausible number of alerting rules
+      ansible.builtin.assert:
+        that: orphaned_vm_rules | length <= (monitoring_prune_max | int)
+        fail_msg: >-
+          {{ orphaned_vm_rules | length }} VMRules look orphaned, over the monitoring_prune_max
+          limit of {{ monitoring_prune_max }}. This usually means the rules glob or the label
+          selector is wrong rather than that they are all stale. Review every name before
+          raising the limit: {{ orphaned_vm_rules | join(', ') }}
+
+    - name: Removing the orphaned alerting rules
+      kubernetes.core.k8s:
+        state: absent
+        api_version: operator.victoriametrics.com/v1beta1
+        kind: VMRule
+        namespace: internal-monitoring
+        name: "{{ vm_rule }}"
+      loop: "{{ orphaned_vm_rules }}"
+      loop_control:
+        loop_var: vm_rule
 
     - name: Retrieving Alertmanager endpoints
       kubernetes.core.k8s_info:
