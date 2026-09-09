@@ -1,51 +1,18 @@
-- name: Configure blackbox-exporter jobs
+- name: Configuring the monitoring targets
   hosts: localhost
   gather_facts: no
+  vars_files:
+    - vars/monitoring-stack.yaml
   tasks:
-    - name: Creating the ping-v4 ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if
-          (groups['virtual_machines'] | default([])) | length > 0 or
-          (groups['baremetal_machines'] | default([])) | length > 0 or
-          (groups['network_devices'] | default([])) | length > 0 or
-          (groups['power_devices'] | default([])) | length > 0
-          else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/ping-v4-job.yaml') | from_yaml }}"
-        apply: no
+    - name: Refusing to rewrite the scrape configs from a suspiciously small inventory
+      ansible.builtin.assert:
+        that: (groups['all'] | default([])) | length >= (minimum_inventory_hosts | int)
+        fail_msg: >-
+          Only {{ (groups['all'] | default([])) | length }} hosts in the inventory, expected at
+          least {{ minimum_inventory_hosts }}. An inventory source probably failed to load, and
+          rewriting the scrape configs now would blank out the targets. Pass
+          -e minimum_inventory_hosts=0 if the shrink is real.
 
-
-    - name: Creating the ssh-banner ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['ssh_service'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/ssh-service-job.yaml') | from_yaml }}"
-        apply: no
-
-    - name: Creating the web-service ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['web_service'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/web-service-job.yaml') | from_yaml }}"
-        apply: no
-
-- name: Configuring snmp-exporter jobs
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the network-devices ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['network_devices'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/network-devices-job.yaml') | from_yaml }}"
-        apply: no
-
-    - name: Creating the power-devices ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['power_devices'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/power-devices-job.yaml') | from_yaml }}"
-        apply: no
-
-- name: Configuring host jobs
-  hosts: localhost
-  gather_facts: no
-  tasks:
     - name: Searching for the node-exporter auth secret
       kubernetes.core.k8s_info:
         api_version: v1
@@ -59,19 +26,8 @@
         that: node_exporter_secret_result.resources | length == 1
         fail_msg: Please define a secret for Prometheus to use to authenticate against node-exporter instances
 
-    - name: Creating the host-metrics ScrapeConfig
-      kubernetes.core.k8s:
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/host-metrics-job.yaml') | from_yaml }}"
-        apply: no
-        state: "{{ 'present' if
-          (groups['virtual_machines'] | default([])) | length > 0 or
-          (groups['baremetal_machines'] | default([])) | length > 0 
-          else 'absent' }}"
-
-    - name: Selecting the baremetal hosts with a BMC address
+    - name: Selecting the baremetal hosts without a BMC address
       ansible.builtin.set_fact:
-        bmc_hosts: "{{ (groups['baremetal_machines'] | default([])) | map('extract', hostvars)
-          | selectattr('oob_ip', 'defined') | map(attribute='inventory_hostname') | list }}"
         bmc_hosts_missing: "{{ (groups['baremetal_machines'] | default([])) | map('extract', hostvars)
           | rejectattr('oob_ip', 'defined') | map(attribute='inventory_hostname') | list }}"
 
@@ -80,94 +36,72 @@
         msg: "No oob_ip in NetBox, excluded from BMC monitoring: {{ bmc_hosts_missing | join(', ') }}"
       when: bmc_hosts_missing | length > 0
 
-    - name: Creating the bmc-metrics ScrapeConfig
+    # One task for every manifest in templates/manifests/monitoring: the file set is the set of
+    # scrape configs this repository manages, which is what the prune below diffs against. A job
+    # whose group is empty gets an empty staticConfigs rather than being deleted.
+    - name: Creating the scrape configs
       kubernetes.core.k8s:
-        state: "{{ 'present' if bmc_hosts | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/bmc-metrics-job.yaml') | from_yaml }}"
+        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
         apply: no
+      loop: "{{ lookup('fileglob', playbook_dir + '/templates/manifests/monitoring/*.yaml', wantlist=True) | sort }}"
+      loop_control:
+        loop_var: manifest
+        label: "{{ manifest | basename }}"
+      register: applied_scrape_configs
 
-    - name: Creating the pmc-metrics ScrapeConfig
-      kubernetes.core.k8s:
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/pmc-metrics-job.yaml') | from_yaml }}"
-        apply: no
-        state: "{{ 'present' if
-          (groups['intel_baremetal'] | default([])) | length > 0 or
-          (groups['amd_baremetal'] | default([])) | length > 0 
-          else 'absent' }}"
-
-- name: Configuring InfluxDB job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Dumping InfluxDB static config
+    - name: Dumping the rendered scrape configs
       ansible.builtin.debug:
-        msg: "{{ lookup('template', 'manifests/monitoring/targets/influxdb_service.yaml.j2') }}"
+        var: applied_scrape_configs
         verbosity: 3
-    - name: Dumping InfluxDB ScrapeConfig
+
+    - name: Listing the scrape configs labelled as managed by this repository
+      kubernetes.core.k8s_info:
+        api_version: operator.victoriametrics.com/v1beta1
+        kind: VMScrapeConfig
+        namespace: internal-monitoring
+        label_selectors:
+          - storpool.com/managed-by=internal-monitoring-automation
+      register: existing_scrape_configs
+
+    # Anything we previously created that no manifest produces any more is a leftover from a
+    # job that was renamed or removed. vmagent runs with selectAllByDefault, so it would keep
+    # scraping the hosts frozen into it.
+    #
+    # The selector above is the managed-by marker, NOT storpool.com/env: production. Scrape
+    # configs maintained by hand with kubectl (libvirt, os-haproxy-service) carry the production
+    # label too, and deleting those would silently drop live monitoring. Only objects this
+    # playbook stamped are ever candidates. Objects owned by another resource are the
+    # VictoriaMetrics operator's conversions and are never ours to delete either.
+    - name: Selecting the orphaned scrape configs
+      ansible.builtin.set_fact:
+        orphaned_scrape_configs: "{{ existing_scrape_configs.resources
+          | rejectattr('metadata.ownerReferences', 'defined')
+          | map(attribute='metadata.name') | list
+          | difference(applied_scrape_configs.results | selectattr('result', 'defined')
+                       | map(attribute='result.metadata.name') | list)
+          | sort }}"
+
+    - name: Reporting the orphaned scrape configs
       ansible.builtin.debug:
-        msg: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') }}"
-        verbosity: 3
-    - name: Creating the InfluxDB ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['influxdb_service'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/influxdb-service-job.yaml') | from_yaml }}"
-        apply: no
+        msg: "Deleting orphaned VMScrapeConfigs: {{ orphaned_scrape_configs | join(', ') }}"
+      when: orphaned_scrape_configs | length > 0
 
-- name: Configuring BIRD job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the BIRD ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['routers'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/bird-service-job.yaml') | from_yaml }}"
-        apply: no
+    - name: Refusing to delete an implausible number of scrape configs
+      ansible.builtin.assert:
+        that: orphaned_scrape_configs | length <= (monitoring_prune_max | int)
+        fail_msg: >-
+          {{ orphaned_scrape_configs | length }} VMScrapeConfigs look orphaned, over the
+          monitoring_prune_max limit of {{ monitoring_prune_max }}. This usually means the
+          manifest directory or the label selector is wrong rather than that they are all stale.
+          Review every name before raising the limit: {{ orphaned_scrape_configs | join(', ') }}
 
-- name: Configuring MySQL job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the MySQL ScrapeConfig
+    - name: Removing the orphaned scrape configs
       kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['mysql_hosts'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/mysql-service-job.yaml') | from_yaml }}"
-        apply: no
-
-- name: Configuring PostgreSQL job
-  hosts: localhost
-  tasks:
-    - name: Creating the PostgreSQL ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['postgresql_hosts'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/postgresql-service-job.yaml') | from_yaml }}"
-        apply: no
-
-- name: Configuring Jenkins job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the Jenkins ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['jenkins_hosts'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/targets/jenkins-job.yaml.j2') | from_yaml }}"
-        apply: no
-
-- name: Configuring Fortigate job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the Fortigate ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['fortigate_firewalls'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/fortigate-job.yaml') | from_yaml }}"
-        apply: no
-
-- name: Configuring IPSec job
-  hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Creating the IPSec ScrapeConfig
-      kubernetes.core.k8s:
-        state: "{{ 'present' if (groups['ipsec_service'] | default([])) | length > 0 else 'absent' }}"
-        resource_definition: "{{ lookup('template', 'manifests/monitoring/ipsec-service.yaml') | from_yaml }}"
-        apply: no
+        state: absent
+        api_version: operator.victoriametrics.com/v1beta1
+        kind: VMScrapeConfig
+        namespace: internal-monitoring
+        name: "{{ scrape_config }}"
+      loop: "{{ orphaned_scrape_configs }}"
+      loop_control:
+        loop_var: scrape_config

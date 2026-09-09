@@ -5,6 +5,7 @@ metadata:
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
+    storpool.com/managed-by: internal-monitoring-automation
     app.kubernetes.io/name: ipmi-exporter
 spec:
   path: /ipmi
@@ -18,4 +19,4 @@ spec:
       targetLabel: __param_target
     - targetLabel: __address__
       replacement: ipmi-exporter:9290
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bmcs.yaml.j2') | from_yaml }}
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/bmcs.yaml.j2') | from_yaml or [] }}
