@@ -9,3 +9,13 @@ storpool_monitoring_labels:
       storpool.com/env: production
 
 alertmanager_internal_domain: "internal-alerts.storpool.net"
+
+# Smallest inventory create-monitoring-targets.yaml will accept before rewriting the scrape
+# configs, so a failed inventory source cannot silently blank out every target list. Roughly half
+# of the live fleet, measured 2026-09-09 from the ping-v4 scrape config (123 targets across the
+# 3dc, mars, moonstone, neterra, office and ops-lab locations).
+minimum_inventory_hosts: 60
+
+# Refuse to delete more than this many objects in one prune. A mis-scoped label selector or a
+# manifest directory that failed to glob would otherwise try to delete everything we manage.
+monitoring_prune_max: 5

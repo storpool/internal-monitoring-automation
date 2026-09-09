@@ -5,6 +5,7 @@ metadata:
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
+    storpool.com/managed-by: internal-monitoring-automation
 spec:
   honorLabels: true
   basicAuth:
@@ -14,4 +15,4 @@ spec:
     password:
       key: password
       name: "{{ node_exporter_secret_name }}"
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/hosts.yaml.j2') | from_yaml }}
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/hosts.yaml.j2') | from_yaml or [] }}

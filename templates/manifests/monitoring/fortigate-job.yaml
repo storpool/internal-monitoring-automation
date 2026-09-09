@@ -5,6 +5,7 @@ metadata:
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
+    storpool.com/managed-by: internal-monitoring-automation
     app: fortigate-exporter
 
 spec:
@@ -18,4 +19,4 @@ spec:
   - targetLabel: __address__
     replacement: fortigate-exporter:9710
 
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/fortigate_targets.yaml.j2') | from_yaml }}
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/fortigate_targets.yaml.j2') | from_yaml or [] }}

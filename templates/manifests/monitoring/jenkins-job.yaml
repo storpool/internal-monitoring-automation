@@ -1,14 +1,12 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMScrapeConfig
 metadata:
-  name: postgresql-service
+  name: jenkins
   namespace: internal-monitoring
   labels:
     storpool.com/env: production
     storpool.com/managed-by: internal-monitoring-automation
 spec:
   honorLabels: true
-  relabelConfigs:
-    - sourceLabels: [ __address__ ]
-      targetLabel: __address__
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/postgresql_service.yaml.j2') | from_yaml or [] }}
+  path: /prometheus
+  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/jenkins_service.yaml.j2') | from_yaml or [] }}
