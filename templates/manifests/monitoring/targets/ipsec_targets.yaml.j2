@@ -4,7 +4,7 @@
   labels:
     instance: {{ host }}
     type: ipsec_service
-{% if host in groups['baremetal_machines'] %}
+{% if host in (groups['baremetal_machines'] | default([])) %}
     location: {{ hostvars[host]['site'] }}
 {% else %}
     location: {{ hostvars[host]["location"] | default("undefined") }}

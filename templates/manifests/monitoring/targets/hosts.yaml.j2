@@ -6,7 +6,7 @@
     - {{ hostvars[host]['ansible_host'] }}:9100
   labels:
     instance: {{ host }}
-{% if host in groups['baremetal_machines'] %}
+{% if host in (groups['baremetal_machines'] | default([])) %}
     type: bare-metal
     role: {{ hostvars[host]['role'] }}
     location: {{ hostvars[host]['site'] }}
