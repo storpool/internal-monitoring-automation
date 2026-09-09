@@ -1,5 +1,4 @@
-{% for host in groups["all"] %}
-{% if "healthcheck_url" in hostvars[host] and hostvars[host]["healthcheck_url"] | length %}
+{% for host in (groups['web_service'] | default([])) %}
 - targets:
 {% for url in hostvars[host]["healthcheck_url"] %}
     - {{ url }}
@@ -8,5 +7,4 @@
     instance: {{ host }}
     location: {{ hostvars[host]["location"] | default("undefined") }}
     environment: production
-{% endif %}
 {% endfor %}
