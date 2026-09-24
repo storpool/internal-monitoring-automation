@@ -1,0 +1,13 @@
+{% for host in (groups['process_exporter'] | default([])) %}
+- targets:
+    - {{ hostvars[host]['ansible_host'] }}:9256
+  labels:
+    instance: {{ host }}
+    type: process_exporter
+{% if host in (groups['baremetal_machines'] | default([])) %}
+    location: {{ hostvars[host]['site'] }}
+{% else %}
+    location: {{ hostvars[host]["location"] | default("undefined") }}
+{% endif %}
+    environment: production
+{% endfor %}
