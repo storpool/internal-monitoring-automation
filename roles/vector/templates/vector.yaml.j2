@@ -1,0 +1,85 @@
+# {{ ansible_managed }}
+data_dir: /var/lib/vector
+
+# `vector top` for live per-component CPU/throughput (local only)
+api:
+  enabled: true
+  address: 127.0.0.1:8686
+
+sources:
+
+  system_journal:
+    type: journald
+{% if vector_journald_exclude_units | length > 0 %}
+    exclude_units:
+{% for unit in vector_journald_exclude_units %}
+      - {{ unit }}
+{% endfor %}
+{% endif %}
+{% if vector_tetragon_enabled | bool %}
+
+  tetragon:
+    type: file
+    include:
+      - {{ vector_tetragon_log }}
+    read_from: beginning
+{% endif %}
+
+transforms:
+
+  system_logs:
+    type: remap
+    inputs:
+      - system_journal
+    source: |
+      .log_source = "system"
+      # journald already sets .host; only look it up when missing
+      if !exists(.host) { .host = get_hostname!() }
+{% if vector_tetragon_enabled | bool %}
+
+  tetragon_json:
+    type: remap
+    inputs:
+      - tetragon
+    drop_on_error: false
+    drop_on_abort: false
+    file: /etc/vector/tetragon.vrl
+{% endif %}
+
+sinks:
+
+  victoria_logs_system:
+    type: http
+    inputs:
+      - system_logs
+    uri: "{{ vector_victorialogs_url }}/insert/jsonline?_stream_fields=host,log_source,_SYSTEMD_UNIT&_msg_field=message&_time_field=timestamp"
+    auth:
+      strategy: basic
+      user: {{ vector_victorialogs_user | to_json }}
+      password: {{ vector_victorialogs_password | to_json }}
+    compression: {{ vector_victorialogs_compression }}
+    encoding:
+      codec: json
+    framing:
+      method: newline_delimited
+    healthcheck:
+      enabled: false
+{% if vector_tetragon_enabled | bool %}
+
+  victoria_logs_tetragon:
+    type: http
+    inputs:
+      - tetragon_json
+    uri: "{{ vector_victorialogs_url }}/insert/jsonline?_stream_fields=host,log_source"
+    auth:
+      strategy: basic
+      user: {{ vector_victorialogs_user | to_json }}
+      password: {{ vector_victorialogs_password | to_json }}
+    compression: {{ vector_victorialogs_compression }}
+    encoding:
+      codec: json
+    framing:
+      method: newline_delimited
+    healthcheck:
+      enabled: false
+{% endif %}

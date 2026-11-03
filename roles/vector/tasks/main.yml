@@ -1,0 +1,104 @@
+---
+- name: Checking if the VictoriaLogs password is defined
+  ansible.builtin.assert:
+    that:
+      - vector_victorialogs_password is defined
+      - vector_victorialogs_password | length > 0
+    fail_msg: Please set the VictoriaLogs writer password via vector_victorialogs_password
+
+- name: Checking if the host architecture is supported
+  ansible.builtin.assert:
+    that:
+      - ansible_architecture in vector_deb_architectures
+    fail_msg: "No vector package for {{ ansible_architecture }}"
+
+- name: Installing vector via apt
+  ansible.builtin.apt:
+    deb: "{{ vector_release_url }}/vector_{{ vector_version }}-1_{{ vector_deb_architectures[ansible_architecture] }}.deb"
+  when:
+    - ansible_pkg_mgr == "apt"
+  notify: Restarting vector
+
+- name: Installing vector via dnf
+  ansible.builtin.dnf:
+    name: "{{ vector_release_url }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm"
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_pkg_mgr in ["dnf", "dnf5"]
+  notify: Restarting vector
+
+# The package postinst does this too, but only if the group existed at install time
+- name: Allowing vector to read the journal
+  ansible.builtin.user:
+    name: vector
+    groups: systemd-journal
+    append: true
+  notify: Restarting vector
+
+- name: Adding the tetragon VRL program
+  ansible.builtin.copy:
+    dest: /etc/vector/tetragon.vrl
+    src: tetragon.vrl
+    owner: root
+    group: vector
+    mode: "0640"
+  when: vector_tetragon_enabled | bool
+  notify: Restarting vector
+
+- name: Configuring vector
+  ansible.builtin.template:
+    dest: /etc/vector/vector.yaml
+    src: vector.yaml.j2
+    owner: root
+    group: vector
+    mode: "0640"
+    validate: /usr/bin/vector validate --no-environment --config-yaml %s
+  notify: Restarting vector
+
+- name: Creating tetragon vrl
+  ansible.builtin.template:
+    dest: /etc/vector/tetragon.vrl
+    src: tetragon.vrl.j2
+    owner: root
+    group: vector
+    mode: "0640"
+    validate: /usr/bin/vector validate --no-environment --config-yaml %s
+  notify: Restarting vector
+
+- name: Creating vector drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/vector.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Creating vector oom score systemd drop-in
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/vector.service.d/10-oom-score.conf
+    src: vector-oom-score.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reloading systemd
+    - Restarting vector
+
+- name: Starting the vector service
+  ansible.builtin.systemd_service:
+    name: vector
+    state: started
+    enabled: true
+
+- name: Flushing handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Checking if vector is healthy
+  ansible.builtin.uri:
+    url: http://127.0.0.1:8686/health
+    status_code: 200
+  register: vector_health
+  retries: 10
+  delay: 3
+  until: vector_health.status == 200

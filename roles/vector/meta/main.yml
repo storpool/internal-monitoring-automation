@@ -1,0 +1,9 @@
+galaxy_info:
+  author: Martin Yalamov
+  description: Installs Vector and ships the systemd journal to VictoriaLogs
+  company: StorPool Inc.
+  license: license (GPL-2.0-or-later, MIT, etc)
+  min_ansible_version: "2.15"
+  galaxy_tags: []
+
+dependencies: []

@@ -1,0 +1,20 @@
+---
+# Pinned release from https://github.com/vectordotdev/vector/releases. Bumping it upgrades the hosts.
+vector_version: "0.60.0"
+vector_release_url: "https://github.com/vectordotdev/vector/releases/download/v{{ vector_version }}"
+vector_deb_architectures:
+  x86_64: amd64
+  aarch64: arm64
+
+vector_victorialogs_url: "https://infralogs.storpool.net"
+vector_victorialogs_user: writer
+# vector_victorialogs_password has no default, set it from an Ascender credential or extra variable
+# zstd needs a recent VictoriaLogs, use gzip against older instances
+vector_victorialogs_compression: zstd
+
+# Journal units that are not shipped, e.g. [ vector.service ]
+vector_journald_exclude_units: []
+
+# Also ship the tetragon event log. Requires roles/vector/files/tetragon.vrl
+vector_tetragon_enabled: false
+vector_tetragon_log: /var/log/tetragon/tetragon.log

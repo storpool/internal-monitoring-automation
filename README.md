@@ -1,6 +1,6 @@
 # Internal Monitoring Automation
 
-This repository contains automation used by AWX workflows to deploy and manage internal monitoring infrastructure and agents across monitored hosts.
+This repository contains automation used by Ascender workflows to deploy and manage internal monitoring infrastructure and agents across monitored hosts.
 
 It provisions a monitoring stack based on **VictoriaMetrics**, integrates with Kubernetes cluster components, and configures alerting via Slack.
 
@@ -14,7 +14,7 @@ The project automates:
 * Configuration of monitoring targets (hosts and Kubernetes components)
 * Alerting setup via Slack webhooks
 * Integration with Kubernetes cluster services (e.g. controller manager metrics)
-* Deployment through **AWX workflows** into designated namespaces
+* Deployment through **Ascender workflows** into designated namespaces
 
 ---
 
@@ -22,7 +22,7 @@ The project automates:
 
 **Core components:**
 
-* **AWX** – orchestrates workflows and automation
+* **Ascender** – orchestrates workflows and automation
 * **VictoriaMetrics** – time-series database and monitoring backend
 * **Kubernetes cluster** – monitored infrastructure
 * **Traefik** – ingress/controller exposure
@@ -97,9 +97,9 @@ data:
 
 ---
 
-### 5. AWX Access
+### 5. Ascender Access
 
-* An operational AWX instance
+* An operational Ascender instance
 * Credentials configured for:
 
   * Kubernetes cluster access
@@ -131,7 +131,7 @@ kubectl -n internal-monitoring run ipmi-probe --rm -it --restart=Never \
 
 `deploy-monitoring-stack.yaml` fails with a clear message unless an `ipmi-exporter-config` Secret
 holding `ipmi.yml` already exists. Create it out of band — the credentials never live in git or in
-AWX.
+Ascender.
 
 ```yaml
 modules:
@@ -184,7 +184,7 @@ It stops and removes the `ipmi_exporter` systemd unit, binary, config directory,
 uninstalls `freeipmi`. Set `ipmi_exporter_cleanup_remove_freeipmi: false` to keep `freeipmi` if
 other tooling on the hosts depends on it. The playbook is idempotent and safe to re-run.
 
-> ⚠️ Remove the AWX job template / workflow node that runs the old `install-ipmi-exporter.yaml`,
+> ⚠️ Remove the Ascender job template / workflow node that runs the old `install-ipmi-exporter.yaml`,
 > otherwise it will reinstall exactly what the cleanup removes.
 
 ---
@@ -226,11 +226,11 @@ data:
 ---
 ## External Access to VictoriaMetrics (Optional)
 
-If external access to VictoriaMetrics is required (e.g. for external Grafana dashboards), enable it via an AWX extra variable.
+If external access to VictoriaMetrics is required (e.g. for external Grafana dashboards), enable it via an Ascender extra variable.
 
 ### Configuration
 
-Set the following variable in the AWX workflow/job template:
+Set the following variable in the Ascender workflow/job template:
 
 ```yaml id="u3k9sd"
 victoria_metrics_external_endpoint: "https://<victoria-metrics-external-url>"
@@ -253,7 +253,7 @@ victoria_metrics_external_endpoint: "https://<victoria-metrics-external-url>"
 
 ## Alertmanager Endpoint Configuration (Optional)
 
-The Alertmanager URL can be configured via an AWX extra variable in the same workflow.
+The Alertmanager URL can be configured via an Ascender extra variable in the same workflow.
 
 ### Configuration
 
@@ -270,3 +270,38 @@ alertmanager_internal_domain: "<alertmanager-url-domain>"
 
 * Ensure the URL is reachable from within the cluster
 * If exposed externally, secure it appropriately (TLS, auth, etc.)
+
+* * *
+
+## Log Shipping to VictoriaLogs (Vector)
+
+`install-vector.yaml` installs [Vector](https://vector.dev) from the pinned upstream release package and ships the systemd journal of every host in the `deploy_vector` group to VictoriaLogs (`https://infralogs.storpool.net`).
+
+### Selecting hosts
+
+- **NetBox:** tag the device with `vector-autodeploy`
+- **OpenNebula:** add the `vector` label to a `Production` VM
+
+### Credentials (required)
+
+The playbook fails unless `vector_victorialogs_password` is set. Provide it from an Ascender credential or extra variable — it never lives in git.
+
+```
+vector_victorialogs_password: "<victorialogs-writer-password>"
+```
+
+### Optional variables
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `vector_version` | `0.60.0` | Vector release; bumping it upgrades the hosts |
+| `vector_victorialogs_url` | `https://infralogs.storpool.net` | VictoriaLogs endpoint |
+| `vector_victorialogs_compression` | `zstd` | Use `gzip` against older VictoriaLogs |
+| `vector_journald_exclude_units` | `[]` | Journal units that are not shipped |
+| `vector_tetragon_enabled` | `false` | Also ship `/var/log/tetragon/tetragon.log`, needs `roles/vector/files/tetragon.vrl` |
+
+### Notes
+
+- Journal streams are keyed on `host`, `log_source` and `_SYSTEMD_UNIT`
+- The Vector API listens on `127.0.0.1:8686` only (`vector top`), so no firewall port is opened
+- The config is checked with `vector validate` before it replaces the running one, a broken template never reaches the service

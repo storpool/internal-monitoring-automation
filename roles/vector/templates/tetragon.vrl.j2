@@ -1,0 +1,259 @@
+# Tetragon JSON -> VictoriaLogs (optimized)
+# Perf rules used here:
+#  * never assign big objects to variables (VRL deep-copies them): move the event
+#    wrapper with del() and read leaf paths directly
+#  * build one flat object with dotted keys; compact() it once (non-recursive)
+#  * no hook.args JSON dump, no exit-reason table, short _msg
+#    (the UI derives reasons, errno names and the readable message itself)
+line = string(.message) ?? ""
+host = string(.host) ?? "unknown"
+., err = parse_json(line)
+if err != null || !is_object(.) {
+  . = {"_time": now(), "log_source": "tetragon", "_msg": line, "node": host,
+       "event.type": "unparsed", "level": "error", "tetragon.parse_error": err}
+  return .
+}
+
+# 1. event type: move the single wrapper object to .e (no copy)
+t = "unknown"
+if exists(.process_kprobe)          { t = "kprobe";     .e = del(.process_kprobe)  } else if exists(.process_exec)       { t = "exec";       .e = del(.process_exec)  } else if exists(.process_exit)       { t = "exit";       .e = del(.process_exit)  } else if exists(.process_tracepoint) { t = "tracepoint"; .e = del(.process_tracepoint)  } else if exists(.process_lsm)        { t = "lsm";        .e = del(.process_lsm)  } else if exists(.process_uprobe)     { t = "uprobe";     .e = del(.process_uprobe)  } else if exists(.process_loader)     { t = "loader";     .e = del(.process_loader)  } else if exists(.process_throttle)   { t = "throttle";   .e = del(.process_throttle)  } else if exists(.rate_limit_info)    { t = "rate_limit_info"; .e = del(.rate_limit_info) }
+
+node = string(.node_name) ?? host
+bin  = string(.e.process.binary) ?? ""
+bin_name = bin
+parts = split(bin, "/")
+if length(parts) > 0 { bin_name = string(parts[-1]) ?? bin }
+
+# 2. k8s origin
+ns  = string(.e.process.pod.namespace) ?? ""
+pod = string(.e.process.pod.name) ?? ""
+origin = "host:" + node
+if ns != "" && pod != "" {
+  origin = ns + "/" + pod
+  c = string(.e.process.pod.container.name) ?? ""
+  if c != "" { origin = origin + "/" + c }
+}
+
+# 3. hook arguments (kprobe/tracepoint/lsm/uprobe only)
+hook = ""; policy = ""; enf = ""; action = ""
+extra = ""; mask = 0
+if t != "exec" && t != "exit" {
+  hook = string(.e.function_name) ?? string(.e.symbol) ?? ""
+  if is_string(.e.subsys) { hook = string!(.e.subsys) + "/" + (string(.e.event) ?? "") }
+  policy = string(.e.policy_name) ?? ""
+  action = string(.e.action) ?? ""
+  if action != "" { enf = downcase(string(split(action, "ACTION_")[-1]) ?? "") }
+  # Each Tetragon argument is {"<type>_arg": value, "label": "..."}; read it by
+  # shape rather than by type name, so new argument types keep working.
+  i = 0
+  for_each(array(.e.args) ?? []) -> |_i, a| {
+    # fast path for the common types; generic scan only for the rare ones
+    k = "sock_arg"; v = a.sock_arg
+    if v == null { k = "file_arg"; v = a.file_arg }
+    if v == null { k = "int_arg"; v = a.int_arg }
+    if v == null { k = "path_arg"; v = a.path_arg }
+    if v == null { k = "string_arg"; v = a.string_arg }
+    if v == null {
+      k = ""
+      for_each(keys(object(a) ?? {})) -> |_j, kk| { if k == "" && kk != "label" { k = kk } }
+      v = get(a, [k]) ?? null
+    }
+    if is_object(v) {
+      if v.saddr != null || v.daddr != null {
+        .n.saddr = v.saddr; .n.sport = v.sport; .n.daddr = v.daddr; .n.dport = v.dport
+        .n.proto = v.protocol
+        if .n.proto == null { .n.proto = v.proto }
+        if .n.proto == null { .n.proto = v.type }
+      } else if v.addr != null {
+        .n.daddr = v.addr; .n.dport = v.port
+      } else if v.path != null {
+        .n.path = v.path
+      } else if k == "module_arg" { extra = extra + " module=" + (string(v.name) ?? "?")
+      } else if k == "capability_arg" { extra = extra + " cap=" + (string(v.name) ?? "?")
+      } else if k == "process_credentials_arg" {
+        .n.new_euid = v.euid
+        extra = extra + " uid=" + (to_string(v.uid) ?? "?") + " euid=" + (to_string(v.euid) ?? "?")
+      }
+    } else if v != null {
+      sv = to_string(v) ?? ""
+      if i == 0 && k == "string_arg" { .n.s0 = sv }               # e.g. the name given to getaddrinfo
+      if k == "string_arg" && .n.path == null && starts_with(sv, "/") {
+        .n.path = sv                                  # syscall path argument (openat, mount, ...)
+      } else {
+        if i == 1 && k == "int_arg" { mask = to_int(v) ?? 0 }
+        if i == 0 { .n.i0 = v } else if i == 1 { .n.i1 = v }     # setuid-family uid arguments
+        extra = extra + " " + sv
+      }
+    }
+    i = i + 1
+  }
+  # accept(): the new connection is the return value
+  if is_object(.e.return.sock_arg) {
+    .n.saddr = .e.return.sock_arg.saddr; .n.sport = .e.return.sock_arg.sport
+    .n.daddr = .e.return.sock_arg.daddr; .n.dport = .e.return.sock_arg.dport
+    .n.proto = .e.return.sock_arg.protocol
+  }
+}
+
+# 4. category / action
+cat = "process"; verb = t
+dp = to_int(.n.dport) ?? 0
+sp = to_int(.n.sport) ?? 0
+if t == "exec" || t == "exit" { verb = t
+} else if t == "loader" { cat = "loader"; verb = "load"
+} else if t == "throttle" || t == "rate_limit_info" { cat = "tetragon"; verb = "throttle"
+} else if match(hook, r'getaddrinfo|gethostbyname') {
+  cat = "dns"; verb = "lookup"                                  # glibc name lookup (uprobe)
+} else if dp == 53 || sp == 53 || dp == 5353 || sp == 5353 { cat = "dns"; verb = "dns"
+} else if .n.daddr != null || .n.saddr != null {
+  cat = "network"; verb = "net"
+  if contains(hook, "connect") { verb = "connect"  } else if contains(hook, "accept") { verb = "accept"  } else if contains(hook, "close") { verb = "close"  } else if contains(hook, "listen") || contains(hook, "bind") { verb = "listen"  } else if contains(hook, "send") || contains(hook, "output") { verb = "send" }
+} else if match(hook, r'(?i)module|bpf|kexec|iopl|ioperm') {
+  cat = "kernel"; verb = "kernel"
+  if contains(hook, "bpf") { verb = "bpf" } else if match(hook, r'iopl|ioperm') { verb = "port-io" }
+} else if match(hook, r'(?i)setuid|setgid|setres|commit_creds|capable|capset|ptrace|process_vm|unshare|setns|namespaces|user_ns|mount|chmod|unix_stream_connect') {
+  cat = "privilege"; verb = "privesc"
+  if match(hook, r'unshare|setns|namespaces|user_ns') { verb = "namespace" }
+  else if contains(hook, "mount") { verb = "mount" }
+  else if match(hook, r'ptrace|process_vm') { verb = "ptrace" }
+  else if contains(hook, "chmod") { verb = "setuid-bit" }
+  else if contains(hook, "unix_stream_connect") { verb = "runtime-socket" }
+} else if .n.path != null || match(hook, r'(?i)file|open|write|read|truncate|unlink|rename|chmod|chown|mmap|path') {
+  cat = "file"; verb = "file"
+  if contains(hook, "unlink") { verb = "file-delete" }
+  else if mask == 2 || match(hook, r'(?i)write|truncate|rename') { verb = "file-write" }
+} else { cat = "syscall" }
+
+# 4b. privilege direction for uid changes: raise / drop / same / change.
+#   setuid(1001) from a process whose euid is 0 (ping, sshd, daemons) gives
+#   root up: a "drop", not an escalation. Compared with the current euid.
+priv = ""
+priv_to = null
+if cat == "privilege" && match(hook, r'(?i)setuid|setreuid|setresuid|setfsuid|commit_creds') {
+  cur = -2
+  if .e.process.process_credentials.euid != null { cur = to_int(.e.process.process_credentials.euid) ?? -2 } else if .e.process.uid != null { cur = to_int(.e.process.uid) ?? -2 }
+  # to_int(null) is 0 in VRL, so every read is guarded: a missing value must not look like root
+  nu = -1
+  if .n.new_euid != null {
+    nu = to_int(.n.new_euid) ?? -1
+  } else if match(hook, r'(?i)setre|setres') {
+    if .n.i1 != null { nu = to_int(.n.i1) ?? -1 }
+  } else if .n.i0 != null {
+    nu = to_int(.n.i0) ?? -1
+  }
+  if nu >= 0 && nu != 4294967295 && cur != -2 {
+    priv_to = nu
+    if nu == cur { priv = "same" } else if nu == 0 { priv = "raise" } else if cur == 0 { priv = "drop" } else { priv = "change" }
+  }
+  if priv == "drop" { verb = "priv-drop" } else if priv == "same" { verb = "priv-same" } else if priv == "change" { verb = "priv-change" }
+}
+
+# 5. outcome + level
+ret = to_int(.e.return.int_arg) ?? 0
+sig = string(.e.signal) ?? ""
+status = to_int(.e.status) ?? 0
+outcome = "allowed"
+if enf == "sigkill" || sig == "SIGKILL" { outcome = "killed"  } else if enf == "override" || enf == "notifyenforcer" || enf == "notify_enforcer" || ret == -1 || ret == -13 { outcome = "denied"  } else if ret < 0 { outcome = "failed"  } else if t == "exit" && (status != 0 || includes(["SIGSEGV","SIGABRT","SIGBUS","SIGILL","SIGFPE","SIGSYS"], sig)) { outcome = "failed" }
+
+level = "info"
+if policy != "" { level = "notice" }
+if cat == "privilege" || cat == "kernel" || cat == "tetragon" || verb == "file-write" || verb == "file-delete" { level = "warning" }
+if priv == "drop" || priv == "same" { level = "info" }
+if enf == "sigkill" || enf == "override" || enf == "signal" || contains(enf, "enforcer") || outcome == "denied" { level = "critical" }
+if t == "exit" {
+  if outcome == "failed" { level = "notice" } else if outcome == "killed" { level = "warning" }
+}
+
+# 5b. reason: why an event was not allowed, worded exactly as the UI shows it,
+#     so the UI's Reason filter can be sent to VictoriaLogs. Only computed for
+#     failed / denied / killed events, a small share of the total.
+reason = ""
+if outcome != "allowed" {
+  if t == "exit" {
+    if sig == "SIGKILL" {
+      reason = "process ended by SIGKILL"
+    } else if includes(["SIGSEGV", "SIGABRT", "SIGBUS", "SIGILL", "SIGFPE", "SIGSYS"], sig) {
+      reason = "crashed by " + sig
+    } else if sig == "" && status != 0 {
+      known = {
+        "curl": {"3": "malformed URL", "6": "could not resolve host", "7": "failed to connect", "22": "HTTP error", "28": "timed out",
+                 "35": "TLS handshake failed", "52": "empty reply", "56": "receive failed", "60": "bad TLS certificate"},
+        "wget": {"4": "network failure", "5": "TLS failure", "6": "authentication failed", "8": "server error response"},
+        "host": {"1": "lookup failed: NXDOMAIN or no answer"}, "nslookup": {"1": "lookup failed: NXDOMAIN or no answer"},
+        "dig": {"9": "no reply from server", "10": "internal error"}, "ping": {"1": "no reply", "2": "error, e.g. unknown host"},
+        "nc": {"1": "connection failed"}, "ncat": {"1": "connection failed"}, "ssh": {"255": "connection or authentication failed"},
+        "scp": {"1": "transfer failed"}, "telnet": {"1": "connection failed"}
+      }
+      reason = string(get(known, [bin_name, to_string(status)]) ?? "") ?? ""
+      if reason == "" { reason = "exit code " + to_string(status) }
+    }
+  } else {
+    parts = []
+    if enf != "" && enf != "post" { parts = push(parts, "action " + enf) }
+    if ret < 0 {
+      errnos = {"-1": "EPERM", "-2": "ENOENT", "-13": "EACCES", "-22": "EINVAL", "-95": "EOPNOTSUPP"}
+      en = string(get(errnos, [to_string(ret)]) ?? "") ?? ""
+      if en == "" { en = "errno " + to_string(0 - ret) }
+      parts = push(parts, "returned " + en)
+    }
+    if policy != "" { parts = push(parts, "policy " + policy) }
+    reason = join(parts, ", ")
+  }
+}
+
+# 6. _msg: short and cheap. The UI renders the full sentence from the fields;
+#    this only gives LogsQL full-text search something to match.
+args = string(.e.process.arguments) ?? ""
+pbin = string(.e.parent.binary) ?? ""
+msg = verb + " " + origin + " " + bin_name
+if hook != "" { msg = msg + " " + hook }
+if .n.daddr != null { msg = msg + " " + (to_string(.n.daddr) ?? "") + ":" + (to_string(.n.dport) ?? "") }
+if .n.path != null { msg = msg + " " + (to_string(.n.path) ?? "") }
+if verb == "lookup" && .n.s0 != null { msg = msg + " " + (to_string(.n.s0) ?? "") }
+if outcome != "allowed" { msg = msg + " " + outcome }
+# 6b. identity and audit evidence (single-field reads; no big copies)
+#  - auid: the login user, survives sudo/su (4294967295 = no login, e.g. daemons)
+#  - container.id: Docker/containerd id (non-k8s: process.docker)
+#  - ns.host: false when the process runs in its own mount or pid namespace
+#    (containers, bwrap/unshare sandboxes); ns.mnt identifies that sandbox
+euid = .e.process.process_credentials.euid
+if euid == .e.process.uid { euid = null }
+ctr_id = .e.process.docker
+if ctr_id == null { ctr_id = .e.process.pod.container.id }
+ns_host = null
+if .e.process.ns.mnt.is_host != null {
+  ns_host = .e.process.ns.mnt.is_host == true && .e.process.ns.pid.is_host != false
+}
+sys_admin = null
+if t == "exec" && .e.process.cap.effective != null {
+  if includes(array(.e.process.cap.effective) ?? [], "CAP_SYS_ADMIN") { sys_admin = true }
+}
+privs = null
+if .e.process.binary_properties.privileges_changed != null {
+  privs = join(array(.e.process.binary_properties.privileges_changed) ?? [], ",") ?? null
+}
+tags = null
+if .e.tags != null { tags = join(array(.e.tags) ?? [], ",") ?? null }
+
+if verb == "lookup" { .n.dnsname = .n.s0 }
+
+# 7. output: flat, only fields the UI reads
+. = compact({
+  "_time": .time, "log_source": "tetragon", "_msg": msg, "level": level, "node": node,
+  "event.type": t, "event.category": cat, "event.action": verb, "event.policy": policy,
+  "event.hook": hook, "event.args": strip_whitespace(extra), "event.priv": priv, "event.priv_to": priv_to, "event.enforcement": enf, "event.outcome": outcome, "event.reason": reason,
+  "dns.name": .n.dnsname, "event.return": .e.return.int_arg,
+  "process.exec_id": .e.process.exec_id, "process.pid": .e.process.pid, "process.uid": .e.process.uid,
+  "process.user": .e.process.user.name, "process.auid": .e.process.auid, "process.euid": euid,
+  "process.setuid": .e.process.binary_properties.setuid, "process.privs_changed": privs,
+  "process.cap_sys_admin": sys_admin,
+  "container.id": ctr_id, "ns.host": ns_host, "ns.mnt": .e.process.ns.mnt.inum, "ns.pid": .e.process.ns.pid.inum,
+  "event.tags": tags, "process.binary": bin, "process.args": args,
+  "process.cwd": .e.process.cwd, "process.flags": .e.process.flags, "process.start_time": .e.process.start_time,
+  "parent.exec_id": .e.process.parent_exec_id, "parent.pid": .e.parent.pid, "parent.binary": pbin,
+  "parent.args": .e.parent.arguments,
+  "k8s.namespace": ns, "k8s.pod": pod, "k8s.container": .e.process.pod.container.name,
+  "k8s.image": .e.process.pod.container.image.name, "k8s.workload": .e.process.pod.workload,
+  "net.saddr": .n.saddr, "net.sport": .n.sport, "net.daddr": .n.daddr, "net.dport": .n.dport, "net.protocol": .n.proto,
+  "file.path": .n.path, "exit.signal": .e.signal, "exit.status": .e.status
+}, null: true, string: true, object: false, array: false, nullish: false)

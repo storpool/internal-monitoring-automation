@@ -19,3 +19,4 @@ groups:
   web_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and healthcheck_url | length > 0 and running | bool'
   ipsec_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "ipsec" in user_attributes.labels and running | bool'
   process_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "process-exporter" in user_attributes.labels and running | bool'
+  deploy_vector: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "vector" in user_attributes.labels and running | bool'
