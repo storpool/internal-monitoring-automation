@@ -6,7 +6,7 @@ vector_deb_architectures:
   x86_64: amd64
   aarch64: arm64
 
-vector_victorialogs_url: "https://infralogs.storpool.net"
+vector_victorialogs_url: ""
 vector_victorialogs_user: writer
 # vector_victorialogs_password has no default, set it from an Ascender credential or extra variable
 # zstd needs a recent VictoriaLogs, use gzip against older instances

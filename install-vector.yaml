@@ -1,0 +1,14 @@
+---
+- name: Configuring common settings
+  hosts: deploy_vector
+  become_method: sudo
+  roles:
+    - name: infrastructure_host
+      become: true
+
+- name: Installing vector
+  hosts: deploy_vector
+  become_method: sudo
+  roles:
+    - name: vector
+      become: true
