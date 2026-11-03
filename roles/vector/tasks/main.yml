@@ -56,16 +56,6 @@
     validate: /usr/bin/vector validate --no-environment --config-yaml %s
   notify: Restarting vector
 
-- name: Creating tetragon vrl
-  ansible.builtin.template:
-    dest: /etc/vector/tetragon.vrl
-    src: tetragon.vrl.j2
-    owner: root
-    group: vector
-    mode: "0640"
-    validate: /usr/bin/vector validate --no-environment --config-yaml %s
-  notify: Restarting vector
-
 - name: Creating vector drop-in directory
   ansible.builtin.file:
     path: /etc/systemd/system/vector.service.d/
