@@ -6,22 +6,57 @@
       - vector_victorialogs_password | length > 0
     fail_msg: Please set the VictoriaLogs writer password via vector_victorialogs_password
 
+- name: Checking if the VictoriaLogs URL is defined
+  ansible.builtin.assert:
+    that:
+      - vector_victorialogs_url | length > 0
+    fail_msg: Please set the VictoriaLogs endpoint via vector_victorialogs_url
+
 - name: Checking if the host architecture is supported
   ansible.builtin.assert:
     that:
       - ansible_architecture in vector_deb_architectures
     fail_msg: "No vector package for {{ ansible_architecture }}"
 
+- name: Checking if the vector package checksum is defined
+  ansible.builtin.assert:
+    that:
+      - vector_package in vector_checksums
+    fail_msg: "No checksum for {{ vector_package }}, add it to vector_checksums"
+  when:
+    - ansible_pkg_mgr in ["apt", "dnf", "dnf5"]
+
+- name: Creating the vector download directory
+  ansible.builtin.file:
+    path: /var/cache/vector
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  when:
+    - ansible_pkg_mgr in ["apt", "dnf", "dnf5"]
+
+- name: Downloading vector
+  ansible.builtin.get_url:
+    url: "{{ vector_release_url }}/{{ vector_package }}"
+    dest: "/var/cache/vector/{{ vector_package }}"
+    checksum: "sha256:{{ vector_checksums[vector_package] }}"
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - ansible_pkg_mgr in ["apt", "dnf", "dnf5"]
+
 - name: Installing vector via apt
   ansible.builtin.apt:
-    deb: "{{ vector_release_url }}/vector_{{ vector_version }}-1_{{ vector_deb_architectures[ansible_architecture] }}.deb"
+    deb: "/var/cache/vector/{{ vector_package }}"
   when:
     - ansible_pkg_mgr == "apt"
   notify: Restarting vector
 
 - name: Installing vector via dnf
   ansible.builtin.dnf:
-    name: "{{ vector_release_url }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm"
+    name: "/var/cache/vector/{{ vector_package }}"
     state: present
     disable_gpg_check: true
   when:
@@ -36,10 +71,14 @@
     append: true
   notify: Restarting vector
 
+- name: Installing tetragon
+  ansible.builtin.include_tasks: tetragon.yml
+  when: vector_tetragon_enabled | bool
+
 - name: Adding the tetragon VRL program
   ansible.builtin.copy:
     dest: /etc/vector/tetragon.vrl
-    src: tetragon.vrl
+    src: "{{ 'tetragon-extended.vrl' if vector_tetragon_extended_enabled | bool else 'tetragon-minimal.vrl' }}"
     owner: root
     group: vector
     mode: "0640"

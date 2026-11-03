@@ -275,7 +275,7 @@ alertmanager_internal_domain: "<alertmanager-url-domain>"
 
 ## Log Shipping to VictoriaLogs (Vector)
 
-`install-vector.yaml` installs [Vector](https://vector.dev) from the pinned upstream release package and ships the systemd journal of every host in the `deploy_vector` group to VictoriaLogs (`https://infralogs.storpool.net`).
+`install-vector.yaml` installs [Vector](https://vector.dev) from the pinned upstream release package (downloaded through `vector_github_proxy_url` and checked against the sha256 in `vector_checksums`) and ships the systemd journal of every host in the `deploy_vector` group to VictoriaLogs (`https://infralogs.storpool.net`).
 
 ### Selecting hosts
 
@@ -294,11 +294,51 @@ vector_victorialogs_password: "<victorialogs-writer-password>"
 
 | Variable | Default | Purpose |
 |---|---|---|
+| `vector_github_proxy_url` | `https://git-release-proxt.storpool.net` | Caching proxy the GitHub release packages are downloaded through |
 | `vector_version` | `0.60.0` | Vector release; bumping it upgrades the hosts |
-| `vector_victorialogs_url` | `https://infralogs.storpool.net` | VictoriaLogs endpoint |
+<<<<<<< HEAD
+=======
+| `vector_checksums` | pinned release | sha256 per package file, update together with `vector_version` |
+>>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
+| `vector_victorialogs_url` | `""` | VictoriaLogs endpoint, required (e.g. `https://infralogs.storpool.net`) |
 | `vector_victorialogs_compression` | `zstd` | Use `gzip` against older VictoriaLogs |
 | `vector_journald_exclude_units` | `[]` | Journal units that are not shipped |
-| `vector_tetragon_enabled` | `false` | Also ship `/var/log/tetragon/tetragon.log`, needs `roles/vector/files/tetragon.vrl` |
+| `vector_tetragon_enabled` | `false` | Install Tetragon and ship its events |
+| `vector_tetragon_extended_enabled` | `false` | Ship the full field set instead of the minimal one |
+| `vector_tetragon_version` | `1.7.1` | Tetragon release; bumping it upgrades the hosts |
+<<<<<<< HEAD
+=======
+| `vector_tetragon_checksums` | pinned release | sha256 per tarball, update together with `vector_tetragon_version` |
+>>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
+| `vector_tetragon_options` | `{}` | Extra Tetragon flags, one `tetragon.conf.d` file each |
+| `vector_tetragon_policies_exclude` | `[]` | Policy files to leave out on a host or group |
+| `vector_tetragon_policies_prune` | `true` | Remove files from `tetragon.tp.d` that are not in the repository |
+
+### Tetragon
+
+With `vector_tetragon_enabled: true` the role installs [Tetragon](https://tetragon.io) from the pinned upstream release (the same layout as its `install.sh`), writes its JSON export to `/var/log/tetragon/tetragon.log` and ships the events to VictoriaLogs. The kernel must expose BTF (`/sys/kernel/btf/vmlinux`), the playbook fails early otherwise.
+
+Two transformations write the same flat field names, so the UI and LogsQL queries work with either:
+
+- **Minimal** (default, `roles/vector/files/tetragon-minimal.vrl`): event type, a coarse category, hook, policy, enforcement and outcome, the process and parent identity (exec_id, pid, uid, user, binary, args), the first socket or path argument, exit signal/status and the k8s pod
+- **Extended** (`vector_tetragon_extended_enabled: true`, `roles/vector/files/tetragon-extended.vrl`): the full set, adding the per-hook category/action table, privilege direction for uid changes, failure reasons, DNS lookups, the rendered argument list, capabilities, namespaces and container ids
+
+Extended events are roughly a third larger.
+
+### Tetragon tracing policies
+
+Without tracing policies Tetragon only reports process exec and exit. Policies live in `roles/vector/files/tetragon-policies/` (`*.yaml` / `*.yml`, one or more `TracingPolicy` documents each, unique `metadata.name`) and are deployed to `/etc/tetragon/tetragon.tp.d/`.
+
+Tetragon loads every regular file in that directory and **refuses to start if any policy fails to load**, so the rollout is guarded:
+
+- the files are checked on the controller first (kind and unique `metadata.name`), a bad file stops the run before any host is touched
+- files in `tetragon.tp.d` that are not in the repository are removed (`vector_tetragon_policies_prune`)
+- Tetragon is restarted only when a policy changed, then every policy must reach `TP_STATE_ENABLED`
+- otherwise the previous policy set is restored, Tetragon restarted on it, and the job fails naming the policies that did not load and the last Tetragon log lines
+
+An empty policy directory in the repository leaves the hosts' policies alone. To skip policies on some hosts, set `vector_tetragon_policies_exclude` for that host or group, e.g. `[ 11-dns-queries.yaml, 12-dns-names.yaml ]`.
+
+> ⚠️ Setting `vector_tetragon_enabled: false` later stops shipping the events but does not uninstall Tetragon.
 
 ### Notes
 

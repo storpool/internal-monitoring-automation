@@ -1,0 +1,119 @@
+---
+# Tracing policies come from roles/vector/files/tetragon-policies/. Tetragon loads every regular
+# file in tetragon.tp.d and refuses to start when one of them fails to load, so the directory is
+# managed as a whole and a rollout that leaves a policy unloaded is rolled back.
+- name: Selecting the tetragon tracing policies
+  ansible.builtin.set_fact:
+    vector_tetragon_policy_files: "{{ query('ansible.builtin.fileglob', 'tetragon-policies/*.yaml', 'tetragon-policies/*.yml')
+      | map('basename') | reject('in', vector_tetragon_policies_exclude) | sort }}"
+
+- name: Reading the tetragon tracing policies
+  ansible.builtin.set_fact:
+    vector_tetragon_policies: "{{ (query('ansible.builtin.file', *(vector_tetragon_policy_files | map('regex_replace', '^', 'tetragon-policies/')))
+      if vector_tetragon_policy_files else []) | map('ansible.builtin.from_yaml_all') | map('list') | flatten(levels=1) | list }}"
+
+- name: Checking the tetragon tracing policies
+  ansible.builtin.assert:
+    that:
+      - vector_tetragon_policies | rejectattr('kind', 'in', ['TracingPolicy', 'TracingPolicyNamespaced']) | list | length == 0
+      - vector_tetragon_policies | rejectattr('metadata.name', 'defined') | list | length == 0
+      - vector_tetragon_policies | map(attribute='metadata.name') | unique | length == vector_tetragon_policies | length
+    fail_msg: >-
+      Every file in roles/vector/files/tetragon-policies must hold TracingPolicy documents with a
+      unique metadata.name. Found: {{ vector_tetragon_policies | map(attribute='metadata.name', default='<no name>') | join(', ') }}
+  when: vector_tetragon_policy_files | length > 0
+
+# An empty policy directory in the repository leaves the hosts alone rather than wiping them
+- name: Deploying the tetragon tracing policies
+  when: vector_tetragon_policy_files | length > 0
+  block:
+    - name: Saving the current tetragon tracing policies
+      ansible.builtin.shell:
+        cmd: rm -rf /var/backups/tetragon.tp.d && cp -a /etc/tetragon/tetragon.tp.d /var/backups/tetragon.tp.d
+      changed_when: false
+
+    - name: Adding the tetragon tracing policies
+      ansible.builtin.copy:
+        dest: "/etc/tetragon/tetragon.tp.d/{{ item }}"
+        src: "tetragon-policies/{{ item }}"
+        owner: root
+        group: root
+        mode: "0600"
+      loop: "{{ vector_tetragon_policy_files }}"
+      register: vector_tetragon_policies_added
+
+    # Tetragon also reads one level of subdirectories
+    - name: Listing the files in the tetragon policy directory
+      ansible.builtin.find:
+        paths: /etc/tetragon/tetragon.tp.d
+        file_type: file
+        hidden: true
+        recurse: true
+        depth: 2
+      register: vector_tetragon_policy_dir
+
+    - name: Removing the tracing policies that are not in the repository
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop: "{{ vector_tetragon_policy_dir.files | map(attribute='path')
+        | difference(vector_tetragon_policy_files | map('regex_replace', '^', '/etc/tetragon/tetragon.tp.d/'))
+        | sort }}"
+      when: vector_tetragon_policies_prune | bool
+      register: vector_tetragon_policies_removed
+
+    - name: Restarting tetragon with the new tracing policies
+      ansible.builtin.systemd_service:
+        name: tetragon
+        state: restarted
+      when: vector_tetragon_policies_added is changed or vector_tetragon_policies_removed is changed
+
+    - name: Checking if tetragon loaded every tracing policy
+      ansible.builtin.command:
+        cmd: /usr/local/bin/tetra --server-address {{ vector_tetragon_config['server-address'] }} tracingpolicy list -o json
+      register: vector_tetragon_policy_list
+      changed_when: false
+      retries: 20
+      delay: 3
+      until: >-
+        vector_tetragon_policy_list.rc == 0 and
+        (vector_tetragon_policy_list.stdout | from_json).policies | default([])
+        | selectattr('state', 'eq', 'TP_STATE_ENABLED') | map(attribute='name')
+        | intersect(vector_tetragon_policies | map(attribute='metadata.name')) | length
+        == vector_tetragon_policies | length
+
+  rescue:
+    - name: Reading the tetragon log
+      ansible.builtin.command:
+        cmd: journalctl --unit tetragon --lines 20 --no-pager --output cat
+      register: vector_tetragon_journal
+      changed_when: false
+      failed_when: false
+
+    - name: Restoring the previous tetragon tracing policies
+      ansible.builtin.shell:
+        cmd: rm -rf /etc/tetragon/tetragon.tp.d && cp -a /var/backups/tetragon.tp.d /etc/tetragon/tetragon.tp.d
+      changed_when: true
+
+    - name: Restarting tetragon with the previous tracing policies
+      ansible.builtin.systemd_service:
+        name: tetragon
+        state: restarted
+
+    - name: Collecting the tracing policy states
+      ansible.builtin.set_fact:
+        vector_tetragon_policy_states: "{{ dict(vector_tetragon_policy_status | map(attribute='name')
+          | zip(vector_tetragon_policy_status | map(attribute='state'))) }}"
+      vars:
+        vector_tetragon_policy_status: "{{ ((((vector_tetragon_policy_list | default({})).stdout | default('')) or '{}')
+          | from_json).policies | default([]) }}"
+
+    - name: Failing the tetragon tracing policy rollout
+      ansible.builtin.fail:
+        msg: >-
+          Tetragon did not load every tracing policy, the previous set was restored.
+          {% if vector_tetragon_policy_states | length == 0 %}Tetragon is not answering.
+          {% else %}Not enabled: {% for name in vector_tetragon_policies | map(attribute='metadata.name')
+          if vector_tetragon_policy_states[name] | default('') != 'TP_STATE_ENABLED' %}{{ name }}
+          ({{ vector_tetragon_policy_states[name] | default('not loaded') }}){{ ', ' if not loop.last }}{% endfor %}.
+          {% endif %}Tetragon log: {{ vector_tetragon_journal.stdout_lines | default([]) | join(' | ') }}

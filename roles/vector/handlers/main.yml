@@ -3,6 +3,11 @@
   ansible.builtin.systemd_service:
     daemon_reload: true
 
+- name: Restarting tetragon
+  ansible.builtin.systemd_service:
+    name: tetragon
+    state: restarted
+
 - name: Restarting vector
   ansible.builtin.systemd_service:
     name: vector

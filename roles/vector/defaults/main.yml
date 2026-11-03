@@ -1,10 +1,22 @@
 ---
+# Caching proxy in front of https://github.com, the release paths stay the same
+vector_github_proxy_url: "https://git-release-proxt.storpool.net"
+
 # Pinned release from https://github.com/vectordotdev/vector/releases. Bumping it upgrades the hosts.
 vector_version: "0.60.0"
-vector_release_url: "https://github.com/vectordotdev/vector/releases/download/v{{ vector_version }}"
+vector_release_url: "{{ vector_github_proxy_url }}/vectordotdev/vector/releases/download/v{{ vector_version }}"
+# sha256 of the release packages, from vector-<version>-SHA256SUMS on GitHub. Update them together
+# with vector_version, the download fails for a package that is not listed here.
+vector_checksums:
+  vector_0.60.0-1_amd64.deb: 985f74a8e07ac8efabc891324435451823e77da5b98b636bd7594f402db41219
+  vector_0.60.0-1_arm64.deb: da915a1acb2723af0502149c780b956b2e560920c188b8453281a5fac5c0d979
+  vector-0.60.0-1.x86_64.rpm: cc04fb81dae39877ac10d447a8b14f3c5c1c928c00dd6f96e5365472ad9a1394
+  vector-0.60.0-1.aarch64.rpm: 8cd45d602feb6e0bfda5b663028f0e33dc1c09dba50eb4fc32475a73f495aee3
 vector_deb_architectures:
   x86_64: amd64
   aarch64: arm64
+vector_package: "{{ ('vector_' ~ vector_version ~ '-1_' ~ vector_deb_architectures[ansible_architecture] ~ '.deb')
+  if ansible_pkg_mgr == 'apt' else ('vector-' ~ vector_version ~ '-1.' ~ ansible_architecture ~ '.rpm') }}"
 
 vector_victorialogs_url: ""
 vector_victorialogs_user: writer
@@ -15,6 +27,41 @@ vector_victorialogs_compression: zstd
 # Journal units that are not shipped, e.g. [ vector.service ]
 vector_journald_exclude_units: []
 
-# Also ship the tetragon event log. Requires roles/vector/files/tetragon.vrl
+# Install tetragon and ship its events
 vector_tetragon_enabled: false
+# false ships the minimal field set (files/tetragon-minimal.vrl), true the full set
+# (files/tetragon-extended.vrl). Both write the same field names.
+vector_tetragon_extended_enabled: false
 vector_tetragon_log: /var/log/tetragon/tetragon.log
+
+# Pinned release from https://github.com/cilium/tetragon/releases. Bumping it upgrades the hosts.
+vector_tetragon_version: "1.7.1"
+<<<<<<< HEAD
+vector_tetragon_release_url: "https://github.com/cilium/tetragon/releases/download/v{{ vector_tetragon_version }}"
+vector_tetragon_package: "tetragon-v{{ vector_tetragon_version }}-{{ vector_deb_architectures[ansible_architecture] }}"
+=======
+vector_tetragon_release_url: "{{ vector_github_proxy_url }}/cilium/tetragon/releases/download/v{{ vector_tetragon_version }}"
+vector_tetragon_package: "tetragon-v{{ vector_tetragon_version }}-{{ vector_deb_architectures[ansible_architecture] }}"
+# sha256 of the release tarballs, from <tarball>.sha256sum on GitHub. Update them together with
+# vector_tetragon_version, the download fails for a tarball that is not listed here.
+vector_tetragon_checksums:
+  tetragon-v1.7.1-amd64.tar.gz: 2f36a7bbb2b3d77a011383a01c8f804fe7761d934a76ff2fdf99ebad6f3e89ae
+  tetragon-v1.7.1-arm64.tar.gz: aa71d12eddd962003e9fd78e3b3534185af5b2728c7d21ab3cb0f7fe2dc87702
+>>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
+
+# Files in /etc/tetragon/tetragon.conf.d, one per tetragon flag
+vector_tetragon_config:
+  export-filename: "{{ vector_tetragon_log }}"
+  export-file-perm: "640"
+  export-file-max-size-mb: "10"
+  export-file-max-backups: "5"
+  export-file-compress: "true"
+  server-address: unix:///var/run/tetragon/tetragon.sock
+# Tracing policies are the files in roles/vector/files/tetragon-policies/. Policy files to leave
+# out on a host or group, e.g. [ 11-dns-queries.yaml, 12-dns-names.yaml ]
+vector_tetragon_policies_exclude: []
+# Remove files from /etc/tetragon/tetragon.tp.d that are not in the repository
+vector_tetragon_policies_prune: true
+
+# Extra or overriding tetragon flags, e.g. { export-rate-limit: "10000", metrics-server: ":2112" }
+vector_tetragon_options: {}

@@ -1,0 +1,138 @@
+---
+- name: Checking if the kernel exposes BTF type information
+  ansible.builtin.stat:
+    path: /sys/kernel/btf/vmlinux
+  register: vector_tetragon_btf
+
+- name: Checking if the host can run tetragon
+  ansible.builtin.assert:
+    that:
+      - vector_tetragon_btf.stat.exists
+    fail_msg: Tetragon needs a kernel built with CONFIG_DEBUG_INFO_BTF, /sys/kernel/btf/vmlinux is missing
+
+<<<<<<< HEAD
+=======
+- name: Checking if the tetragon checksum is defined
+  ansible.builtin.assert:
+    that:
+      - (vector_tetragon_package ~ '.tar.gz') in vector_tetragon_checksums
+    fail_msg: "No checksum for {{ vector_tetragon_package }}.tar.gz, add it to vector_tetragon_checksums"
+
+>>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
+- name: Creating the tetragon download directory
+  ansible.builtin.file:
+    path: /var/cache/tetragon
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Downloading tetragon
+  ansible.builtin.get_url:
+    url: "{{ vector_tetragon_release_url }}/{{ vector_tetragon_package }}.tar.gz"
+    dest: "/var/cache/tetragon/{{ vector_tetragon_package }}.tar.gz"
+<<<<<<< HEAD
+    checksum: "sha256:{{ vector_tetragon_release_url }}/{{ vector_tetragon_package }}.tar.gz.sha256sum"
+=======
+    checksum: "sha256:{{ vector_tetragon_checksums[vector_tetragon_package ~ '.tar.gz'] }}"
+>>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Unpacking tetragon
+  ansible.builtin.unarchive:
+    src: "/var/cache/tetragon/{{ vector_tetragon_package }}.tar.gz"
+    dest: /var/cache/tetragon
+    remote_src: true
+    creates: "/var/cache/tetragon/{{ vector_tetragon_package }}/install.sh"
+
+# Same layout as the upstream install.sh, without its unconditional restart
+- name: Installing the tetragon binaries and BPF objects
+  ansible.builtin.copy:
+    src: "/var/cache/tetragon/{{ vector_tetragon_package }}/usr/local/"
+    dest: /usr/local/
+    remote_src: true
+    owner: root
+    group: root
+    mode: preserve
+  notify: Restarting tetragon
+
+- name: Adding the tetragon systemd service unit file
+  ansible.builtin.copy:
+    src: "/var/cache/tetragon/{{ vector_tetragon_package }}/usr/lib/systemd/system/tetragon.service"
+    dest: /usr/lib/systemd/system/tetragon.service
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Reloading systemd
+    - Restarting tetragon
+
+- name: Creating the tetragon configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - /etc/tetragon/tetragon.conf.d
+    - /etc/tetragon/tetragon.tp.d
+
+# Tetragon writes the export as root, setgid makes the files group vector so vector can read them
+- name: Creating the tetragon export directory
+  ansible.builtin.file:
+    path: "{{ vector_tetragon_log | dirname }}"
+    state: directory
+    owner: root
+    group: vector
+    mode: "2750"
+
+- name: Configuring tetragon
+  ansible.builtin.copy:
+    dest: "/etc/tetragon/tetragon.conf.d/{{ item.key }}"
+    content: "{{ item.value }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ vector_tetragon_config | combine(vector_tetragon_options) | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  notify: Restarting tetragon
+
+- name: Checking for an existing tetragon export file
+  ansible.builtin.stat:
+    path: "{{ vector_tetragon_log }}"
+  register: vector_tetragon_export_file
+
+# An export written before this role managed tetragon is root:root 0600
+- name: Allowing vector to read the existing tetragon export file
+  ansible.builtin.file:
+    path: "{{ vector_tetragon_log }}"
+    owner: root
+    group: vector
+    mode: "0640"
+  when: vector_tetragon_export_file.stat.exists
+
+- name: Starting the tetragon service
+  ansible.builtin.systemd_service:
+    name: tetragon
+    state: started
+    enabled: true
+
+- name: Flushing handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Checking if tetragon is healthy
+  ansible.builtin.command:
+    cmd: /usr/local/bin/tetra --server-address {{ vector_tetragon_config['server-address'] }} status
+  register: vector_tetragon_status
+  changed_when: false
+  retries: 10
+  delay: 3
+  until: vector_tetragon_status.rc == 0
+
+- name: Deploying the tetragon tracing policies
+  ansible.builtin.include_tasks: tetragon-policies.yml

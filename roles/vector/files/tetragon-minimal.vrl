@@ -1,0 +1,114 @@
+# Tetragon JSON -> VictoriaLogs (minimal)
+# A subset of the fields tetragon-extended.vrl writes, under the same names, so the UI and
+# LogsQL queries work against both. Left out: privilege direction, failure reasons, DNS
+# detection, the per-hook category/action table, capabilities, namespaces, container ids and
+# the rendered argument list.
+# Same perf rules as tetragon-extended.vrl:
+#  * never assign big objects to variables (VRL deep-copies them): move the event
+#    wrapper with del() and read leaf paths directly
+#  * build one flat object with dotted keys; compact() it once (non-recursive)
+line = string(.message) ?? ""
+host = string(.host) ?? "unknown"
+., err = parse_json(line)
+if err != null || !is_object(.) {
+  . = {"_time": now(), "log_source": "tetragon", "_msg": line, "node": host,
+       "event.type": "unparsed", "level": "error", "tetragon.parse_error": err}
+  return .
+}
+
+# 1. event type: move the single wrapper object to .e (no copy)
+t = "unknown"
+if exists(.process_kprobe)          { t = "kprobe";     .e = del(.process_kprobe)
+} else if exists(.process_exec)       { t = "exec";       .e = del(.process_exec)
+} else if exists(.process_exit)       { t = "exit";       .e = del(.process_exit)
+} else if exists(.process_tracepoint) { t = "tracepoint"; .e = del(.process_tracepoint)
+} else if exists(.process_lsm)        { t = "lsm";        .e = del(.process_lsm)
+} else if exists(.process_uprobe)     { t = "uprobe";     .e = del(.process_uprobe)
+} else if exists(.process_loader)     { t = "loader";     .e = del(.process_loader)
+} else if exists(.process_throttle)   { t = "throttle";   .e = del(.process_throttle)
+} else if exists(.rate_limit_info)    { t = "rate_limit_info"; .e = del(.rate_limit_info) }
+
+node = string(.node_name) ?? host
+bin  = string(.e.process.binary) ?? ""
+bin_name = bin
+parts = split(bin, "/")
+if length(parts) > 0 { bin_name = string(parts[-1]) ?? bin }
+
+ns  = string(.e.process.pod.namespace) ?? ""
+pod = string(.e.process.pod.name) ?? ""
+origin = "host:" + node
+if ns != "" && pod != "" {
+  origin = ns + "/" + pod
+  c = string(.e.process.pod.container.name) ?? ""
+  if c != "" { origin = origin + "/" + c }
+}
+
+# 2. hook: the first socket or path argument only
+hook = ""; policy = ""; enf = ""
+if t != "exec" && t != "exit" {
+  hook = string(.e.function_name) ?? string(.e.symbol) ?? ""
+  if is_string(.e.subsys) { hook = string!(.e.subsys) + "/" + (string(.e.event) ?? "") }
+  policy = string(.e.policy_name) ?? ""
+  action = string(.e.action) ?? ""
+  if action != "" { enf = downcase(string(split(action, "ACTION_")[-1]) ?? "") }
+  for_each(array(.e.args) ?? []) -> |_i, a| {
+    if .n.daddr == null && is_object(a.sock_arg) {
+      .n.saddr = a.sock_arg.saddr; .n.sport = a.sock_arg.sport
+      .n.daddr = a.sock_arg.daddr; .n.dport = a.sock_arg.dport
+      .n.proto = a.sock_arg.protocol
+    } else if .n.daddr == null && is_object(a.sockaddr_arg) {
+      .n.daddr = a.sockaddr_arg.addr; .n.dport = a.sockaddr_arg.port
+    } else if .n.path == null && a.file_arg.path != null {
+      .n.path = a.file_arg.path
+    } else if .n.path == null && a.path_arg.path != null {
+      .n.path = a.path_arg.path
+    } else if .n.path == null && is_string(a.string_arg) && starts_with(string!(a.string_arg), "/") {
+      .n.path = a.string_arg
+    }
+  }
+}
+
+# 3. coarse category, from the fields above only (no hook name matching)
+cat = "process"; verb = t
+if t == "loader" { cat = "loader"; verb = "load"
+} else if t == "throttle" || t == "rate_limit_info" { cat = "tetragon"; verb = "throttle"
+} else if t != "exec" && t != "exit" {
+  if .n.daddr != null || .n.saddr != null { cat = "network"; verb = "net"
+  } else if .n.path != null { cat = "file"; verb = "file"
+  } else { cat = "syscall" }
+}
+
+# 4. outcome + level
+ret = to_int(.e.return.int_arg) ?? 0
+sig = string(.e.signal) ?? ""
+status = to_int(.e.status) ?? 0
+outcome = "allowed"
+if enf == "sigkill" || sig == "SIGKILL" { outcome = "killed"
+} else if enf == "override" || enf == "notifyenforcer" || enf == "notify_enforcer" || ret == -1 || ret == -13 { outcome = "denied"
+} else if ret < 0 { outcome = "failed"
+} else if t == "exit" && status != 0 { outcome = "failed" }
+
+level = "info"
+if policy != "" || cat == "tetragon" { level = "notice" }
+if enf == "sigkill" || enf == "override" || enf == "signal" || contains(enf, "enforcer") || outcome == "denied" { level = "critical" }
+if t == "exit" && outcome == "killed" { level = "warning" }
+
+# 5. _msg, same shape as tetragon-extended.vrl
+msg = verb + " " + origin + " " + bin_name
+if hook != "" { msg = msg + " " + hook }
+if .n.daddr != null { msg = msg + " " + (to_string(.n.daddr) ?? "") + ":" + (to_string(.n.dport) ?? "") }
+if .n.path != null { msg = msg + " " + (to_string(.n.path) ?? "") }
+if outcome != "allowed" { msg = msg + " " + outcome }
+
+# 6. output: flat, same field names as tetragon-extended.vrl
+. = compact({
+  "_time": .time, "log_source": "tetragon", "_msg": msg, "level": level, "node": node,
+  "event.type": t, "event.category": cat, "event.action": verb, "event.policy": policy,
+  "event.hook": hook, "event.enforcement": enf, "event.outcome": outcome,
+  "process.exec_id": .e.process.exec_id, "process.pid": .e.process.pid, "process.uid": .e.process.uid,
+  "process.user": .e.process.user.name, "process.binary": bin, "process.args": .e.process.arguments,
+  "parent.exec_id": .e.process.parent_exec_id, "parent.pid": .e.parent.pid, "parent.binary": .e.parent.binary,
+  "k8s.namespace": ns, "k8s.pod": pod,
+  "net.saddr": .n.saddr, "net.sport": .n.sport, "net.daddr": .n.daddr, "net.dport": .n.dport, "net.protocol": .n.proto,
+  "file.path": .n.path, "exit.signal": .e.signal, "exit.status": .e.status
+}, null: true, string: true, object: false, array: false, nullish: false)
