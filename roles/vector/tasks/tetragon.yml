@@ -10,15 +10,12 @@
       - vector_tetragon_btf.stat.exists
     fail_msg: Tetragon needs a kernel built with CONFIG_DEBUG_INFO_BTF, /sys/kernel/btf/vmlinux is missing
 
-<<<<<<< HEAD
-=======
 - name: Checking if the tetragon checksum is defined
   ansible.builtin.assert:
     that:
       - (vector_tetragon_package ~ '.tar.gz') in vector_tetragon_checksums
     fail_msg: "No checksum for {{ vector_tetragon_package }}.tar.gz, add it to vector_tetragon_checksums"
 
->>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
 - name: Creating the tetragon download directory
   ansible.builtin.file:
     path: /var/cache/tetragon
@@ -31,11 +28,7 @@
   ansible.builtin.get_url:
     url: "{{ vector_tetragon_release_url }}/{{ vector_tetragon_package }}.tar.gz"
     dest: "/var/cache/tetragon/{{ vector_tetragon_package }}.tar.gz"
-<<<<<<< HEAD
-    checksum: "sha256:{{ vector_tetragon_release_url }}/{{ vector_tetragon_package }}.tar.gz.sha256sum"
-=======
     checksum: "sha256:{{ vector_tetragon_checksums[vector_tetragon_package ~ '.tar.gz'] }}"
->>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
     owner: root
     group: root
     mode: "0644"

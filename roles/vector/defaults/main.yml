@@ -36,10 +36,6 @@ vector_tetragon_log: /var/log/tetragon/tetragon.log
 
 # Pinned release from https://github.com/cilium/tetragon/releases. Bumping it upgrades the hosts.
 vector_tetragon_version: "1.7.1"
-<<<<<<< HEAD
-vector_tetragon_release_url: "https://github.com/cilium/tetragon/releases/download/v{{ vector_tetragon_version }}"
-vector_tetragon_package: "tetragon-v{{ vector_tetragon_version }}-{{ vector_deb_architectures[ansible_architecture] }}"
-=======
 vector_tetragon_release_url: "{{ vector_github_proxy_url }}/cilium/tetragon/releases/download/v{{ vector_tetragon_version }}"
 vector_tetragon_package: "tetragon-v{{ vector_tetragon_version }}-{{ vector_deb_architectures[ansible_architecture] }}"
 # sha256 of the release tarballs, from <tarball>.sha256sum on GitHub. Update them together with
@@ -47,7 +43,6 @@ vector_tetragon_package: "tetragon-v{{ vector_tetragon_version }}-{{ vector_deb_
 vector_tetragon_checksums:
   tetragon-v1.7.1-amd64.tar.gz: 2f36a7bbb2b3d77a011383a01c8f804fe7761d934a76ff2fdf99ebad6f3e89ae
   tetragon-v1.7.1-arm64.tar.gz: aa71d12eddd962003e9fd78e3b3534185af5b2728c7d21ab3cb0f7fe2dc87702
->>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
 
 # Files in /etc/tetragon/tetragon.conf.d, one per tetragon flag
 vector_tetragon_config:

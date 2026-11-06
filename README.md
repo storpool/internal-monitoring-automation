@@ -296,20 +296,14 @@ vector_victorialogs_password: "<victorialogs-writer-password>"
 |---|---|---|
 | `vector_github_proxy_url` | `https://git-release-proxt.storpool.net` | Caching proxy the GitHub release packages are downloaded through |
 | `vector_version` | `0.60.0` | Vector release; bumping it upgrades the hosts |
-<<<<<<< HEAD
-=======
 | `vector_checksums` | pinned release | sha256 per package file, update together with `vector_version` |
->>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
 | `vector_victorialogs_url` | `""` | VictoriaLogs endpoint, required (e.g. `https://infralogs.storpool.net`) |
 | `vector_victorialogs_compression` | `zstd` | Use `gzip` against older VictoriaLogs |
 | `vector_journald_exclude_units` | `[]` | Journal units that are not shipped |
 | `vector_tetragon_enabled` | `false` | Install Tetragon and ship its events |
 | `vector_tetragon_extended_enabled` | `false` | Ship the full field set instead of the minimal one |
 | `vector_tetragon_version` | `1.7.1` | Tetragon release; bumping it upgrades the hosts |
-<<<<<<< HEAD
-=======
 | `vector_tetragon_checksums` | pinned release | sha256 per tarball, update together with `vector_tetragon_version` |
->>>>>>> f178713 (Adding vector to ship the systemd journal and tetragon logs to VictoriaLogs)
 | `vector_tetragon_options` | `{}` | Extra Tetragon flags, one `tetragon.conf.d` file each |
 | `vector_tetragon_policies_exclude` | `[]` | Policy files to leave out on a host or group |
 | `vector_tetragon_policies_prune` | `true` | Remove files from `tetragon.tp.d` that are not in the repository |
