@@ -1,6 +1,6 @@
 ---
 # Caching proxy in front of https://github.com, the release paths stay the same
-vector_github_proxy_url: "https://git-release-proxt.storpool.net"
+vector_github_proxy_url: "https://git-release-proxy.storpool.net"
 
 # Pinned release from https://github.com/vectordotdev/vector/releases. Bumping it upgrades the hosts.
 vector_version: "0.60.0"
