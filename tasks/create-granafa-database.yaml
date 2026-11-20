@@ -23,8 +23,6 @@
   community.postgresql.postgresql_user:
     name: "{{ grafana_database.user }}"
     password: "{{ grafana_database.password }}"
-    db: "{{ grafana_database.name }}"
-    priv: ALL
     role_attr_flags: CREATEROLE
 
 - name: Setting the PostgreSQL user as owner of the database
