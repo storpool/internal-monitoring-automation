@@ -21,7 +21,7 @@
       become: yes
       become_user: postgres
       community.postgresql.postgresql_privs:
-        db: postgres
+        login_db: postgres
         privs: CONNECT
         type: database
         roles: "{{ postgres_exporter_system_user }}"
