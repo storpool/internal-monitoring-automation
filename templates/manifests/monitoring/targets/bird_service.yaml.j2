@@ -3,7 +3,9 @@
     - {{ hostvars[host]['ansible_host'] }}:9324
   labels:
     instance: {{ host }}
-    type: bare-metal
-    location: {{ hostvars[host]['site'] }}
+{# The routers group has no is_virtual test, so it also holds router VMs. NetBox only gives a VM
+   a site when its cluster is assigned to one, so site cannot be assumed here. #}
+    type: {{ 'virtual-machine' if hostvars[host]['is_virtual'] | default(false) else 'bare-metal' }}
+    location: {{ hostvars[host]['site'] | default(hostvars[host]['location'] | default('undefined')) }}
     environment: production
 {% endfor %}
