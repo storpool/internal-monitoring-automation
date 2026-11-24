@@ -62,8 +62,11 @@
     # whose group is empty gets an empty staticConfigs rather than being deleted.
     - name: Creating the scrape configs
       kubernetes.core.k8s:
-        resource_definition: "{{ lookup('template', manifest) | from_yaml }}"
+        resource_definition: "{{ manifest_definition }}"
         apply: no
+      vars:
+        manifest_definition: "{{ lookup('template', manifest) | from_yaml }}"
+      when: manifest_definition is mapping
       loop: "{{ lookup('fileglob', playbook_dir + '/templates/manifests/monitoring/*.yaml', wantlist=True) | sort }}"
       loop_control:
         loop_var: manifest
