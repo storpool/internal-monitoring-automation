@@ -1,3 +1,5 @@
+{% set fortigate_targets = lookup('template', 'manifests/monitoring/targets/fortigate_targets.yaml.j2') | from_yaml or [] %}
+{% if fortigate_targets | length > 0 %}
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMScrapeConfig
 metadata:
@@ -19,4 +21,5 @@ spec:
   - targetLabel: __address__
     replacement: fortigate-exporter:9710
 
-  staticConfigs: {{ lookup('template', 'manifests/monitoring/targets/fortigate_targets.yaml.j2') | from_yaml or [] }}
+  staticConfigs: {{ fortigate_targets | to_json }}
+{% endif %}
