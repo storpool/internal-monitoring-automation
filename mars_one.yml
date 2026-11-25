@@ -9,6 +9,15 @@ compose:
   running: state == "active" and lcm_state == "running"
   services: dict(user_attributes.services | split(",") | map("split", ":")) if user_attributes.services is defined else {}
   healthcheck_url: user_attributes.healthcheck_url | split(",") if user_attributes.healthcheck_url is defined else []
+  public_ipv4: >-
+    nic | map(attribute='ip', default='') | select
+    | reject('match', '^(10|127)\.|^169\.254\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[01])\.|^100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.')
+    | list
+  public_ipv6: >-
+    ((nic | map(attribute='ip6_global', default='') | list)
+     + (nic | map(attribute='ip6', default='') | list))
+    | select | select('match', '^[23]') | reject('match', '(?i)^2001:0?db8:')
+    | unique | list
 groups:
   virtual_machines: 'user_attributes.labels is defined and "Production" in user_attributes.labels and running | bool'
   jenkins_hosts: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "jenkins" in user_attributes.labels and running | bool'
@@ -22,3 +31,7 @@ groups:
   ipsec_service: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "ipsec" in user_attributes.labels and running | bool'
   process_exporter: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "process-exporter" in user_attributes.labels and running | bool'
   deploy_vector: 'user_attributes.labels is defined and "Production" in user_attributes.labels and "vector" in user_attributes.labels and running | bool'
+  public_ipv4_hosts: 'public_ipv4 | length > 0 and running | bool'
+  public_ipv6_hosts: 'public_ipv6 | length > 0 and running | bool'
+  public_hosts: '(public_ipv4 | length > 0 or public_ipv6 | length > 0) and running | bool'
+
