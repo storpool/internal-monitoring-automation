@@ -10,6 +10,22 @@ device_query_filters:
 interfaces: true
 group_by:
   - site
+compose:
+  public_ipv4: >-
+    interfaces | default([]) | map(attribute='ip_addresses') | flatten(levels=1)
+    | selectattr('family.value', 'eq', 4)
+    | selectattr('status.value', 'eq', 'active')
+    | map(attribute='address') | map('regex_replace', '/.*$', '')
+    | reject('match', '^(10|127)\.|^169\.254\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[01])\.|^100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.')
+    | unique | list
+  public_ipv6: >-
+    interfaces | default([]) | map(attribute='ip_addresses') | flatten(levels=1)
+    | selectattr('family.value', 'eq', 6)
+    | selectattr('status.value', 'eq', 'active')
+    | map(attribute='address') | map('regex_replace', '/.*$', '')
+    | select('match', '^[23]') | reject('match', '(?i)^2001:0?db8:')
+    | unique | list
+
 groups:
   baremetal_machines: '(role == "server" or role == "router") and not is_virtual and "omit-monitor" not in tags'
   virtual_machines: '(role == "server" or role == "router") and is_virtual and "omit-monitor" not in tags'
@@ -24,3 +40,6 @@ groups:
   amd_baremetal: 'role == "server" and (custom_fields["cpu_maker"]["value"] is defined and custom_fields["cpu_maker"]["value"] == "AMD") and "omit-monitor" not in tags'
   dns_servers: 'role == "router" and (services | select_attr("name", "eq", "Internal DNS") | list | length == 1)'
   fortigate_firewalls: 'role == "firewall" and platform == "fortios" and "omit-monitor" not in tags'
+  public_ipv4_hosts: 'public_ipv4 | length > 0 and "omit-monitor" not in tags'
+  public_ipv6_hosts: 'public_ipv6 | length > 0 and "omit-monitor" not in tags'
+  public_hosts: '(public_ipv4 | length > 0 or public_ipv6 | length > 0) and "omit-monitor" not in tags'
